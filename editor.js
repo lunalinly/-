@@ -287,7 +287,7 @@
   function sourceLinksText(item) {
     const links = Array.isArray(item?.sourceLinks) && item.sourceLinks.length
       ? item.sourceLinks
-      : (item?.sourceUrl ? [{ title: "開啟來源", url: item.sourceUrl }] : []);
+      : ((item?.sourceUrl || item?.url) ? [{ title: "開啟來源", url: item.sourceUrl || item.url }] : []);
     return links.map(link => `${link.title || "開啟來源"} | ${link.url || ""}`).join("\n");
   }
 
@@ -569,7 +569,7 @@
     return `<div class="subrecord-card"><div class="subrecord-head"><b>欄位 ${i + 1}｜${esc(v.label)}</b><button type="button" data-remove-variable="${i}">移除</button></div><input type="hidden" name="var_code_${i}" value="${esc(v.code)}"><div class="editor-grid">${field("中文欄位名稱", `var_label_${i}`, v.label, { required: true })}${field("輸入提示", `var_hint_${i}`, v.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", `var_source_note_${i}`, v.sourceNote || "", { wide: true, type: "textarea", rows: 4, placeholder: "例如：訂單後台 → 訂單詳情" })}${field("來源連結（每行：標題 | 網址）", `var_source_links_${i}`, sourceLinksText(v), { wide: true, type: "textarea", rows: 5, placeholder: "訂單後台 | https://…\n物流查詢 | https://…" })}${field("輸入類型", `var_type_${i}`, inputKind, { type: "select", choices: typeOptions })}${field("下拉選項（每行一個）", `var_options_${i}`, (v.options || []).join("\n"), { type: "textarea", rows: 4, wide: true, placeholder: "是\n否\n需要再確認" })}${field("預設答案（選填）", `var_default_value_${i}`, v.defaultValue || "", { wide: true, type: "textarea", rows: 3, placeholder: "前台首次顯示時自動填入，仍可修改" })}${field("自動依照哪個欄位", `var_source_${i}`, v.autoSource || "", { type: "select", choices: sourceChoices(q, vars, v.autoSource || "") })}${field("增減天數", `var_days_${i}`, v.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", `var_required_${i}`, v.required, { type: "checkbox", checkLabel: "必填" })}${field("自動帶入", `var_common_${i}`, v.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></div>`;
   }
   function actionCard(a, i) {
-    return `<div class="subrecord-card"><div class="subrecord-head"><b>操作 ${i + 1}｜${esc(a.action)}</b><button type="button" data-remove-action="${i}">移除</button></div><div class="editor-grid">${field("操作名稱", `action_name_${i}`, a.action, { required: true })}${field("是否需要", `action_needed_${i}`, a.needed, { type: "checkbox", checkLabel: "需要執行" })}${field("補充說明", `action_note_${i}`, a.note || "", { wide: true, type: "textarea", rows: 3 })}${field("連結（選填）", `action_url_${i}`, a.url || "", { wide: true, type: "url", placeholder: "https://…" })}</div></div>`;
+    return `<div class="subrecord-card"><div class="subrecord-head"><b>操作 ${i + 1}｜${esc(a.action)}</b><button type="button" data-remove-action="${i}">移除</button></div><div class="editor-grid">${field("操作名稱", `action_name_${i}`, a.action, { required: true })}${field("是否需要", `action_needed_${i}`, a.needed, { type: "checkbox", checkLabel: "需要執行" })}${field("補充說明", `action_note_${i}`, a.note || "", { wide: true, type: "textarea", rows: 3 })}${field("值從哪裡找", `action_source_note_${i}`, a.sourceNote || "", { wide: true, type: "textarea", rows: 4, placeholder: "可輸入多行操作位置說明" })}${field("來源連結（每行：標題 | 網址）", `action_source_links_${i}`, sourceLinksText(a), { wide: true, type: "textarea", rows: 5, placeholder: "訂單後台 | https://…\n物流查詢 | https://…" })}</div></div>`;
   }
   function variableTokens(vars, target = "template_text") {
     const sorted = [...new Map(vars.map(variable => [variable.code, variable])).values()].sort(compareFieldCatalog);
@@ -752,7 +752,7 @@
       v.sourceUrl = v.sourceLinks[0]?.url || "";
       if (!v.autoSource) delete v.autoSource;
     });
-    const previousActions = exactActions(oldQ, oldBranch); const actions = previousActions.map((old, i) => ({ q, branch, action: String(fd.get(`action_name_${i}`) || "").trim(), needed: fd.has(`action_needed_${i}`), note: String(fd.get(`action_note_${i}`) || "").trim(), url: String(fd.get(`action_url_${i}`) || "").trim() }));
+    const previousActions = exactActions(oldQ, oldBranch); const actions = previousActions.map((old, i) => ({ q, branch, action: String(fd.get(`action_name_${i}`) || "").trim(), needed: fd.has(`action_needed_${i}`), note: String(fd.get(`action_note_${i}`) || "").trim(), sourceNote: String(fd.get(`action_source_note_${i}`) || "").trim(), sourceLinks: parseSourceLinks(fd.get(`action_source_links_${i}`)) })).map(action => ({ ...action, url: action.sourceLinks[0]?.url || "" }));
     const templateText = String(fd.get("template_text") || "").trim();
     return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, routes, answerParts, variables, actions, templateText };
   }
@@ -875,7 +875,7 @@
     if (!saveField(false)) return; current().fillRules[ruleIndex]?.assignments?.splice(assignmentIndex, 1); markDirty(); renderForm();
   }
   function removeRouteAt(index) { if (!saveBranch(false)) return; current().routes.splice(index, 1); markDirty(); renderForm(); }
-  function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "", url: "" }); markDirty(); renderForm(); }
+  function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "", sourceNote: "", sourceLinks: [], url: "" }); markDirty(); renderForm(); }
   function removeActionAt(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactActions(q, flow.branch), target = list[index]; if (target) data.actions.splice(data.actions.indexOf(target), 1); markDirty(); renderForm(); }
   function insertToken(label, target = "template_text") { const textarea = $("#studioForm [name=" + target + "]"); if (!textarea) return; const marker = `{${label}}`; textarea.setRangeText(marker, textarea.selectionStart ?? textarea.value.length, textarea.selectionEnd ?? textarea.value.length, "end"); textarea.focus(); }
 

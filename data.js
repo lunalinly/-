@@ -30,20 +30,6 @@ window.SOP_DATA = {
       "keywords": "規格,款式,圖片,商品資訊,尺寸,材質,功能",
       "description": "依商品頁是否有資訊決定回覆或查廠商",
       "enabled": true
-    },
-    {
-      "id": "Q005",
-      "name": "出貨/配送查詢",
-      "keywords": "出貨,配送,物流,廠商直送,一般出貨,宅配",
-      "description": "依出貨類型決定查詢來源與是否建單",
-      "enabled": true
-    },
-    {
-      "id": "Q006",
-      "name": "商品異常/需回報",
-      "keywords": "瑕疵,破損,故障,異常,少件,缺件",
-      "description": "依是否需回報廠商決定工單/Jira",
-      "enabled": true
     }
   ],
   "flows": [
@@ -143,65 +129,6 @@ window.SOP_DATA = {
       ],
       "branch": "自有物流/一般商品，填表問廠商",
       "next": "到一般商品詢問表填資料，送出後等待回覆"
-    },
-    {
-      "question": "詢問商品資訊",
-      "steps": [
-        {
-          "prompt": "商品頁有沒有找到客人要的資訊？",
-          "option": "商品頁沒有找到"
-        },
-        {
-          "prompt": "接下來要用哪一種方式詢問/查詢？",
-          "option": "先不用填表，直接回覆會確認"
-        }
-      ],
-      "branch": "先不用填表，直接回覆會確認",
-      "next": "回覆會與廠商確認，最晚 2 個工作天內回覆"
-    },
-    {
-      "question": "出貨/配送查詢",
-      "steps": [
-        {
-          "prompt": "這張訂單是哪一種出貨類型？",
-          "option": "廠商直送"
-        }
-      ],
-      "branch": "廠商直送",
-      "next": "查廠商直送表，必要時建立追蹤紀錄"
-    },
-    {
-      "question": "出貨/配送查詢",
-      "steps": [
-        {
-          "prompt": "這張訂單是哪一種出貨類型？",
-          "option": "一般出貨"
-        }
-      ],
-      "branch": "一般出貨",
-      "next": "查訂單/物流系統，不用查廠商直送表"
-    },
-    {
-      "question": "商品異常/需回報",
-      "steps": [
-        {
-          "prompt": "這個狀況要不要回報廠商？",
-          "option": "需要回報廠商"
-        }
-      ],
-      "branch": "需要回報廠商",
-      "next": "建立工單與 Jira，記錄商品異常資訊"
-    },
-    {
-      "question": "商品異常/需回報",
-      "steps": [
-        {
-          "prompt": "這個狀況要不要回報廠商？",
-          "option": "不用回報廠商"
-        }
-      ],
-      "branch": "不用回報廠商",
-      "next": "整理現有資訊直接回覆客人，不用建立 Jira"
     }
   ],
   "variables": [
@@ -212,7 +139,11 @@ window.SOP_DATA = {
       "label": "發票異動期限",
       "hint": "可填下一個單月 5 日",
       "required": true,
-      "type": "date"
+      "type": "date",
+      "category": "發票相關",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
     },
     {
       "q": "Q004",
@@ -221,7 +152,11 @@ window.SOP_DATA = {
       "label": "客人要找",
       "hint": "例如：尺寸、材質、商品圖片",
       "required": true,
-      "common": true
+      "common": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q004",
@@ -229,7 +164,12 @@ window.SOP_DATA = {
       "code": "product_page_area",
       "label": "產品頁的哪裡",
       "hint": "例如：商品描述、規格表、圖片",
-      "required": true
+      "required": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
     },
     {
       "q": "Q004",
@@ -238,34 +178,37 @@ window.SOP_DATA = {
       "label": "找到的關鍵字／內容",
       "hint": "把商品頁看到的資訊貼上",
       "required": true,
-      "multiline": true
-    },
-    {
-      "q": "Q004",
-      "branch": "先不用填表，直接回覆會確認",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "required": true,
-      "common": true
+      "multiline": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "common": false
     },
     {
       "q": "Q004",
       "branch": "廠商直送，填表問廠商",
       "code": "order_id",
-      "label": "訂單編號",
+      "label": "訂單編號_Order SN",
       "hint": "貼上訂單編號",
       "required": true,
-      "common": true
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q004",
       "branch": "廠商直送，填表問廠商",
       "code": "product_id",
-      "label": "商品代碼",
-      "hint": "貼上商品代碼",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
       "required": true,
-      "common": true
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q004",
@@ -274,25 +217,37 @@ window.SOP_DATA = {
       "label": "客人要找",
       "hint": "例如：尺寸、材質、商品圖片",
       "required": true,
-      "common": true
+      "common": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q004",
       "branch": "自有物流/一般商品，填表問廠商",
       "code": "order_id",
-      "label": "訂單編號",
+      "label": "訂單編號_Order SN",
       "hint": "貼上訂單編號",
       "required": true,
-      "common": true
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q004",
       "branch": "自有物流/一般商品，填表問廠商",
       "code": "product_id",
-      "label": "商品代碼",
-      "hint": "貼上商品代碼",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
       "required": true,
-      "common": true
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q004",
@@ -301,103 +256,11 @@ window.SOP_DATA = {
       "label": "客人要找",
       "hint": "例如：尺寸、材質、商品圖片",
       "required": true,
-      "common": true
-    },
-    {
-      "q": "Q005",
-      "branch": "廠商直送",
-      "code": "order_id",
-      "label": "訂單編號",
-      "hint": "貼上訂單編號",
-      "required": true,
-      "common": true
-    },
-    {
-      "q": "Q005",
-      "branch": "廠商直送",
-      "code": "vendor_name",
-      "label": "廠商名稱",
-      "hint": "廠商直送表上的廠商",
-      "required": true
-    },
-    {
-      "q": "Q005",
-      "branch": "廠商直送",
-      "code": "lookup_result",
-      "label": "查詢結果",
-      "hint": "貼上查表後的狀態",
-      "required": true,
-      "multiline": true
-    },
-    {
-      "q": "Q005",
-      "branch": "一般出貨",
-      "code": "order_id",
-      "label": "訂單編號",
-      "hint": "貼上訂單編號",
-      "required": true,
-      "common": true
-    },
-    {
-      "q": "Q005",
-      "branch": "一般出貨",
-      "code": "shipping_status",
-      "label": "物流／訂單狀態",
-      "hint": "貼上系統查到的狀態",
-      "required": true,
-      "multiline": true
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "code": "order_id",
-      "label": "訂單編號",
-      "hint": "貼上訂單編號",
-      "required": true,
-      "common": true
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "code": "product_id",
-      "label": "商品代碼",
-      "hint": "貼上商品代碼",
-      "required": true,
-      "common": true
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "code": "issue_detail",
-      "label": "問題描述",
-      "hint": "描述破損／瑕疵／少件狀況",
-      "required": true,
-      "multiline": true
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "code": "work_order",
-      "label": "工單號",
-      "hint": "建立後填入",
-      "required": true
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "code": "jira_key",
-      "label": "Jira 單號",
-      "hint": "建立後填入",
-      "required": true
-    },
-    {
-      "q": "Q006",
-      "branch": "不用回報廠商",
-      "code": "issue_detail",
-      "label": "問題描述",
-      "hint": "填客人反應的狀況",
-      "required": true,
-      "multiline": true
+      "common": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
     },
     {
       "q": "Q001",
@@ -409,7 +272,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "常用"
     },
     {
       "q": "Q001",
@@ -422,7 +286,8 @@ window.SOP_DATA = {
       "autoDays": 1,
       "required": false,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "鑑賞期"
     },
     {
       "q": "Q001",
@@ -435,7 +300,8 @@ window.SOP_DATA = {
       "autoDays": 15,
       "required": false,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "鑑賞期"
     },
     {
       "q": "Q002",
@@ -447,7 +313,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "常用"
     },
     {
       "q": "Q003",
@@ -459,7 +326,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": true
+      "common": false,
+      "category": "常用"
     },
     {
       "q": "Q003",
@@ -471,7 +339,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "發票相關"
     },
     {
       "q": "Q003",
@@ -483,7 +352,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "常用"
     }
   ],
   "templates": [
@@ -504,11 +374,6 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "先不用填表，直接回覆會確認",
-      "text": "目前商品頁沒有看到客人詢問的 {{customer_need}}。\n請回覆客人：我們會再與廠商確認，最晚 2 個工作天（不含假日）內回覆。"
-    },
-    {
-      "q": "Q004",
       "branch": "廠商直送，填表問廠商",
       "text": "商品頁沒有看到客人詢問的 {{customer_need}}。\n此單／商品需要走廠商直送詢問，請到廠商直送表填資料：\n訂單編號：{{order_id}}\n商品代碼：{{product_id}}\n客人要找：{{customer_need}}\n送出後可先回覆客人：我們會再與廠商確認，最晚 2 個工作天（不含假日）內回覆。"
     },
@@ -516,21 +381,6 @@ window.SOP_DATA = {
       "q": "Q004",
       "branch": "自有物流/一般商品，填表問廠商",
       "text": "商品頁沒有看到客人詢問的 {{customer_need}}。\n請到一般商品詢問表填資料：\n訂單編號：{{order_id}}\n商品代碼：{{product_id}}\n客人要找：{{customer_need}}\n送出後可先回覆客人：我們會再與廠商確認，最晚 2 個工作天（不含假日）內回覆。"
-    },
-    {
-      "q": "Q005",
-      "branch": "廠商直送",
-      "text": "此訂單 {{order_id}} 為廠商直送，請先查詢廠商直送表。\n廠商：{{vendor_name}}\n查詢結果：{{lookup_result}}\n請依查詢結果整理後回覆客人；若狀態異常，再建立追蹤紀錄。"
-    },
-    {
-      "q": "Q005",
-      "branch": "一般出貨",
-      "text": "此訂單 {{order_id}} 為一般出貨，請查訂單／物流系統。\n目前狀態：{{shipping_status}}\n請依系統狀態整理後回覆客人。"
-    },
-    {
-      "q": "Q006",
-      "branch": "不用回報廠商",
-      "text": "目前可依現有資訊回覆客人，暫時不用建立工單或 Jira。\n問題描述：{{issue_detail}}"
     },
     {
       "q": "Q001",
@@ -562,34 +412,6 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     },
     {
-      "q": "Q005",
-      "branch": "廠商直送",
-      "action": "查廠商直送表",
-      "needed": true,
-      "note": "使用廠商名稱與訂單編號查詢"
-    },
-    {
-      "q": "Q005",
-      "branch": "一般出貨",
-      "action": "查訂單／物流系統",
-      "needed": true,
-      "note": "不用查廠商直送表"
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "action": "key 工單",
-      "needed": true,
-      "note": "把工單號填回變數區"
-    },
-    {
-      "q": "Q006",
-      "branch": "需要回報廠商",
-      "action": "key Jira",
-      "needed": true,
-      "note": "把 Jira 單號填回變數區"
-    },
-    {
       "q": "Q004",
       "branch": "廠商直送，填表問廠商",
       "action": "填廠商直送詢問表",
@@ -602,13 +424,6 @@ window.SOP_DATA = {
       "action": "填一般商品詢問表",
       "needed": true,
       "note": "填訂單編號、商品代碼、客人要找的資訊"
-    },
-    {
-      "q": "Q006",
-      "branch": "不用回報廠商",
-      "action": "不用 key Jira",
-      "needed": false,
-      "note": "直接整理回覆"
     },
     {
       "q": "Q001",
@@ -625,5 +440,152 @@ window.SOP_DATA = {
       "note": "補打統編"
     }
   ],
-  "updatedAt": "2026-07-31T03:12:14.166Z"
+  "updatedAt": "2026-07-31T03:31:06.654Z",
+  "fields": [
+    {
+      "code": "invoice_period_deadline",
+      "label": "發票異動期限",
+      "hint": "可填下一個單月 5 日",
+      "required": true,
+      "type": "date",
+      "category": "發票相關",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "code": "customer_need",
+      "label": "客人要找",
+      "hint": "例如：尺寸、材質、商品圖片",
+      "required": true,
+      "common": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
+    },
+    {
+      "code": "product_page_area",
+      "label": "產品頁的哪裡",
+      "hint": "例如：商品描述、規格表、圖片",
+      "required": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "code": "found_keyword",
+      "label": "找到的關鍵字／內容",
+      "hint": "把商品頁看到的資訊貼上",
+      "required": true,
+      "multiline": true,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "common": false
+    },
+    {
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "required": true,
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
+    },
+    {
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "required": true,
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false
+    },
+    {
+      "code": "shipping_status",
+      "label": "物流單號",
+      "hint": "貼上系統查到的狀態",
+      "required": true,
+      "multiline": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "common": false
+    },
+    {
+      "code": "work_order",
+      "label": "工單號",
+      "hint": "建立後填入",
+      "required": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "code": "pickup_date",
+      "label": "取貨日期",
+      "hint": "日期，例如 2026/7/30",
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "category": "常用"
+    },
+    {
+      "code": "return_start",
+      "label": "第一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "type": "text",
+      "autoSource": "pickup_date",
+      "autoDays": 1,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "category": "鑑賞期"
+    },
+    {
+      "code": "return_deadline",
+      "label": "最後一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "type": "text",
+      "autoSource": "pickup_date",
+      "autoDays": 15,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "category": "鑑賞期"
+    },
+    {
+      "code": "V001",
+      "label": "小編代號",
+      "hint": "[LN]",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "category": "常用"
+    },
+    {
+      "code": "V002",
+      "label": "發貨日期",
+      "hint": "數入發貨日期",
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "category": "常用"
+    }
+  ]
 };

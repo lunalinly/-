@@ -445,6 +445,27 @@ window.SOP_DATA = {
       "required": false,
       "multiline": false,
       "common": false
+    },
+    {
+      "q": "Q002",
+      "branch": "共用",
+      "code": "V001",
+      "label": "小編代號",
+      "hint": "[LN]",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q003",
+      "branch": "查詢發票",
+      "code": "V002",
+      "label": "新欄位",
+      "hint": "",
+      "type": "text",
+      "required": true
     }
   ],
   "templates": [
@@ -506,7 +527,7 @@ window.SOP_DATA = {
     {
       "q": "Q002",
       "branch": "共用",
-      "text": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。"
+      "text": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。\n{{V001}}"
     }
   ],
   "actions": [
@@ -581,5 +602,5 @@ window.SOP_DATA = {
       "note": "只需回覆客人"
     }
   ],
-  "updatedAt": "2026-07-31T02:29:07.801Z"
+  "updatedAt": "2026-07-31T02:54:27.684Z"
 };

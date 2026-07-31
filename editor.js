@@ -40,7 +40,9 @@
         assignments: (rule.assignments || []).map(assignment => ({
           ...assignment,
           action: assignment.action === "reveal" ? "reveal" : "fill",
-          answerText: assignment.answerText || ""
+          answerText: assignment.answerText || "",
+          answerPosition: ["start", "after_question", "after_branch", "end"].includes(assignment.answerPosition) ? assignment.answerPosition : "end",
+          answerAnchor: assignment.answerAnchor || ""
         }))
       }));
     });
@@ -338,11 +340,29 @@
     return groupedFieldOptions(data.fields.filter(fieldItem => fieldItem.code !== sourceCode), value, "選擇目標欄位…");
   }
 
+  function answerAnchorChoices(value) {
+    const groups = new Map();
+    [...new Map(data.flows.filter(flow => !isSharedBranch(flow.branch)).map(flow => [`${flow.question}|${flow.branch}`, flow])).values()]
+      .sort((a, b) => String(a.question).localeCompare(String(b.question), "zh-Hant") || String(a.branch).localeCompare(String(b.branch), "zh-Hant"))
+      .forEach(flow => {
+        if (!groups.has(flow.question)) groups.set(flow.question, []);
+        groups.get(flow.question).push(flow);
+      });
+    return `<option value="">請選擇答案分支…</option>` + [...groups].map(([question, flows]) =>
+      `<optgroup label="${esc(question)}">${flows.map(flow => {
+        const key = JSON.stringify({ question: flow.question, branch: flow.branch });
+        return `<option value="${esc(key)}" ${key === value ? "selected" : ""}>${esc(flow.branch)}</option>`;
+      }).join("")}</optgroup>`
+    ).join("");
+  }
+
   function fieldRuleAssignmentCard(assignment, ruleIndex, assignmentIndex, sourceCode) {
     const action = assignment.action === "reveal" ? "reveal" : "fill";
     const actionChoices = `<option value="fill" ${action === "fill" ? "selected" : ""}>自動填入欄位</option><option value="reveal" ${action === "reveal" ? "selected" : ""}>顯示欄位讓我確認</option>`;
     const answerText = friendlyFieldTemplate(assignment.answerText || "");
-    return `<div class="subrecord-card route-assignment-card"><div class="subrecord-head"><b>符合後動作 ${assignmentIndex + 1}</b><button type="button" data-remove-field-assignment="${ruleIndex}" data-assignment-index="${assignmentIndex}">移除</button></div><div class="editor-grid">${field("符合後要做什麼", `field_rule_action_${ruleIndex}_${assignmentIndex}`, action, { type: "select", choices: actionChoices, required: true })}${field("目標欄位", `field_rule_target_${ruleIndex}_${assignmentIndex}`, assignment.targetCode || "", { type: "select", choices: fieldRuleTargetChoices(sourceCode, assignment.targetCode || ""), required: true })}${field("自動填入的內容", `field_rule_value_${ruleIndex}_${assignmentIndex}`, assignment.value || "", { type: "textarea", rows: 3, placeholder: "選擇「顯示欄位」時可留空" })}${variableTokens(data.fields, `field_rule_answer_${ruleIndex}_${assignmentIndex}`)}${field("符合時加入答案文字（選填）", `field_rule_answer_${ruleIndex}_${assignmentIndex}`, answerText, { type: "textarea", rows: 3, wide: true, placeholder: "例如：且{是不是廠商直送}廠商直送" })}</div></div>`;
+    const position = assignment.answerPosition || "end";
+    const positionChoices = `<option value="start" ${position === "start" ? "selected" : ""}>最終答案最前面</option><option value="after_question" ${position === "after_question" ? "selected" : ""}>問題本身文字後</option><option value="after_branch" ${position === "after_branch" ? "selected" : ""}>指定答案分支後</option><option value="end" ${position === "end" ? "selected" : ""}>最終答案最末端</option>`;
+    return `<div class="subrecord-card route-assignment-card"><div class="subrecord-head"><b>符合後動作 ${assignmentIndex + 1}</b><button type="button" data-remove-field-assignment="${ruleIndex}" data-assignment-index="${assignmentIndex}">移除</button></div><div class="editor-grid">${field("符合後要做什麼", `field_rule_action_${ruleIndex}_${assignmentIndex}`, action, { type: "select", choices: actionChoices, required: true })}${field("目標欄位", `field_rule_target_${ruleIndex}_${assignmentIndex}`, assignment.targetCode || "", { type: "select", choices: fieldRuleTargetChoices(sourceCode, assignment.targetCode || ""), required: true })}${field("自動填入的內容", `field_rule_value_${ruleIndex}_${assignmentIndex}`, assignment.value || "", { type: "textarea", rows: 3, placeholder: "選擇「顯示欄位」時可留空" })}${variableTokens(data.fields, `field_rule_answer_${ruleIndex}_${assignmentIndex}`)}${field("符合時加入答案文字（選填）", `field_rule_answer_${ruleIndex}_${assignmentIndex}`, answerText, { type: "textarea", rows: 3, wide: true, placeholder: "例如：且{是不是廠商直送}廠商直送" })}${field("答案文字插入位置", `field_rule_position_${ruleIndex}_${assignmentIndex}`, position, { type: "select", choices: positionChoices })}${field("指定答案分支（只有選「指定答案分支後」時使用）", `field_rule_anchor_${ruleIndex}_${assignmentIndex}`, assignment.answerAnchor || "", { type: "select", choices: answerAnchorChoices(assignment.answerAnchor || "") })}</div></div>`;
   }
 
   function fieldFillRuleCard(rule, ruleIndex, item) {
@@ -562,7 +582,9 @@
         action: String(fd.get(`field_rule_action_${ruleIndex}_${assignmentIndex}`) || "fill") === "reveal" ? "reveal" : "fill",
         targetCode: String(fd.get(`field_rule_target_${ruleIndex}_${assignmentIndex}`) || ""),
         value: String(fd.get(`field_rule_value_${ruleIndex}_${assignmentIndex}`) || "").trim(),
-        answerText: storedFieldTemplate(String(fd.get(`field_rule_answer_${ruleIndex}_${assignmentIndex}`) || "").trim())
+        answerText: storedFieldTemplate(String(fd.get(`field_rule_answer_${ruleIndex}_${assignmentIndex}`) || "").trim()),
+        answerPosition: String(fd.get(`field_rule_position_${ruleIndex}_${assignmentIndex}`) || "end"),
+        answerAnchor: String(fd.get(`field_rule_anchor_${ruleIndex}_${assignmentIndex}`) || "")
       }))
     }));
     if (data.fields.some((fieldItem, index) => index !== state.index && fieldItem.label === label)) { alert("這個中文欄位名稱已經存在。"); return false; }
@@ -709,7 +731,7 @@
     if (!saveField(false)) return; const item = current();
     const target = data.fields.find(fieldItem => fieldItem.code !== item.code);
     if (!target) { alert("請先建立另一個可自動填入的變數。"); return; }
-    item.fillRules[ruleIndex].assignments ||= []; item.fillRules[ruleIndex].assignments.push({ action: "fill", targetCode: target.code, value: "", answerText: "" }); markDirty(); renderForm();
+    item.fillRules[ruleIndex].assignments ||= []; item.fillRules[ruleIndex].assignments.push({ action: "fill", targetCode: target.code, value: "", answerText: "", answerPosition: "end", answerAnchor: "" }); markDirty(); renderForm();
   }
   function removeFieldAssignment(ruleIndex, assignmentIndex) {
     if (!saveField(false)) return; current().fillRules[ruleIndex]?.assignments?.splice(assignmentIndex, 1); markDirty(); renderForm();

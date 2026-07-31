@@ -129,6 +129,7 @@ kbd { padding: 3px 8px; border: 1px solid var(--line); border-bottom-width: 2px;
   opacity: 1 !important; visibility: visible !important;
   font-family: inherit; font-size: 16px; font-weight: 500; line-height: 1.75;
   box-shadow: inset 0 1px 3px rgba(67, 44, 32, .05);
+  width: 100%; resize: vertical; cursor: text;
 }
 .output.missing {
   background: var(--amber-soft) !important;

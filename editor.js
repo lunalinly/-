@@ -20,7 +20,13 @@
   normalizeData();
 
   function normalizeData() {
-    data.variables ||= []; data.templates ||= []; data.actions ||= [];
+    data.variables ||= []; data.templates ||= []; data.actions ||= []; data.fields ||= [];
+    const fieldCopy = value => {
+      const copy = clone(value); delete copy.q; delete copy.branch; return copy;
+    };
+    const catalog = new Map(data.fields.map(item => [item.code, fieldCopy(item)]));
+    data.variables.forEach(item => { if (!catalog.has(item.code)) catalog.set(item.code, fieldCopy(item)); });
+    data.fields = [...catalog.values()];
     const isSharedBranch = value => {
       const branch = String(value || "").trim();
       return branch === "共用" || branch.toLowerCase() === "all";
@@ -93,8 +99,9 @@
             <div id="studioTabs">
               <button type="button" data-mode="questions"><span>01</span>題目管理<b id="questionCount">0</b></button>
               <button type="button" data-mode="branches"><span>02</span>分支管理<b id="branchCount">0</b></button>
+              <button type="button" data-mode="fields"><span>03</span>欄位管理<b id="fieldCount">0</b></button>
             </div>
-            <div class="studio-help"><strong>新的編輯方式</strong><p>題目只管理名稱與搜尋資料；每個分支頁面可同時處理不限層數的判斷、欄位、答案及操作提醒。</p></div>
+            <div class="studio-help"><strong>新的編輯方式</strong><p>題目、分支與欄位分開管理；分支頁面可處理不限層數的判斷、答案及操作提醒。</p></div>
           </aside>
           <aside class="studio-records">
             <div class="studio-record-head"><div><p id="studioListLabel"></p><span id="studioListCount"></span></div><button id="studioAdd" type="button"></button></div>
@@ -127,7 +134,7 @@
     if (state.dirty && confirm("修改已保存在這個瀏覽器。要重新整理操作頁並套用嗎？")) location.reload();
   }
   function closeSync() { $("#syncDialog").hidden = true; }
-  function currentList() { return state.mode === "questions" ? data.questions : data.flows; }
+  function currentList() { return state.mode === "questions" ? data.questions : state.mode === "branches" ? data.flows : data.fields; }
   function current() { return currentList()[state.index] || null; }
   function qidForName(name) { return data.questions.find(q => q.name === name)?.id || ""; }
   function qnameForId(id) { return data.questions.find(q => q.id === id)?.name || "未選題目"; }
@@ -136,23 +143,25 @@
   function exactTemplate(q, branch) { return data.templates.find(v => v.q === q && v.branch === branch) || null; }
 
   function renderStudio() {
-    $("#questionCount").textContent = data.questions.length; $("#branchCount").textContent = data.flows.length;
+    $("#questionCount").textContent = data.questions.length; $("#branchCount").textContent = data.flows.length; $("#fieldCount").textContent = data.fields.length;
     document.querySelectorAll("#studioTabs [data-mode]").forEach(b => b.classList.toggle("active", b.dataset.mode === state.mode));
-    const isQuestion = state.mode === "questions";
-    $("#studioListLabel").textContent = isQuestion ? "題目清單" : "分支清單";
-    $("#studioAdd").textContent = isQuestion ? "＋ 新增題目" : "＋ 新增分支";
-    $("#studioEditorTitle").textContent = isQuestion ? "編輯問題" : "編輯分支";
-    $("#studioSave").textContent = isQuestion ? "儲存題目" : "儲存整個分支";
+    const isQuestion = state.mode === "questions", isBranch = state.mode === "branches";
+    $("#studioListLabel").textContent = isQuestion ? "題目清單" : isBranch ? "分支清單" : "欄位清單";
+    $("#studioAdd").textContent = isQuestion ? "＋ 新增題目" : isBranch ? "＋ 新增分支" : "＋ 新增欄位";
+    $("#studioEditorTitle").textContent = isQuestion ? "編輯問題" : isBranch ? "編輯分支" : "編輯欄位";
+    $("#studioSave").textContent = isQuestion ? "儲存題目" : isBranch ? "儲存整個分支" : "儲存欄位";
     renderList(); renderForm();
   }
 
   function titleFor(record, index) {
     if (state.mode === "questions") return record.name || `題目 ${index + 1}`;
-    return `${record.question || "未選題目"} · ${record.branch || "共用"}`;
+    if (state.mode === "branches") return `${record.question || "未選題目"} · ${record.branch || "共用"}`;
+    return record.label || `欄位 ${index + 1}`;
   }
   function metaFor(record) {
     if (state.mode === "questions") return `${data.flows.filter(f => f.question === record.name).length} 個分支　${record.keywords || "尚無關鍵字"}`;
-    return (record.steps || []).map(s => s.option).join(" → ") || "直接回答（無判斷）";
+    if (state.mode === "branches") return (record.steps || []).map(s => s.option).join(" → ") || "直接回答（無判斷）";
+    return `${data.variables.filter(v => v.code === record.code).length} 個分支使用　${record.type === "date" ? "日期" : "文字"}`;
   }
   function renderList() {
     const list = $("#studioList"); list.replaceChildren();
@@ -186,7 +195,7 @@
 
   function reusableVariables(q, branch) {
     const used = new Set(exactVariables(q, branch).map(v => v.code));
-    return [...new Map(data.variables.map(v => [v.code, v])).values()]
+    return data.fields
       .map(variable => ({ variable, used: used.has(variable.code) }))
       .sort((a, b) => String(a.variable.label).localeCompare(String(b.variable.label), "zh-Hant"));
   }
@@ -195,13 +204,21 @@
     const form = $("#studioForm"); const record = current();
     $("#studioDuplicate").disabled = !record; $("#studioDelete").disabled = !record; $("#studioSave").disabled = !record;
     if (!record) { form.innerHTML = `<div class="studio-blank"><b>尚無資料</b><span>請按左上方新增。</span></div>`; return; }
-    form.innerHTML = state.mode === "questions" ? questionForm(record) : branchForm(record);
+    form.innerHTML = state.mode === "questions" ? questionForm(record) : state.mode === "branches" ? branchForm(record) : fieldForm(record);
   }
 
   function questionForm(q) {
     const linked = data.flows.map((flow, index) => ({ flow, index })).filter(x => x.flow.question === q.name);
     const branches = linked.length ? linked.map(x => `<button type="button" class="linked-branch" data-edit-branch="${x.index}"><strong>${esc(x.flow.branch)}</strong><span>${esc((x.flow.steps || []).map(s => s.option).join(" → ") || "直接回答")}</span></button>`).join("") : `<div class="no-steps">這個題目尚未建立分支。</div>`;
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>題目基本資料</b><small>系統代碼會自動處理，只需填中文。</small></div></div><div class="editor-grid">${field("題目名稱", "name", q.name, { required: true, wide: true, placeholder: "例如：詢問保固" })}${field("搜尋關鍵字", "keywords", q.keywords, { wide: true, placeholder: "保固,維修,故障" })}${field("題目說明", "description", q.description, { wide: true, type: "textarea", rows: 3 })}${field("前台顯示", "enabled", q.enabled, { type: "checkbox", checkLabel: "啟用這個題目" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>這個題目的分支</b><small>可直接跳到分支完整編輯頁。</small></div><button type="button" data-add-branch-for="${esc(q.name)}">＋ 新增分支</button></div><div class="linked-branches">${branches}</div></section>`;
+  }
+
+  function fieldForm(item) {
+    const typeOptions = `<option value="text" ${item.type !== "date" ? "selected" : ""}>文字</option><option value="date" ${item.type === "date" ? "selected" : ""}>日期</option>`;
+    const sourceOptions = `<option value="">不自動計算</option>` + data.fields.filter(v => v.code !== item.code).map(v => `<option value="${esc(v.code)}" ${v.code === item.autoSource ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+    const used = data.variables.filter(v => v.code === item.code);
+    const usage = used.length ? `<div class="linked-branches">${used.map(v => `<div class="linked-branch"><strong>${esc(qnameForId(v.q))} · ${esc(v.branch)}</strong><span>正在使用此欄位</span></div>`).join("")}</div>` : `<div class="no-steps">目前尚未被任何分支使用。</div>`;
+    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}${field("輸入提示", "field_hint", item.hint || "")}${field("輸入類型", "field_type", item.type || "text", { type: "select", choices: typeOptions })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("多行輸入", "field_multiline", item.multiline, { type: "checkbox", checkLabel: "大型文字欄" })}${field("常用參數", "field_common", item.common, { type: "checkbox", checkLabel: "沿用上次輸入" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
   }
 
   function branchForm(flow) {
@@ -255,7 +272,11 @@
   }
 
   function nextId(prefix, ids) { const nums = ids.map(x => Number(String(x || "").replace(/\D/g, ""))).filter(Number.isFinite); return prefix + String(Math.max(0, ...nums) + 1).padStart(3, "0"); }
-  function addCurrent() { state.mode === "questions" ? addQuestion() : addBranch(data.questions[0]?.name || ""); }
+  function addCurrent() { state.mode === "questions" ? addQuestion() : state.mode === "branches" ? addBranch(data.questions[0]?.name || "") : addField(); }
+  function addField() {
+    data.fields.push({ code: nextId("V", [...data.fields, ...data.variables].map(v => v.code)), label: "新欄位", hint: "", type: "text", required: true });
+    state.mode = "fields"; state.index = data.fields.length - 1; markDirty(); renderStudio();
+  }
   function addQuestion() { data.questions.push({ id: nextId("Q", data.questions.map(q => q.id)), name: "新題目", keywords: "", description: "", enabled: true }); state.mode = "questions"; state.index = data.questions.length - 1; markDirty(); renderStudio(); }
   function addBranch(questionName) { data.flows.push({ question: questionName || data.questions[0]?.name || "", branch: "新分支", steps: [], next: "" }); state.mode = "branches"; state.index = data.flows.length - 1; markDirty(); renderStudio(); }
 
@@ -263,12 +284,15 @@
     if (!current()) return;
     if (state.mode === "questions") {
       const q = clone(current()); q.id = nextId("Q", data.questions.map(x => x.id)); q.name += "（副本）"; data.questions.splice(state.index + 1, 0, q); state.index++;
-    } else {
+    } else if (state.mode === "branches") {
       saveBranch(false); const original = current(); const copy = clone(original); copy.branch += "（副本）"; data.flows.splice(state.index + 1, 0, copy); state.index++;
       const oldQ = qidForName(original.question), newQ = qidForName(copy.question);
       exactVariables(oldQ, original.branch).forEach(v => data.variables.push({ ...clone(v), q: newQ, branch: copy.branch }));
       const template = exactTemplate(oldQ, original.branch); if (template) data.templates.push({ ...clone(template), q: newQ, branch: copy.branch });
       exactActions(oldQ, original.branch).forEach(a => data.actions.push({ ...clone(a), q: newQ, branch: copy.branch }));
+    } else {
+      const copy = clone(current()); copy.code = nextId("V", [...data.fields, ...data.variables].map(v => v.code)); copy.label += "（副本）";
+      data.fields.splice(state.index + 1, 0, copy); state.index++;
     }
     markDirty(); renderStudio();
   }
@@ -279,22 +303,44 @@
       if (!confirm(`確定刪除「${record.name}」及它的所有分支、欄位、答案與操作提醒？`)) return;
       const qid = record.id; const names = new Set(data.flows.filter(f => f.question === record.name).map(f => f.branch));
       data.flows = data.flows.filter(f => f.question !== record.name); data.variables = data.variables.filter(v => v.q !== qid); data.templates = data.templates.filter(v => v.q !== qid); data.actions = data.actions.filter(v => v.q !== qid); data.questions.splice(state.index, 1);
-    } else {
+    } else if (state.mode === "branches") {
       if (!confirm(`確定刪除分支「${record.branch}」？`)) return;
       const qid = qidForName(record.question); const shared = data.flows.some((f, i) => i !== state.index && f.question === record.question && f.branch === record.branch);
       data.flows.splice(state.index, 1);
       if (!shared) { data.variables = data.variables.filter(v => !(v.q === qid && v.branch === record.branch)); data.templates = data.templates.filter(v => !(v.q === qid && v.branch === record.branch)); data.actions = data.actions.filter(v => !(v.q === qid && v.branch === record.branch)); }
+    } else {
+      const uses = data.variables.filter(v => v.code === record.code).length;
+      if (uses) { alert(`這個欄位仍被 ${uses} 個分支使用，請先到那些分支移除後再刪除。`); return; }
+      if (!confirm(`確定刪除欄位「${record.label}」？`)) return;
+      data.fields.splice(state.index, 1);
     }
     state.index = Math.max(0, state.index - 1); markDirty(); renderStudio();
   }
 
-  function saveCurrent(show = true) { return state.mode === "questions" ? saveQuestion(show) : saveBranch(show); }
+  function saveCurrent(show = true) { return state.mode === "questions" ? saveQuestion(show) : state.mode === "branches" ? saveBranch(show) : saveField(show); }
   function saveQuestion(show = true) {
     const q = current(); if (!q) return false; const form = $("#studioForm"); if (!form.reportValidity()) return false; const fd = new FormData(form); const oldName = q.name; const name = String(fd.get("name") || "").trim();
     if (!name) return false; if (data.questions.some((x, i) => i !== state.index && x.name === name)) { alert("這個中文題目名稱已經存在。"); return false; }
     q.name = name; q.keywords = String(fd.get("keywords") || "").trim(); q.description = String(fd.get("description") || "").trim(); q.enabled = fd.has("enabled");
     if (oldName !== name) data.flows.forEach(f => { if (f.question === oldName) f.question = name; });
     markDirty(); renderStudio(); if (show) setStatus("題目已保存於瀏覽器"); return true;
+  }
+
+  function saveField(show = true) {
+    const item = current(); if (!item || state.mode !== "fields") return false;
+    const form = $("#studioForm"); if (!form.reportValidity()) return false; const fd = new FormData(form);
+    const label = String(fd.get("field_label") || "").trim();
+    if (data.fields.some((fieldItem, index) => index !== state.index && fieldItem.label === label)) { alert("這個中文欄位名稱已經存在。"); return false; }
+    Object.assign(item, {
+      label, hint: String(fd.get("field_hint") || "").trim(), type: String(fd.get("field_type") || "text"),
+      autoSource: String(fd.get("field_source") || "") || undefined, autoDays: Number(fd.get("field_days") || 0),
+      required: fd.has("field_required"), multiline: fd.has("field_multiline"), common: fd.has("field_common")
+    });
+    if (!item.autoSource) delete item.autoSource;
+    data.variables.filter(v => v.code === item.code).forEach(v => {
+      const q = v.q, branch = v.branch; Object.assign(v, clone(item), { q, branch });
+    });
+    markDirty(); renderStudio(); if (show) setStatus("欄位已保存並套用到所有分支"); return true;
   }
 
   function captureBranchForm(flow, oldQ, oldBranch) {
@@ -327,7 +373,7 @@
     const select = $("#studioForm [name=existing_variable_code]");
     const code = select?.value || "";
     if (!code) { alert("請先選擇一個既有欄位。"); select?.focus(); return; }
-    const source = data.variables.find(v => v.code === code);
+    const source = data.fields.find(v => v.code === code) || data.variables.find(v => v.code === code);
     if (!source) { alert("找不到這個既有欄位，請重新選擇。"); return; }
     if (!saveBranch(false)) return;
     const flow = current(), q = qidForName(flow.question);
@@ -338,7 +384,8 @@
 
   function addVariable() {
     if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
-    data.variables.push({ q, branch: flow.branch, code: nextId("V", data.variables.map(v => v.code)), label: "新欄位", hint: "", type: "text", required: true }); markDirty(); renderForm();
+    const item = { code: nextId("V", [...data.fields, ...data.variables].map(v => v.code)), label: "新欄位", hint: "", type: "text", required: true };
+    data.fields.push(clone(item)); data.variables.push({ ...item, q, branch: flow.branch }); markDirty(); renderForm();
   }
   function removeVariable(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactVariables(q, flow.branch), target = list[index]; if (target) data.variables.splice(data.variables.indexOf(target), 1); markDirty(); renderForm(); }
   function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "" }); markDirty(); renderForm(); }

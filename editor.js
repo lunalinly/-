@@ -20,7 +20,7 @@
   normalizeData();
 
   function normalizeData() {
-    data.variables ||= []; data.templates ||= []; data.actions ||= []; data.fields ||= [];
+    data.variables ||= []; data.templates ||= []; data.actions ||= []; data.fields ||= []; data.decisions ||= [];
     const fieldCopy = value => {
       const copy = clone(value); delete copy.q; delete copy.branch; return copy;
     };
@@ -52,6 +52,15 @@
     [data.variables, data.templates, data.actions].forEach(list => list.forEach(item => {
       item.branch = branchMap.get(`${item.q}|${item.branch}`) || (isSharedBranch(item.branch) ? "共用" : item.branch || "共用");
     }));
+    const decisionCatalog = new Map(data.decisions.map(item => [item.prompt, { prompt: item.prompt, options: [...new Set(item.options || [])] }]));
+    data.flows.flatMap(flow => flow.steps || []).forEach(step => {
+      if (!step.prompt) return;
+      const item = decisionCatalog.get(step.prompt) || { prompt: step.prompt, options: [] };
+      if (step.option && !item.options.includes(step.option)) item.options.push(step.option);
+      decisionCatalog.set(step.prompt, item);
+    });
+    data.decisions = [...decisionCatalog.values()];
+
     data.variables.forEach(v => {
       if (v.auto === "pickup+1") { v.autoSource = "pickup_date"; v.autoDays = 1; delete v.auto; }
       if (v.auto === "pickup+15") { v.autoSource = "pickup_date"; v.autoDays = 15; delete v.auto; }
@@ -301,9 +310,24 @@
     return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("符合以下任一值", `route_values_${i}`, values, { type: "textarea", rows: 3, required: true, placeholder: "每行輸入一個值" })}${field("跳到哪個分支", `route_target_${i}`, route.targetBranch || "", { type: "select", choices: routeTargetChoices(flow, route.targetBranch || ""), required: true, wide: true })}</div><div class="route-assignment-head"><b>自動填入變數（選填，可新增多個）</b><button type="button" data-add-route-assignment="${i}">＋ 新增自動填入</button></div><div class="route-assignment-list">${assignments}</div></div>`;
   }
 
+  function reusableDecisionOptions(flow) {
+    const used = new Set((flow.steps || []).map(step => step.prompt));
+    return data.decisions.map(item => `<option value="${esc(item.prompt)}" ${used.has(item.prompt) ? "disabled" : ""}>${esc(item.prompt)}${used.has(item.prompt) ? "（目前路徑已使用）" : ""}</option>`).join("");
+  }
+
+  function decisionOptionSuggestions(prompt, index) {
+    const item = data.decisions.find(decision => decision.prompt === prompt);
+    return `<datalist id="decisionOptions_${index}">${(item?.options || []).map(option => `<option value="${esc(option)}"></option>`).join("")}</datalist>`;
+  }
+
   function branchForm(flow) {
     const q = qidForName(flow.question); const vars = exactVariables(q, flow.branch); const template = exactTemplate(q, flow.branch); const actions = exactActions(q, flow.branch);
-    const steps = (flow.steps || []).map((step, i) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${i + 1}</b><button type="button" data-remove-step="${i}">移除</button></div>${field("判斷問題", `step_prompt_${i}`, step.prompt, { required: true, wide: true })}${field("這條路徑的選項", `step_option_${i}`, step.option, { required: true, wide: true })}</div>`).join("");
+    const steps = (flow.steps || []).map((step, i) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${i + 1}</b><button type="button" data-remove-step="${i}">移除</button></div>${field("判斷問題", `step_prompt_${i}`, step.prompt, { required: true, wide: true })}<label class="studio-field wide"><span>這條路徑的選項 ＊</span><input name="step_option_${i}" list="decisionOptions_${i}" value="${esc(step.option)}" required placeholder="可選既有選項或輸入新的中文選項">${decisionOptionSuggestions(step.prompt, i)}</label></div>`).join("");
+    const decisionOptions = reusableDecisionOptions(flow);
+    const canReuseDecision = data.decisions.some(item => !(flow.steps || []).some(step => step.prompt === item.prompt));
+    const decisionControls = data.decisions.length
+      ? `<div class="field-add-tools"><select name="existing_decision_prompt" aria-label="選擇既有判斷"><option value="">選擇既有判斷…</option>${decisionOptions}</select><button type="button" data-use-existing-decision ${canReuseDecision ? "" : "disabled"}>＋ 使用既有判斷</button><button type="button" data-add-step>＋ 建立新判斷</button></div>`
+      : `<div class="field-add-tools"><span>目前沒有既有判斷</span><button type="button" data-add-step>＋ 建立新判斷</button></div>`;
     const variableRows = vars.map((v, i) => variableCard(v, i, q, vars)).join("") || `<div class="no-steps">這個分支目前不需要填入欄位。</div>`;
     const reusable = reusableVariables(q, flow.branch);
     const canReuse = reusable.some(item => !item.used);
@@ -317,7 +341,7 @@
     const answerRows = answerBranches.map((branch, i) => answerPartCard(branch, i, flow)).join("");
     const friendly = friendlyTemplate(template?.text || "", q);
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
-      <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>沒有層數上限；依實際操作順序一直增加即可。</small></div><button type="button" data-add-step>＋ 增加一層判斷</button></div><div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>可沿用既有判斷或建立新的判斷，且沒有層數上限。</small></div></div>${decisionControls}<div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>可沿用既有中文欄位，或建立全新欄位；自動計算設定也會一起沿用。</small></div></div>${reuseControls}<div class="branch-variable-list">${variableRows}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>欄位值轉向</b><small>輸入指定值後，自動跳到同一題目的另一個分支。</small></div><button type="button" data-add-route>＋ 新增轉向規則</button></div><div class="branch-route-list">${routeRows}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案組合</b><small>依順序組合多個分支的獨立答案文字；同一分支可在不同流程重複使用。</small></div><button type="button" data-add-answer-part>＋ 加入答案分支</button></div><div class="branch-answer-list">${answerRows}</div></section>
@@ -354,7 +378,8 @@
   function handleFormClick(event) {
     const edit = event.target.closest("[data-edit-branch]"); if (edit) { state.mode = "branches"; state.index = Number(edit.dataset.editBranch); renderStudio(); return; }
     const addFor = event.target.closest("[data-add-branch-for]"); if (addFor) { addBranch(addFor.dataset.addBranchFor); return; }
-    if (event.target.closest("[data-add-step]")) { saveBranch(false); current().steps.push({ prompt: "", option: "" }); markDirty(); renderForm(); return; }
+    if (event.target.closest("[data-use-existing-decision]")) { useExistingDecision(); return; }
+    if (event.target.closest("[data-add-step]")) { addNewDecision(); return; }
     const removeStep = event.target.closest("[data-remove-step]"); if (removeStep) { saveBranch(false); current().steps.splice(Number(removeStep.dataset.removeStep), 1); markDirty(); renderForm(); return; }
     if (event.target.closest("[data-add-answer-part]")) { addAnswerPart(); return; }
     const removeAnswer = event.target.closest("[data-remove-answer-part]"); if (removeAnswer) { removeAnswerPart(Number(removeAnswer.dataset.removeAnswerPart)); return; }
@@ -474,6 +499,12 @@
     const oldShared = data.flows.some((f, i) => i !== state.index && f.question === oldQuestion && f.branch === oldBranch);
     const moved = captured.q !== oldQ || captured.branch !== oldBranch;
     flow.question = captured.question; flow.branch = captured.branch; flow.next = captured.next; flow.steps = captured.steps; flow.routes = captured.routes;
+    captured.steps.forEach(step => {
+      if (!step.prompt) return;
+      let item = data.decisions.find(decision => decision.prompt === step.prompt);
+      if (!item) { item = { prompt: step.prompt, options: [] }; data.decisions.push(item); }
+      if (step.option && !item.options.includes(step.option)) item.options.push(step.option);
+    });
     flow.answerBranches = (captured.answerBranches.length ? captured.answerBranches : [captured.branch]).map(name => name === oldBranch ? captured.branch : name);
     data.flows.forEach((item, index) => { if (index !== state.index && item.question === captured.question && item.branch === captured.branch) item.answerBranches = clone(flow.answerBranches); });
     if (!oldShared || !moved) {
@@ -504,6 +535,22 @@
     data.fields.push(clone(item)); data.variables.push({ ...item, q, branch: flow.branch }); markDirty(); renderForm();
   }
   function removeVariable(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactVariables(q, flow.branch), target = list[index]; if (target) data.variables.splice(data.variables.indexOf(target), 1); markDirty(); renderForm(); }
+  function useExistingDecision() {
+    const select = $("#studioForm [name=existing_decision_prompt]");
+    const prompt = select?.value || "";
+    if (!prompt) { alert("請先選擇一個既有判斷。"); select?.focus(); return; }
+    const decision = data.decisions.find(item => item.prompt === prompt);
+    if (!decision) { alert("找不到這個既有判斷。"); return; }
+    if (!saveBranch(false)) return;
+    const flow = current();
+    if (flow.steps.some(step => step.prompt === prompt)) { alert("這條路徑已經使用此判斷。"); return; }
+    flow.steps.push({ prompt, option: decision.options[0] || "" }); markDirty(); renderForm(); setStatus(`已沿用判斷：${prompt}`, true);
+  }
+
+  function addNewDecision() {
+    if (!saveBranch(false)) return; current().steps.push({ prompt: "", option: "" }); markDirty(); renderForm();
+  }
+
   function addAnswerPart() {
     if (!saveBranch(false)) return; const flow = current();
     const names = [...new Set(data.flows.filter(item => item.question === flow.question).map(item => item.branch))];

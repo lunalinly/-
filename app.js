@@ -366,12 +366,16 @@
         }
         list.append(li);
       });
+      const shownSourceUrls = new Set();
       sources.forEach(source => {
         const li = document.createElement("li");
         const name = document.createElement("b"); name.textContent = `{${source.label}}`;
         li.append(name, document.createTextNode(` 的值從這裡找：${source.note || "請開啟來源連結"}`));
         (source.links || []).forEach(sourceLink => {
           if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
+          const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
+          if (shownSourceUrls.has(normalizedUrl)) return;
+          shownSourceUrls.add(normalizedUrl);
           const link = document.createElement("a");
           link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
           li.append(document.createTextNode(" "), link);

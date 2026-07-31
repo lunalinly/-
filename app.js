@@ -269,7 +269,12 @@
   function questionIdForName(name) { return name === "共用" ? "GLOBAL" : (data.questions.find(question => question.name === name)?.id || ""); }
 
   function variablesFor(flow) {
-    const parts = answerPartsFor(flow);
+    const baseParts = Array.isArray(flow.answerParts)
+      ? [...flow.answerParts]
+      : (Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch]).map(branch => ({ question: flow.question, branch }));
+    const currentIndex = baseParts.findIndex(part => part.question === flow.question && part.branch === flow.branch);
+    const parts = currentIndex >= 0 ? baseParts.slice(0, currentIndex + 1) : [];
+    state.appendedSharedBranches.forEach(branch => parts.push({ question: "共用", branch }));
     const questionText = String(state.question.answerText || "");
     const catalog = new Map();
     data.variables.filter(variable =>
@@ -282,6 +287,11 @@
       ).forEach(variable => {
         if (!catalog.has(variable.code)) catalog.set(variable.code, variable);
       });
+    });
+    data.variables.filter(variable =>
+      variable.q === questionIdForName(flow.question) && (variable.branch === flow.branch || isSharedBranch(variable.branch))
+    ).forEach(variable => {
+      if (!catalog.has(variable.code)) catalog.set(variable.code, variable);
     });
     let added = true;
     while (added) {

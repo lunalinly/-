@@ -72,6 +72,7 @@
       state.index = Number(item.dataset.index); renderStudio();
     });
     $("#studioForm").addEventListener("click", handleFormClick);
+    $("#studioForm").addEventListener("input", handleFormInput);
   }
 
   function markup() {
@@ -185,8 +186,9 @@
 
   function reusableVariables(q, branch) {
     const used = new Set(exactVariables(q, branch).map(v => v.code));
-    return [...new Map(data.variables.filter(v => !used.has(v.code)).map(v => [v.code, v])).values()]
-      .sort((a, b) => String(a.label).localeCompare(String(b.label), "zh-Hant"));
+    return [...new Map(data.variables.map(v => [v.code, v])).values()]
+      .map(variable => ({ variable, used: used.has(variable.code) }))
+      .sort((a, b) => String(a.variable.label).localeCompare(String(b.variable.label), "zh-Hant"));
   }
 
   function renderForm() {
@@ -207,9 +209,10 @@
     const steps = (flow.steps || []).map((step, i) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${i + 1}</b><button type="button" data-remove-step="${i}">移除</button></div>${field("判斷問題", `step_prompt_${i}`, step.prompt, { required: true, wide: true })}${field("這條路徑的選項", `step_option_${i}`, step.option, { required: true, wide: true })}</div>`).join("");
     const variableRows = vars.map((v, i) => variableCard(v, i, q, vars)).join("") || `<div class="no-steps">這個分支目前不需要填入欄位。</div>`;
     const reusable = reusableVariables(q, flow.branch);
+    const canReuse = reusable.some(item => !item.used);
     const reuseControls = reusable.length
-      ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusable.map(v => `<option value="${esc(v.code)}">${esc(v.label)}</option>`).join("")}</select><button type="button" data-use-existing-variable>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
-      : `<div class="field-add-tools"><span>目前沒有其他既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
+      ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusable.map(({ variable, used }) => `<option value="${esc(variable.code)}" ${used ? "disabled" : ""}>${esc(variable.label)}${used ? "（目前分支已使用）" : ""}</option>`).join("")}</select><button type="button" data-use-existing-variable ${canReuse ? "" : "disabled"}>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
+      : `<div class="field-add-tools"><span>目前沒有既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
     const friendly = friendlyTemplate(template?.text || "", q);
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
@@ -229,6 +232,14 @@
   function variableTokens(vars) { return `<div class="template-tokens wide"><span>${vars.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}">＋ ${esc(v.label)}</button>`).join("")}</div>`; }
   function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`【${v.label}】`); }); return result; }
   function storedTemplate(text, q, variables) { let result = String(text || ""); variables.forEach(v => { result = result.split(`【${v.label}】`).join(`{{${v.code}}}`); }); return result; }
+
+  function handleFormInput(event) {
+    const match = event.target.name?.match(/^var_label_(\d+)$/);
+    if (!match) return;
+    const code = $("#studioForm [name=var_code_" + match[1] + "]")?.value;
+    const option = [...$("#studioForm [name=existing_variable_code]")?.options || []].find(item => item.value === code);
+    if (option) option.textContent = (event.target.value.trim() || "未命名欄位") + "（目前分支已使用）";
+  }
 
   function handleFormClick(event) {
     const edit = event.target.closest("[data-edit-branch]"); if (edit) { state.mode = "branches"; state.index = Number(edit.dataset.editBranch); renderStudio(); return; }

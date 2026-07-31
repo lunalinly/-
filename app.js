@@ -273,7 +273,7 @@
       ? [...flow.answerParts]
       : (Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch]).map(branch => ({ question: flow.question, branch }));
     const currentIndex = baseParts.findIndex(part => part.question === flow.question && part.branch === flow.branch);
-    const parts = currentIndex >= 0 ? baseParts.slice(0, currentIndex + 1) : [];
+    const parts = currentIndex >= 0 ? baseParts.slice(0, currentIndex + 1) : [...baseParts];
     state.appendedSharedBranches.forEach(branch => parts.push({ question: "共用", branch }));
     const questionText = String(state.question.answerText || "");
     const catalog = new Map();

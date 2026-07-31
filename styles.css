@@ -255,6 +255,11 @@ footer a:hover { color: var(--accent-dark); }
 .studio-list-item strong, .studio-list-item small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .studio-list-item strong { color: #30383d; font-size: 13px; }
 .studio-list-item small { margin-top: 3px; color: #89939a; font-size: 11px; }
+.studio-list-category {
+  position: sticky; top: 0; z-index: 1; margin: 8px 4px 4px; padding: 6px 8px;
+  color: #6f7a81; background: rgba(245,247,248,.96); font-size: 10px; font-weight: 800; letter-spacing: .08em;
+}
+.studio-list-category:first-child { margin-top: 0; }
 .studio-list-empty { padding: 50px 15px; color: #929ca2; text-align: center; font-size: 12px; }
 .studio-editor { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #f5f7f8; }
 .studio-editor-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px 12px; }

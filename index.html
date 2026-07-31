@@ -15,7 +15,7 @@
       <span><strong>SOP 操作小抄</strong><small>搜尋 → 判斷 → 填入 → 複製</small></span>
     </a>
     <nav>
-      <a class="ghost-button" href="https://github.com/lunalinly/-/edit/main/data.js" target="_blank" rel="noopener">編輯資料</a>
+      <button class="ghost-button editor-entry" id="editorButton" type="button">✦ 開啟編輯室</button>
       <button class="ghost-button" id="resetButton" type="button">重新開始</button>
     </nav>
   </header>
@@ -42,7 +42,7 @@
       <div id="questionGrid" class="question-grid"></div>
       <div id="emptyState" class="empty-state" hidden>
         <strong>找不到相符題目</strong>
-        <span>換一個關鍵字，或按右上角「編輯資料」新增題目。</span>
+        <span>換一個關鍵字，或按右上角「開啟編輯室」新增題目。</span>
       </div>
     </section>
 
@@ -70,6 +70,7 @@
   </footer>
 
   <script src="data.js"></script>
+  <script src="editor.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

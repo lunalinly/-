@@ -360,22 +360,6 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "歷史發問查詢有找到",
-      "code": "V004",
-      "label": "KAM回覆_歷史發問",
-      "hint": "",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": false,
-      "category": "常用",
-      "fillRules": []
-    },
-    {
-      "q": "Q004",
       "branch": "商品頁有找到",
       "code": "customer_need",
       "label": "客人要找",
@@ -461,23 +445,53 @@ window.SOP_DATA = {
               "value": "歷史提問-24H",
               "answerText": "",
               "answerPosition": "end",
-              "answerAnchor": ""
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         },
         {
           "values": [
+            "蝦皮超市",
             "蝦皮直送 美妝",
-            "蝦皮直營 - 3C家電館"
+            "蝦皮直營 - 3C家電館",
+            "蝦皮 免運直送",
+            "超級品牌運動",
+            "蝦皮日嚐選物所"
           ],
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V006",
               "value": "",
               "answerText": "且{{V006}}廠商直送或大型運送",
-              "answerPosition": "after_question",
-              "answerAnchor": ""
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V003"
+            }
+          ]
+        },
+        {
+          "values": [
+            "蝦皮直營_餐券&禮券 - 最快當日到",
+            "蝦皮耗材館",
+            "OPPO產品旗艦店",
+            "realme產品旗艦店",
+            "Google產品旗艦店",
+            "電玩宅急便",
+            "蝦皮直營 - Apple品牌旗艦館",
+            "蝦皮直營 - 遊戲點數旗艦店",
+            "ASUS華碩官方旗艦店"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-SBS",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         }
@@ -514,6 +528,38 @@ window.SOP_DATA = {
       "common": true,
       "category": "商品詢問",
       "fillRules": []
+    },
+    {
+      "q": "Q004",
+      "branch": "歷史發問查詢有找到",
+      "code": "V004",
+      "label": "KAM回覆_歷史發問",
+      "hint": "",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "Q004",
+      "branch": "歷史發問查詢有找到",
+      "code": "V007",
+      "label": "發問內容_歷史發問",
+      "hint": "填入歷史發問裡對應的發問內容",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "category": "未分類",
+      "fillRules": []
     }
   ],
   "templates": [
@@ -549,11 +595,6 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "歷史發問查詢有找到",
-      "text": "查詢到曾經廠商有回覆過：{{V004}}\n整理完回覆給客人"
-    },
-    {
-      "q": "Q004",
       "branch": "商品頁有找到",
       "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
     },
@@ -561,6 +602,11 @@ window.SOP_DATA = {
       "q": "Q004",
       "branch": "商品頁沒有找到",
       "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}，所以下面的分頁要選擇{{V005}}\n將{{product_id}}填入 PID 看看有沒有顧客詢問「{{customer_need}}」相關的問題"
+    },
+    {
+      "q": "Q004",
+      "branch": "歷史發問查詢有找到",
+      "text": "查詢到曾經有人問過：{{V007}}\n有回覆：{{V004}}\n整理完回覆給客人"
     }
   ],
   "actions": [
@@ -586,7 +632,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T06:46:28.515Z",
+  "updatedAt": "2026-07-31T07:10:37.564Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -772,23 +818,53 @@ window.SOP_DATA = {
               "value": "歷史提問-24H",
               "answerText": "",
               "answerPosition": "end",
-              "answerAnchor": ""
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         },
         {
           "values": [
+            "蝦皮超市",
             "蝦皮直送 美妝",
-            "蝦皮直營 - 3C家電館"
+            "蝦皮直營 - 3C家電館",
+            "蝦皮 免運直送",
+            "超級品牌運動",
+            "蝦皮日嚐選物所"
           ],
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V006",
               "value": "",
               "answerText": "且{{V006}}廠商直送或大型運送",
-              "answerPosition": "after_question",
-              "answerAnchor": ""
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V003"
+            }
+          ]
+        },
+        {
+          "values": [
+            "蝦皮直營_餐券&禮券 - 最快當日到",
+            "蝦皮耗材館",
+            "OPPO產品旗艦店",
+            "realme產品旗艦店",
+            "Google產品旗艦店",
+            "電玩宅急便",
+            "蝦皮直營 - Apple品牌旗艦館",
+            "蝦皮直營 - 遊戲點數旗艦店",
+            "ASUS華碩官方旗艦店"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-SBS",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         }
@@ -810,7 +886,7 @@ window.SOP_DATA = {
       "sourceNote": "",
       "sourceUrl": "",
       "autoDays": 0,
-      "multiline": false,
+      "multiline": true,
       "common": false
     },
     {
@@ -872,6 +948,20 @@ window.SOP_DATA = {
       "autoDays": 0,
       "multiline": false,
       "common": false
+    },
+    {
+      "code": "V007",
+      "label": "發問內容_歷史發問",
+      "category": "未分類",
+      "hint": "填入歷史發問裡對應的發問內容",
+      "type": "text",
+      "required": true,
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": true
     }
   ],
   "decisions": [

@@ -137,19 +137,19 @@
 
   function recordTitle(record, index) {
     if (!record) return `第 ${index + 1} 筆`;
-    if (studio.section === "questions") return record.name || record.id || `題目 ${index + 1}`;
-    if (studio.section === "flows") return `${record.question || "未選題目"} · ${record.branch || "未設分支"}`;
-    if (studio.section === "variables") return `${record.label || record.code || "未命名欄位"} · ${record.branch || ""}`;
-    if (studio.section === "templates") return `${questionName(record.q)} · ${record.branch || ""}`;
-    return `${record.action || "未命名動作"} · ${record.branch || ""}`;
+    if (studio.section === "questions") return record.name || `題目 ${index + 1}`;
+    if (studio.section === "flows") return `${record.question || "未選題目"} · ${record.branch || "共用"}`;
+    if (studio.section === "variables") return `${record.label || "未命名欄位"} · ${record.branch || "共用"}`;
+    if (studio.section === "templates") return `${questionName(record.q)} · ${record.branch || "共用"}`;
+    return `${record.action || "未命名動作"} · ${record.branch || "共用"}`;
   }
 
   function recordMeta(record) {
-    if (studio.section === "questions") return `${record.id || "—"}　${record.keywords || "尚無關鍵字"}`;
+    if (studio.section === "questions") return record.keywords || "尚無搜尋關鍵字";
     if (studio.section === "flows") return (record.steps || []).map(s => s.option).join(" → ") || "無分支流程";
-    if (studio.section === "variables") return `${record.q || "—"}　{{${record.code || "code"}}}`;
-    if (studio.section === "templates") return (record.text || "尚無答案內容").replace(/\s+/g, " ").slice(0, 54);
-    return `${record.q || "—"}　${record.needed ? "需要" : "不需要"}`;
+    if (studio.section === "variables") return `${questionName(record.q)}　${record.hint || "尚無輸入提示"}`;
+    if (studio.section === "templates") return friendlyTemplate(record.text || "尚無答案內容", record.q).replace(/\s+/g, " ").slice(0, 54);
+    return `${questionName(record.q)}　${record.needed ? "需要執行" : "不需執行"}`;
   }
 
   function renderList() {
@@ -171,8 +171,36 @@
 
   function questionName(id) { return data.questions.find(q => q.id === id)?.name || id || "未選題目"; }
   function questionOptions(byName = false, value = "") {
-    return data.questions.map(q => `<option value="${esc(byName ? q.name : q.id)}" ${(byName ? q.name : q.id) === value ? "selected" : ""}>${esc(q.id)} · ${esc(q.name)}</option>`).join("");
+    return data.questions.map(q => `<option value="${esc(byName ? q.name : q.id)}" ${(byName ? q.name : q.id) === value ? "selected" : ""}>${esc(q.name)}</option>`).join("");
   }
+
+  function branchOptions(value = "") {
+    const names = [...new Set(["共用", ...data.flows.map(f => f.branch).filter(Boolean), value].filter(Boolean))];
+    return names.map(name => `<option value="${esc(name)}" ${name === value ? "selected" : ""}>${esc(name)}</option>`).join("");
+  }
+
+  function variableOptions(q, value = "") {
+    const vars = data.variables.filter(v => v.q === q);
+    return `<option value="" ${!value ? "selected" : ""}>不使用自動計算</option>` +
+      vars.map(v => `<option value="${esc(v.code)}" ${v.code === value ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+  }
+
+  function friendlyTemplate(text, q) {
+    let result = String(text || "");
+    data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`【${v.label}】`); });
+    return result;
+  }
+
+  function storedTemplate(text, q) {
+    let result = String(text || "");
+    data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`【${v.label}】`).join(`{{${v.code}}}`); });
+    return result;
+  }
+
+  function branchField(value) {
+    return field("分支名稱", "branch", value || "共用", { type: "select", choices: branchOptions(value || "共用"), required: true, hint: "可直接選擇既有中文分支，讓不同流程重複使用同一組內容。" });
+  }
+
   function field(label, name, value = "", options = {}) {
     const wide = options.wide ? " wide" : "";
     const hint = options.hint ? `<small>${esc(options.hint)}</small>` : "";
@@ -200,8 +228,7 @@
   }
 
   function questionForm(r) {
-    return field("題目 ID", "id", r.id, { required: true, placeholder: "Q007", hint: "後台辨識用，建議依序編號" }) +
-      field("題目名稱", "name", r.name, { required: true, placeholder: "例如：詢問保固" }) +
+    return field("題目名稱", "name", r.name, { required: true, placeholder: "例如：詢問保固", wide: true }) +
       field("搜尋關鍵字", "keywords", r.keywords, { wide: true, placeholder: "保固,維修,故障", hint: "用半形逗號分隔" }) +
       field("題目說明", "description", r.description, { wide: true, type: "textarea", rows: 3 }) +
       field("前台顯示", "enabled", r.enabled, { type: "checkbox", checkLabel: "啟用這個題目" });
@@ -210,47 +237,49 @@
   function flowForm(r) {
     const steps = (r.steps || []).map((step, index) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${index + 1}</b><button type="button" data-remove-step="${index}">移除</button></div>${field("判斷問題", `step_prompt_${index}`, step.prompt, { required: true, wide: true, placeholder: "例如：商品頁有沒有找到資訊？" })}${field("這條路徑選項", `step_option_${index}`, step.option, { required: true, wide: true, placeholder: "例如：商品頁有找到" })}</div>`).join("");
     return field("所屬題目", "question", r.question, { type: "select", choices: questionOptions(true, r.question), required: true }) +
-      field("分支 ID", "branch", r.branch, { required: true, placeholder: "B013 或 ALL" }) +
-      `<div class="flow-steps wide"><div class="flow-steps-title"><div><span>判斷路徑</span><small>依照客人實際操作順序排列，最多六層</small></div><button id="addStep" type="button" ${(r.steps || []).length >= 6 ? "disabled" : ""}>＋ 增加判斷</button></div>${steps || `<div class="no-steps">無分支題目不必增加判斷，會直接產生答案。</div>`}</div>` +
+      branchField(r.branch) +
+      `<div class="flow-steps wide"><div class="flow-steps-title"><div><span>判斷路徑</span><small>依照客人實際操作順序排列，最多六層；相同分支名稱可以重複使用。</small></div><button id="addStep" type="button" ${(r.steps || []).length >= 6 ? "disabled" : ""}>＋ 增加判斷</button></div>${steps || `<div class="no-steps">無分支題目不必增加判斷，會直接使用「共用」內容。</div>`}</div>` +
       field("走完後的下一步", "next", r.next, { wide: true, type: "textarea", rows: 3, placeholder: "例如：查詢廠商直送表後回覆客人" });
   }
 
   function variableForm(r) {
-    const autoChoices = `<option value="" ${!r.auto ? "selected" : ""}>不自動計算</option><option value="pickup+1" ${r.auto === "pickup+1" ? "selected" : ""}>取貨日期＋1 天</option><option value="pickup+15" ${r.auto === "pickup+15" ? "selected" : ""}>取貨日期＋15 天</option>`;
     const typeChoices = `<option value="text" ${r.type !== "date" ? "selected" : ""}>文字</option><option value="date" ${r.type === "date" ? "selected" : ""}>日期</option>`;
     return field("所屬題目", "q", r.q, { type: "select", choices: questionOptions(false, r.q), required: true }) +
-      field("分支 ID", "branch", r.branch, { required: true, placeholder: "B001 或 ALL" }) +
-      field("變數代碼", "code", r.code, { required: true, placeholder: "order_id", hint: "答案範本中使用 {{order_id}}" }) +
-      field("畫面欄位名稱", "label", r.label, { required: true, placeholder: "訂單編號" }) +
+      branchField(r.branch) +
+      field("畫面欄位名稱", "label", r.label, { required: true, placeholder: "訂單編號", wide: true }) +
       field("輸入提示", "hint", r.hint, { wide: true, placeholder: "貼上訂單編號" }) +
       field("輸入類型", "type", r.type || "text", { type: "select", choices: typeChoices }) +
-      field("自動計算", "auto", r.auto || "", { type: "select", choices: autoChoices }) +
+      field("自動依照哪個欄位計算", "autoSource", r.autoSource || "", { type: "select", choices: variableOptions(r.q, r.autoSource || ""), hint: "例如選擇「取貨日期」" }) +
+      field("增減天數", "autoDays", r.autoDays ?? 0, { type: "number", placeholder: "0", hint: "例如 15 代表加 15 天；-1 代表減 1 天" }) +
       field("必填", "required", r.required, { type: "checkbox", checkLabel: "必須填寫才能複製" }) +
       field("多行輸入", "multiline", r.multiline, { type: "checkbox", checkLabel: "使用大型文字欄位" }) +
       field("常用參數", "common", r.common, { type: "checkbox", checkLabel: "自動沿用上次輸入值" });
   }
 
   function templateForm(r) {
+    const vars = data.variables.filter(v => v.q === r.q && (v.branch === r.branch || v.branch === "共用"));
+    const chips = vars.length ? `<div class="template-tokens wide"><span>點一下插入欄位：</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}">＋ ${esc(v.label)}</button>`).join("")}</div>` : `<div class="template-tokens wide"><span>這個分支目前沒有變數欄位，可先到「變數欄位」新增。</span></div>`;
     return field("所屬題目", "q", r.q, { type: "select", choices: questionOptions(false, r.q), required: true }) +
-      field("分支 ID", "branch", r.branch, { required: true, placeholder: "B001 或 ALL" }) +
-      field("最終答案範本", "text", r.text, { wide: true, type: "textarea", rows: 16, required: true, placeholder: "您好，訂單 {{order_id}}…", hint: "需要讓操作員填入的地方，請使用 {{變數代碼}}。" });
+      branchField(r.branch) + chips +
+      field("最終答案範本", "text", friendlyTemplate(r.text, r.q), { wide: true, type: "textarea", rows: 16, required: true, placeholder: "您好，訂單【訂單編號】…", hint: "直接使用中文欄位標記，不需要記變數代碼。" });
   }
 
   function actionForm(r) {
     return field("所屬題目", "q", r.q, { type: "select", choices: questionOptions(false, r.q), required: true }) +
-      field("分支 ID", "branch", r.branch, { required: true, placeholder: "B001 或 ALL" }) +
-      field("操作名稱", "action", r.action, { required: true, placeholder: "例如：查廠商直送表" }) +
+      branchField(r.branch) +
+      field("操作名稱", "action", r.action, { required: true, placeholder: "例如：查廠商直送表", wide: true }) +
       field("補充說明", "note", r.note, { wide: true, type: "textarea", rows: 4 }) +
       field("是否需要", "needed", r.needed, { type: "checkbox", checkLabel: "這個分支需要執行" });
   }
 
   function defaultRecord(section) {
     const q = data.questions[0];
+    const firstBranch = data.flows.find(f => f.question === q?.name)?.branch || "共用";
     if (section === "questions") return { id: nextId("Q", data.questions.map(x => x.id)), name: "新題目", keywords: "", description: "", enabled: true };
-    if (section === "flows") return { question: q?.name || "", steps: [], branch: nextId("B", data.flows.map(x => x.branch)), next: "" };
-    if (section === "variables") return { q: q?.id || "", branch: "ALL", code: "new_value", label: "新欄位", hint: "", required: true };
-    if (section === "templates") return { q: q?.id || "", branch: "ALL", text: "" };
-    return { q: q?.id || "", branch: "ALL", action: "新操作", needed: true, note: "" };
+    if (section === "flows") return { question: q?.name || "", steps: [], branch: firstBranch, next: "" };
+    if (section === "variables") return { q: q?.id || "", branch: firstBranch, code: nextId("V", data.variables.map(x => x.code)), label: "新欄位", hint: "", required: true };
+    if (section === "templates") return { q: q?.id || "", branch: firstBranch, text: "" };
+    return { q: q?.id || "", branch: firstBranch, action: "新操作", needed: true, note: "" };
   }
 
   function nextId(prefix, ids) {
@@ -292,27 +321,27 @@
     const fd = new FormData(form);
     const before = deepClone(record);
     if (studio.section === "questions") {
-      record.id = formValue(fd, "id"); record.name = formValue(fd, "name"); record.keywords = formValue(fd, "keywords"); record.description = formValue(fd, "description"); record.enabled = fd.has("enabled");
-      if (before.id !== record.id) [data.variables, data.templates, data.actions].forEach(arr => arr.forEach(x => { if (x.q === before.id) x.q = record.id; }));
+      record.name = formValue(fd, "name"); record.keywords = formValue(fd, "keywords"); record.description = formValue(fd, "description"); record.enabled = fd.has("enabled");
       if (before.name !== record.name) data.flows.forEach(x => { if (x.question === before.name) x.question = record.name; });
     } else if (studio.section === "flows") {
-      record.question = formValue(fd, "question"); record.branch = formValue(fd, "branch"); record.next = formValue(fd, "next");
+      record.question = formValue(fd, "question"); record.branch = formValue(fd, "branch") || "共用"; record.next = formValue(fd, "next");
       record.steps = (record.steps || []).map((_, i) => ({ prompt: formValue(fd, `step_prompt_${i}`), option: formValue(fd, `step_option_${i}`) }));
     } else if (studio.section === "variables") {
-      Object.assign(record, { q: formValue(fd, "q"), branch: formValue(fd, "branch"), code: formValue(fd, "code"), label: formValue(fd, "label"), hint: formValue(fd, "hint"), type: formValue(fd, "type") || undefined, auto: formValue(fd, "auto") || undefined, required: fd.has("required"), multiline: fd.has("multiline"), common: fd.has("common") });
+      Object.assign(record, { q: formValue(fd, "q"), branch: formValue(fd, "branch") || "共用", label: formValue(fd, "label"), hint: formValue(fd, "hint"), type: formValue(fd, "type") || undefined, autoSource: formValue(fd, "autoSource") || undefined, autoDays: Number(formValue(fd, "autoDays") || 0), required: fd.has("required"), multiline: fd.has("multiline"), common: fd.has("common") });
       Object.keys(record).forEach(k => record[k] === undefined && delete record[k]);
-    } else if (studio.section === "templates") Object.assign(record, { q: formValue(fd, "q"), branch: formValue(fd, "branch"), text: String(fd.get("text") || "").trim() });
-    else Object.assign(record, { q: formValue(fd, "q"), branch: formValue(fd, "branch"), action: formValue(fd, "action"), note: formValue(fd, "note"), needed: fd.has("needed") });
+    } else if (studio.section === "templates") {
+      Object.assign(record, { q: formValue(fd, "q"), branch: formValue(fd, "branch") || "共用", text: storedTemplate(String(fd.get("text") || "").trim(), formValue(fd, "q")) });
+    } else Object.assign(record, { q: formValue(fd, "q"), branch: formValue(fd, "branch") || "共用", action: formValue(fd, "action"), note: formValue(fd, "note"), needed: fd.has("needed") });
     if (!validateRecord(record, before)) { Object.assign(record, before); return false; }
     markDirty(); renderStudio(); if (showMessage) setStatus("已保存在這個瀏覽器"); return true;
   }
 
   function validateRecord(record, before) {
     if (studio.section === "questions") {
-      if (!record.id || !record.name) { alert("題目 ID 與名稱不能空白。"); return false; }
-      if (data.questions.some((q, i) => i !== studio.index && q.id === record.id)) { alert("題目 ID 已存在，請使用不同編號。"); return false; }
+      if (!record.name) { alert("題目名稱不能空白。"); return false; }
+      if (data.questions.some((q, i) => i !== studio.index && q.name === record.name)) { alert("這個中文題目名稱已經存在。"); return false; }
     }
-    if (studio.section === "flows" && (!record.question || !record.branch)) { alert("流程必須選擇題目並填寫分支 ID。"); return false; }
+    if (studio.section === "flows" && (!record.question || !record.branch)) { alert("流程必須選擇題目與中文分支名稱。"); return false; }
     return true;
   }
 

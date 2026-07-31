@@ -50,13 +50,13 @@ window.SOP_DATA = {
     {
       "question": "詢問鑑賞期",
       "steps": [],
-      "branch": "All",
+      "branch": "共用",
       "next": "填入取貨日期，產生鑑賞期回覆"
     },
     {
       "question": "詢問付款方式",
       "steps": [],
-      "branch": "All",
+      "branch": "共用",
       "next": "直接複製付款方式說明"
     },
     {
@@ -410,7 +410,7 @@ window.SOP_DATA = {
     },
     {
       "q": "Q001",
-      "branch": "All",
+      "branch": "共用",
       "code": "pickup_date",
       "label": "取貨日期",
       "hint": "日期，例如 2026/7/30",
@@ -422,7 +422,7 @@ window.SOP_DATA = {
     },
     {
       "q": "Q001",
-      "branch": "All",
+      "branch": "共用",
       "code": "return_start",
       "label": "第一天（鑑賞期）",
       "hint": "由取貨日期自動計算",
@@ -435,7 +435,7 @@ window.SOP_DATA = {
     },
     {
       "q": "Q001",
-      "branch": "All",
+      "branch": "共用",
       "code": "return_deadline",
       "label": "最後一天（鑑賞期）",
       "hint": "由取貨日期自動計算",
@@ -500,12 +500,12 @@ window.SOP_DATA = {
     },
     {
       "q": "Q001",
-      "branch": "All",
+      "branch": "共用",
       "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
     },
     {
       "q": "Q002",
-      "branch": "All",
+      "branch": "共用",
       "text": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。"
     }
   ],
@@ -575,7 +575,7 @@ window.SOP_DATA = {
     },
     {
       "q": "Q001",
-      "branch": "All",
+      "branch": "共用",
       "action": "不用建單",
       "needed": true,
       "note": "只需回覆客人"

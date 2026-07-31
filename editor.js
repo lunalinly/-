@@ -495,7 +495,7 @@
       ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusableVariableOptions(reusable)}</select><button type="button" data-use-existing-variable ${canReuse ? "" : "disabled"}>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
       : `<div class="field-add-tools"><span>目前沒有既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
-    const routeRows = (flow.routes || []).map((route, i) => routeCard(route, i, flow, q, vars)).join("") || `<div class="no-steps">目前沒有依欄位值自動轉向。</div>`;
+    const routeRows = (flow.routes || []).map((route, i) => routeCard(route, i, flow, q, answerVariables)).join("") || `<div class="no-steps">目前沒有依欄位值自動轉向。</div>`;
     const answerParts = Array.isArray(flow.answerParts) ? flow.answerParts : [{ question: flow.question, branch: flow.branch }];
     flow.answerParts = answerParts;
     const answerRows = answerParts.map((part, i) => answerPartCard(part, i, flow)).join("") || `<div class="no-steps">目前只會輸出問題本身的答案文字，尚未加入其他分支。</div>`;
@@ -787,7 +787,8 @@
   }
   function addRoute() {
     if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
-    const available = [...exactVariables(q, "共用"), ...exactVariables(q, flow.branch)];
+    const inherited = inheritedVariablesFor(flow).map(entry => entry.variable);
+    const available = [...new Map([...exactVariables(q, "共用"), ...inherited, ...exactVariables(q, flow.branch)].map(variable => [variable.code, variable])).values()];
     const target = data.flows.find(item => item.question === flow.question && item !== flow);
     if (!available.length) { alert("請先在這個分支加入要判斷的欄位。"); return; }
     if (!target) { alert("請先為這個題目建立另一個目標分支。"); return; }

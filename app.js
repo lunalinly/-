@@ -104,6 +104,26 @@
     return String(value ?? "").split(/\r?\n|,|、|;/).map(item => item.trim()).filter(Boolean);
   }
 
+  function applyFieldFillRules(variable) {
+    const definition = data.fields?.find(item => item.code === variable.code) || variable;
+    const actual = splitRouteValues(state.values[variable.code]);
+    const matched = (definition.fillRules || []).filter(rule => {
+      const expected = (rule.values || []).map(value => String(value ?? "").trim()).filter(Boolean);
+      return expected.some(value => actual.includes(value));
+    });
+    let filled = 0;
+    matched.forEach(rule => (rule.assignments || []).forEach(assignment => {
+      if (!assignment.targetCode) return;
+      state.values[assignment.targetCode] = String(assignment.value ?? "");
+      const targetVariable = data.variables.find(item => item.q === state.question.id && item.code === assignment.targetCode);
+      if (targetVariable?.common) saveCommonValue(assignment.targetCode, state.values[assignment.targetCode]);
+      const targetInput = document.getElementById(`field-${assignment.targetCode}`);
+      if (targetInput) targetInput.value = state.values[assignment.targetCode];
+      filled += 1;
+    }));
+    return filled;
+  }
+
   function applyVariableRoute(flow) {
     const route = (flow.routes || []).find(item => {
       const actual = splitRouteValues(state.values[item.sourceCode]);
@@ -111,18 +131,11 @@
       return expected.some(value => actual.includes(value));
     });
     if (!route || !route.targetBranch || route.targetBranch === flow.branch) return false;
-    (route.assignments || []).forEach(assignment => {
-      if (!assignment.targetCode) return;
-      state.values[assignment.targetCode] = String(assignment.value ?? "");
-      const variable = data.variables.find(item => item.q === state.question.id && item.code === assignment.targetCode);
-      if (variable?.common) saveCommonValue(assignment.targetCode, state.values[assignment.targetCode]);
-    });
     const target = questionFlows().find(item => item.branch === route.targetBranch);
     if (!target) return false;
     state.routedBranch = target.branch;
     renderWorkflow();
-    const filled = (route.assignments || []).filter(item => item.targetCode).length;
-    showToast(`已轉到：${target.branch}${filled ? `，並自動填入 ${filled} 個變數` : ""}`);
+    showToast(`已轉到：${target.branch}`);
     return true;
   }
 
@@ -279,12 +292,16 @@
     input.addEventListener("input", () => {
       state.values[variable.code] = input.value;
       if (variable.common) saveCommonValue(variable.code, input.value);
+      const autoFilledCount = applyFieldFillRules(variable);
       variables.filter(v => v.auto || v.autoSource).forEach(autoVar => {
         state.values[autoVar.code] = calculateAuto(autoVar);
         const autoInput = document.getElementById(`field-${autoVar.code}`);
         if (autoInput) autoInput.value = state.values[autoVar.code];
       });
-      if (!applyVariableRoute(flow)) refreshOutput(flow, variables);
+      if (!applyVariableRoute(flow)) {
+        refreshOutput(flow, variables);
+        if (autoFilledCount) showToast(`已自動填入 ${autoFilledCount} 個變數`);
+      }
     });
     const hint = document.createElement("span"); hint.className = "hint"; hint.textContent = variable.hint || "";
     wrap.append(label, input, hint);

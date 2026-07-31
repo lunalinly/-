@@ -45,9 +45,10 @@
       const friendly = isSharedBranch(old) ? "共用" : (flow.steps.at(-1)?.option || old || "共用");
       branchMap.set(`${qidByName.get(flow.question)}|${old}`, friendly);
       flow.branch = friendly;
-      flow.answerBranches = Array.isArray(flow.answerBranches) && flow.answerBranches.length
-        ? flow.answerBranches.map(name => name === old ? friendly : (isSharedBranch(name) ? "共用" : name))
-        : [friendly];
+      const legacyAnswerBranches = Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [friendly];
+      flow.answerParts = Array.isArray(flow.answerParts) && flow.answerParts.length
+        ? flow.answerParts.map(part => ({ question: part.question || flow.question, branch: isSharedBranch(part.branch) ? "共用" : part.branch }))
+        : legacyAnswerBranches.map(name => ({ question: flow.question, branch: name === old ? friendly : (isSharedBranch(name) ? "共用" : name) }));
     });
     data.flows.forEach(flow => (flow.routes || []).forEach(route => {
       if (!(route.assignments || []).length) return;
@@ -199,7 +200,7 @@
     if (raw === "") { alert("請先選擇一個既有分支。"); return; }
     const source = data.flows[Number(raw)];
     if (!source) { alert("找不到這個既有分支。"); return; }
-    data.flows.push({ question: source.question, branch: source.branch, steps: [], routes: clone(source.routes || []), answerBranches: clone(source.answerBranches || [source.branch]), next: source.next || "" });
+    data.flows.push({ question: source.question, branch: source.branch, steps: [], routes: clone(source.routes || []), answerParts: clone(source.answerParts || [{ question: source.question, branch: source.branch }]), next: source.next || "" });
     state.index = data.flows.length - 1; markDirty(); renderStudio(); setStatus(`已引用既有分支：${source.branch}`, true);
   }
 
@@ -311,14 +312,19 @@
     return `<option value="">選擇目標分支…</option>` + targets.map(item => `<option value="${esc(item.branch)}" ${item.branch === value ? "selected" : ""}>${esc(item.branch)}</option>`).join("");
   }
 
-  function answerBranchChoices(flow, value) {
-    const names = [...new Set(data.flows.filter(item => item.question === flow.question).map(item => item.branch))];
-    if (!names.includes(flow.branch)) names.unshift(flow.branch);
-    return names.map(name => `<option value="${esc(name)}" ${name === value ? "selected" : ""}>${esc(name)}</option>`).join("");
+  function answerPartValue(part) { return JSON.stringify({ question: part.question, branch: part.branch }); }
+
+  function answerBranchChoices(flow, selectedPart) {
+    const unique = [...new Map(data.flows.map(item => [`${item.question}|${item.branch}`, { question: item.question, branch: item.branch }])).values()];
+    const selected = answerPartValue(selectedPart);
+    return unique.map(part => {
+      const value = answerPartValue(part);
+      return `<option value="${esc(value)}" ${value === selected ? "selected" : ""}>${esc(part.question)} · ${esc(part.branch)}</option>`;
+    }).join("");
   }
 
-  function answerPartCard(branch, i, flow) {
-    return `<div class="subrecord-card answer-part-card"><div class="subrecord-head"><b>答案區塊 ${i + 1}</b><div><button type="button" data-move-answer-up="${i}" ${i === 0 ? "disabled" : ""}>上移</button><button type="button" data-move-answer-down="${i}" ${i === (flow.answerBranches || []).length - 1 ? "disabled" : ""}>下移</button><button type="button" data-remove-answer-part="${i}">移除</button></div></div>${field("使用哪個分支的獨立答案", `answer_branch_${i}`, branch, { type: "select", choices: answerBranchChoices(flow, branch), required: true, wide: true })}</div>`;
+  function answerPartCard(part, i, flow) {
+    return `<div class="subrecord-card answer-part-card"><div class="subrecord-head"><b>答案區塊 ${i + 1}</b><div><button type="button" data-move-answer-up="${i}" ${i === 0 ? "disabled" : ""}>上移</button><button type="button" data-move-answer-down="${i}" ${i === (flow.answerParts || []).length - 1 ? "disabled" : ""}>下移</button><button type="button" data-remove-answer-part="${i}">移除</button></div></div>${field("使用哪個既有分支的獨立答案", `answer_part_${i}`, answerPartValue(part), { type: "select", choices: answerBranchChoices(flow, part), required: true, wide: true })}</div>`;
   }
 
   function routeCard(route, i, flow, q, vars) {
@@ -352,9 +358,9 @@
       : `<div class="field-add-tools"><span>目前沒有既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
     const routeRows = (flow.routes || []).map((route, i) => routeCard(route, i, flow, q, vars)).join("") || `<div class="no-steps">目前沒有依欄位值自動轉向。</div>`;
-    const answerBranches = Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch];
-    flow.answerBranches = answerBranches;
-    const answerRows = answerBranches.map((branch, i) => answerPartCard(branch, i, flow)).join("");
+    const answerParts = Array.isArray(flow.answerParts) && flow.answerParts.length ? flow.answerParts : [{ question: flow.question, branch: flow.branch }];
+    flow.answerParts = answerParts;
+    const answerRows = answerParts.map((part, i) => answerPartCard(part, i, flow)).join("");
     const friendly = friendlyTemplate(template?.text || "", q);
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>可沿用既有判斷或建立新的判斷，且沒有層數上限。</small></div></div>${decisionControls}<div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
@@ -422,7 +428,7 @@
     state.mode = "fields"; state.index = data.fields.length - 1; markDirty(); renderStudio();
   }
   function addQuestion() { data.questions.push({ id: nextId("Q", data.questions.map(q => q.id)), name: "新題目", keywords: "", description: "", enabled: true }); state.mode = "questions"; state.index = data.questions.length - 1; markDirty(); renderStudio(); }
-  function addBranch(questionName) { data.flows.push({ question: questionName || data.questions[0]?.name || "", branch: "新分支", steps: [], routes: [], answerBranches: ["新分支"], next: "" }); state.mode = "branches"; state.index = data.flows.length - 1; markDirty(); renderStudio(); }
+  function addBranch(questionName) { data.flows.push({ question: questionName || data.questions[0]?.name || "", branch: "新分支", steps: [], routes: [], answerParts: [{ question: questionName || data.questions[0]?.name || "", branch: "新分支" }], next: "" }); state.mode = "branches"; state.index = data.flows.length - 1; markDirty(); renderStudio(); }
 
   function duplicateCurrent() {
     if (!current()) return;
@@ -506,12 +512,14 @@
       values: String(fd.get(`route_values_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
       targetBranch: String(fd.get(`route_target_${i}`) || "")
     }));
-    const answerBranches = (flow.answerBranches || [flow.branch]).map((_, i) => String(fd.get(`answer_branch_${i}`) || "")).filter(Boolean);
+    const answerParts = (flow.answerParts || [{ question: flow.question, branch: flow.branch }]).map((_, i) => {
+      try { return JSON.parse(String(fd.get(`answer_part_${i}`) || "")); } catch { return null; }
+    }).filter(part => part?.question && part?.branch);
     const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), sourceNote: String(fd.get(`var_source_note_${i}`) || "").trim(), sourceUrl: String(fd.get(`var_source_url_${i}`) || "").trim(), type: String(fd.get(`var_type_${i}`) || "text"), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), multiline: fd.has(`var_multiline_${i}`), common: fd.has(`var_common_${i}`) }));
     variables.forEach(v => { if (!v.autoSource) delete v.autoSource; });
     const previousActions = exactActions(oldQ, oldBranch); const actions = previousActions.map((old, i) => ({ q, branch, action: String(fd.get(`action_name_${i}`) || "").trim(), needed: fd.has(`action_needed_${i}`), note: String(fd.get(`action_note_${i}`) || "").trim() }));
     const templateText = String(fd.get("template_text") || "").trim();
-    return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, routes, answerBranches, variables, actions, templateText };
+    return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, routes, answerParts, variables, actions, templateText };
   }
 
   function saveBranch(show = true) {
@@ -526,8 +534,10 @@
       if (!item) { item = { prompt: step.prompt, options: [] }; data.decisions.push(item); }
       if (step.option && !item.options.includes(step.option)) item.options.push(step.option);
     });
-    flow.answerBranches = (captured.answerBranches.length ? captured.answerBranches : [captured.branch]).map(name => name === oldBranch ? captured.branch : name);
-    data.flows.forEach((item, index) => { if (index !== state.index && item.question === captured.question && item.branch === captured.branch) item.answerBranches = clone(flow.answerBranches); });
+    flow.answerParts = (captured.answerParts.length ? captured.answerParts : [{ question: captured.question, branch: captured.branch }]).map(part =>
+      part.question === oldQuestion && part.branch === oldBranch ? { question: captured.question, branch: captured.branch } : part
+    );
+    data.flows.forEach((item, index) => { if (index !== state.index && item.question === captured.question && item.branch === captured.branch) item.answerParts = clone(flow.answerParts); });
     if (!oldShared || !moved) {
       data.variables = data.variables.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.templates = data.templates.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.actions = data.actions.filter(v => !(v.q === oldQ && v.branch === oldBranch));
     }
@@ -574,18 +584,19 @@
 
   function addAnswerPart() {
     if (!saveBranch(false)) return; const flow = current();
-    const names = [...new Set(data.flows.filter(item => item.question === flow.question).map(item => item.branch))];
-    flow.answerBranches ||= [flow.branch];
-    flow.answerBranches.push(names.find(name => !flow.answerBranches.includes(name)) || flow.branch);
+    const parts = [...new Map(data.flows.map(item => [`${item.question}|${item.branch}`, { question: item.question, branch: item.branch }])).values()];
+    flow.answerParts ||= [{ question: flow.question, branch: flow.branch }];
+    const used = new Set(flow.answerParts.map(part => `${part.question}|${part.branch}`));
+    flow.answerParts.push(parts.find(part => !used.has(`${part.question}|${part.branch}`)) || { question: flow.question, branch: flow.branch });
     markDirty(); renderForm();
   }
   function removeAnswerPart(index) {
     if (!saveBranch(false)) return; const flow = current();
-    if ((flow.answerBranches || []).length <= 1) { alert("最終答案至少要保留一個答案分支。"); return; }
-    flow.answerBranches.splice(index, 1); markDirty(); renderForm();
+    if ((flow.answerParts || []).length <= 1) { alert("最終答案至少要保留一個答案分支。"); return; }
+    flow.answerParts.splice(index, 1); markDirty(); renderForm();
   }
   function moveAnswerPart(index, direction) {
-    if (!saveBranch(false)) return; const list = current().answerBranches || []; const target = index + direction;
+    if (!saveBranch(false)) return; const list = current().answerParts || []; const target = index + direction;
     if (target < 0 || target >= list.length) return;
     [list[index], list[target]] = [list[target], list[index]]; markDirty(); renderForm();
   }

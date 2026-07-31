@@ -279,10 +279,27 @@
   }
   function questionChoices(value) { return `<option value="共用" ${value === "共用" ? "selected" : ""}>共用（不綁題目）</option>` + data.questions.map(q => `<option value="${esc(q.name)}" ${q.name === value ? "selected" : ""}>${esc(q.name)}</option>`).join(""); }
   function branchSuggestions() { return [...new Set(["共用", ...data.flows.map(f => f.branch).filter(Boolean)])].map(x => `<option value="${esc(x)}"></option>`).join(""); }
+  function groupedFieldOptions(items, value, emptyLabel = "選擇欄位…") {
+    const sorted = [...items].sort((a, b) =>
+      String(a.category || "未分類").localeCompare(String(b.category || "未分類"), "zh-Hant") ||
+      String(a.label || "").localeCompare(String(b.label || ""), "zh-Hant")
+    );
+    const groups = new Map();
+    sorted.forEach(item => {
+      const category = item.category || "未分類";
+      if (!groups.has(category)) groups.set(category, []);
+      groups.get(category).push(item);
+    });
+    return `<option value="" ${!value ? "selected" : ""}>${esc(emptyLabel)}</option>` +
+      [...groups].map(([category, group]) =>
+        `<optgroup label="${esc(category)}">${group.map(item => `<option value="${esc(item.code)}" ${item.code === value ? "selected" : ""}>${esc(item.label)}</option>`).join("")}</optgroup>`
+      ).join("");
+  }
+
   function sourceChoices(q, vars, value) {
     const combined = [...exactVariables(q, "共用"), ...vars];
     const unique = [...new Map(combined.map(v => [v.code, v])).values()];
-    return `<option value="" ${!value ? "selected" : ""}>不自動計算</option>` + unique.map(v => `<option value="${esc(v.code)}" ${v.code === value ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+    return groupedFieldOptions(unique, value, "不自動計算");
   }
 
   function reusableVariables(q, branch) {
@@ -318,7 +335,7 @@
   }
 
   function fieldRuleTargetChoices(sourceCode, value) {
-    return `<option value="">選擇目標欄位…</option>` + data.fields.filter(fieldItem => fieldItem.code !== sourceCode).map(fieldItem => `<option value="${esc(fieldItem.code)}" ${fieldItem.code === value ? "selected" : ""}>${esc(fieldItem.label)}</option>`).join("");
+    return groupedFieldOptions(data.fields.filter(fieldItem => fieldItem.code !== sourceCode), value, "選擇目標欄位…");
   }
 
   function fieldRuleAssignmentCard(assignment, ruleIndex, assignmentIndex, sourceCode) {
@@ -337,7 +354,7 @@
   function fieldForm(item) {
     const typeOptions = `<option value="text" ${item.type !== "date" ? "selected" : ""}>文字</option><option value="date" ${item.type === "date" ? "selected" : ""}>日期</option>`;
     const categories = [...new Set(data.fields.map(v => v.category || "未分類"))].sort((a, b) => a.localeCompare(b, "zh-Hant")).map(value => `<option value="${esc(value)}"></option>`).join("");
-    const sourceOptions = `<option value="">不自動計算</option>` + data.fields.filter(v => v.code !== item.code).map(v => `<option value="${esc(v.code)}" ${v.code === item.autoSource ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+    const sourceOptions = groupedFieldOptions(data.fields.filter(v => v.code !== item.code), item.autoSource || "", "不自動計算");
     item.fillRules ||= [];
     const fillRuleRows = item.fillRules.map((rule, index) => fieldFillRuleCard(rule, index, item)).join("") || `<div class="no-steps">目前沒有依欄位值自動填入其他變數。</div>`;
     const used = data.variables.filter(v => v.code === item.code);
@@ -348,7 +365,7 @@
   function routeVariableChoices(q, vars, value) {
     const combined = [...exactVariables(q, "共用"), ...vars];
     const unique = [...new Map(combined.map(v => [v.code, v])).values()];
-    return `<option value="">選擇欄位…</option>` + unique.map(v => `<option value="${esc(v.code)}" ${v.code === value ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+    return groupedFieldOptions(unique, value, "選擇欄位…");
   }
 
   function routeTargetChoices(flow, value) {

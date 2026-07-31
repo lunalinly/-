@@ -128,10 +128,11 @@
       (rule.assignments || []).forEach(assignment => {
         const text = String(assignment.answerText || "").trim();
         if (!text) return;
-        const position = ["start", "after_question", "after_branch", "end"].includes(assignment.answerPosition) ? assignment.answerPosition : "end";
+        const position = ["start", "after_question", "after_branch", "after_field", "end"].includes(assignment.answerPosition) ? assignment.answerPosition : "end";
         const anchor = String(assignment.answerAnchor || "");
-        const key = `${position}|${anchor}|${text}`;
-        if (!seen.has(key)) { seen.add(key); entries.push({ text, position, anchor }); }
+        const fieldCode = String(assignment.answerFieldCode || "");
+        const key = `${position}|${anchor}|${fieldCode}|${text}`;
+        if (!seen.has(key)) { seen.add(key); entries.push({ text, position, anchor, fieldCode }); }
       });
     }));
     return entries;
@@ -428,6 +429,11 @@
     parts.push(...conditional.filter(item => item.position === "end").map(item => item.text));
     if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true, sources: [] };
     let text = parts.join("\n\n");
+    conditional.filter(item => item.position === "after_field" && item.fieldCode).forEach(item => {
+      const token = `{{${item.fieldCode}}}`;
+      const index = text.indexOf(token);
+      if (index >= 0) text = text.slice(0, index + token.length) + item.text + text.slice(index + token.length);
+    });
     const sourceMap = new Map();
     variables.forEach(variable => {
       if (text.includes(`{{${variable.code}}}`) && (variable.sourceNote || variable.sourceUrl) && !sourceMap.has(variable.code)) {

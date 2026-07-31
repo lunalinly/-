@@ -351,3 +351,7 @@ footer a:hover { color: var(--accent-dark); }
   .editor-section-title { align-items: flex-start; }
   .linked-branches { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 680px) {
+  .studio-layout-v2 #studioTabs { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+}

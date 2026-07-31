@@ -288,7 +288,8 @@
   function renderOutputPanel(panel, flow, variables) {
     const label = document.createElement("div"); label.className = "panel-label"; label.textContent = "最終可複製答案";
     const title = document.createElement("h3"); title.textContent = "確認後一鍵複製";
-    const pre = document.createElement("pre"); pre.id = "finalOutput"; pre.className = "output";
+    const pre = document.createElement("textarea"); pre.id = "finalOutput"; pre.className = "output";
+    pre.readOnly = true; pre.setAttribute("aria-label", "最終可複製答案");
     pre.style.setProperty("color", "#211d1a", "important");
     pre.style.setProperty("-webkit-text-fill-color", "#211d1a", "important");
     const actions = document.createElement("div"); actions.className = "output-actions";
@@ -315,6 +316,7 @@
     const pre = document.getElementById("finalOutput");
     if (!pre) return;
     const built = buildOutput(flow, variables);
+    pre.value = built.text;
     pre.textContent = built.text;
     pre.classList.toggle("missing", built.missing);
     const textColor = built.missing ? "#604016" : "#211d1a";

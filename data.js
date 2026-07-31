@@ -205,7 +205,8 @@ window.SOP_DATA = {
             "S"
           ],
           "targetQuestion": "共用",
-          "targetBranch": "KAM表"
+          "targetBranch": "KAM表",
+          "assignments": []
         }
       ],
       "answerBranches": [
@@ -315,7 +316,7 @@ window.SOP_DATA = {
       "branch": "共用",
       "code": "V001",
       "label": "小編代號",
-      "hint": "[LN]",
+      "hint": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
@@ -324,14 +325,17 @@ window.SOP_DATA = {
       "category": "常用",
       "fillRules": [],
       "sourceNote": "",
-      "sourceUrl": ""
+      "sourceUrl": "",
+      "options": [],
+      "sourceLinks": [],
+      "defaultValue": "[LN]"
     },
     {
       "q": "Q003",
       "branch": "查詢發票",
       "code": "V001",
       "label": "小編代號",
-      "hint": "[LN]",
+      "hint": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
@@ -340,7 +344,10 @@ window.SOP_DATA = {
       "category": "常用",
       "fillRules": [],
       "sourceNote": "",
-      "sourceUrl": ""
+      "sourceUrl": "",
+      "options": [],
+      "sourceLinks": [],
+      "defaultValue": "[LN]"
     },
     {
       "q": "Q003",
@@ -366,7 +373,11 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用"
+      "category": "物流相關",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "options": []
     },
     {
       "q": "Q003",
@@ -391,10 +402,11 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "required": true,
-      "multiline": false,
+      "multiline": true,
       "common": true,
-      "category": "商品詢問",
-      "fillRules": []
+      "category": "常用",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "Q004",
@@ -453,7 +465,7 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用",
+      "category": "商家相關",
       "fillRules": [
         {
           "values": [
@@ -517,7 +529,8 @@ window.SOP_DATA = {
             }
           ]
         }
-      ]
+      ],
+      "options": []
     },
     {
       "q": "Q004",
@@ -532,8 +545,9 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用",
-      "fillRules": []
+      "category": "歷史發問",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "Q004",
@@ -546,10 +560,11 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "required": true,
-      "multiline": false,
+      "multiline": true,
       "common": true,
-      "category": "商品詢問",
-      "fillRules": []
+      "category": "常用",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "Q004",
@@ -564,8 +579,9 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": true,
-      "category": "常用",
-      "fillRules": []
+      "category": "歷史發問",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "Q004",
@@ -580,8 +596,9 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": true,
-      "category": "未分類",
-      "fillRules": []
+      "category": "歷史發問",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "GLOBAL",
@@ -612,8 +629,9 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": false,
-      "category": "未分類",
-      "fillRules": []
+      "category": "商品詢問",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "GLOBAL",
@@ -628,7 +646,7 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": false,
-      "category": "常用",
+      "category": "商家相關",
       "fillRules": [
         {
           "values": [
@@ -692,13 +710,14 @@ window.SOP_DATA = {
             }
           ]
         }
-      ]
+      ],
+      "options": []
     },
     {
       "q": "GLOBAL",
       "branch": "KAM表",
       "code": "V009",
-      "label": "買家問題_整理後",
+      "label": "買家問題_KAM",
       "hint": "整理客人問題後輸入",
       "sourceNote": "",
       "sourceUrl": "",
@@ -707,8 +726,9 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": true,
-      "category": "未分類",
-      "fillRules": []
+      "category": "KAM表",
+      "fillRules": [],
+      "options": []
     },
     {
       "q": "GLOBAL",
@@ -719,12 +739,14 @@ window.SOP_DATA = {
       "sourceNote": "",
       "sourceUrl": "",
       "autoDays": 0,
-      "required": false,
+      "required": true,
       "common": false,
       "type": "text",
       "multiline": false,
-      "category": "未分類",
-      "fillRules": []
+      "category": "商品詢問",
+      "fillRules": [],
+      "options": [],
+      "defaultValue": "客人沒問不用填"
     },
     {
       "q": "GLOBAL",
@@ -733,14 +755,22 @@ window.SOP_DATA = {
       "label": "分頁_KAM表",
       "hint": "會自動填入",
       "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
-      "sourceUrl": "",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307",
       "autoDays": 0,
       "required": false,
       "common": false,
       "type": "text",
       "multiline": false,
-      "category": "未分類",
-      "fillRules": []
+      "category": "KAM表",
+      "fillRules": [],
+      "options": [],
+      "sourceLinks": [
+        {
+          "title": "KAM表",
+          "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307"
+        }
+      ],
+      "defaultValue": ""
     },
     {
       "q": "GLOBAL",
@@ -748,15 +778,30 @@ window.SOP_DATA = {
       "code": "V012",
       "label": "問題分類_KAM",
       "hint": "選擇對應的分類",
-      "sourceNote": "",
+      "sourceNote": "售前的話要選擇「售前-XXX」",
       "sourceUrl": "",
       "autoDays": 0,
       "required": true,
       "common": false,
-      "type": "text",
+      "type": "select",
       "multiline": false,
-      "category": "未分類",
-      "fillRules": []
+      "category": "KAM表",
+      "fillRules": [],
+      "options": [
+        "退換貨",
+        "退換貨-二次詢問",
+        "商品使用",
+        "商品規格",
+        "配件/贈品",
+        "保固相關",
+        "品質諮詢",
+        "其他",
+        "售前-商品使用",
+        "售前-商品規格",
+        "售前-配件/贈品",
+        "售前-保固相關",
+        "售前-品質諮詢"
+      ]
     }
   ],
   "templates": [
@@ -804,6 +849,11 @@ window.SOP_DATA = {
       "q": "Q004",
       "branch": "歷史發問查詢有找到",
       "text": "查詢到曾經有人問過：{{V007}}\n有回覆：{{V004}}\n整理完回覆給客人"
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "text": "進入KAM表後\nproduct id 填入：{{product_id}}\n商品品項 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題 填入：{{V009}}"
     }
   ],
   "actions": [
@@ -827,9 +877,17 @@ window.SOP_DATA = {
       "action": "查關貿電子發票平台",
       "needed": true,
       "note": "先取消再補打"
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "action": "KAM表",
+      "needed": true,
+      "note": "",
+      "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-07-31T07:50:01.067Z",
+  "updatedAt": "2026-07-31T09:26:13.277Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -841,7 +899,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "multiline": false,
       "common": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "customer_need",
@@ -849,13 +908,15 @@ window.SOP_DATA = {
       "hint": "例如：尺寸、材質、商品圖片",
       "required": true,
       "common": true,
-      "category": "商品詢問",
+      "category": "常用",
       "type": "text",
       "autoDays": 0,
-      "multiline": false,
+      "multiline": true,
       "fillRules": [],
       "sourceNote": "",
-      "sourceUrl": ""
+      "sourceUrl": "",
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "product_page_area",
@@ -867,7 +928,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "multiline": false,
       "common": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "found_keyword",
@@ -879,7 +941,8 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "common": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "order_id",
@@ -891,7 +954,25 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "multiline": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
     },
     {
       "code": "product_id",
@@ -905,7 +986,8 @@ window.SOP_DATA = {
       "multiline": false,
       "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
       "sourceUrl": "",
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "shipping_status",
@@ -913,11 +995,15 @@ window.SOP_DATA = {
       "hint": "貼上系統查到的狀態",
       "required": true,
       "multiline": true,
-      "category": "常用",
+      "category": "物流相關",
       "type": "text",
       "autoDays": 0,
       "common": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "work_order",
@@ -929,7 +1015,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "multiline": false,
       "common": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "pickup_date",
@@ -941,7 +1028,8 @@ window.SOP_DATA = {
       "multiline": false,
       "common": false,
       "category": "常用",
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "return_start",
@@ -954,7 +1042,8 @@ window.SOP_DATA = {
       "multiline": false,
       "common": false,
       "category": "鑑賞期",
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "return_deadline",
@@ -967,12 +1056,13 @@ window.SOP_DATA = {
       "multiline": false,
       "common": false,
       "category": "鑑賞期",
-      "fillRules": []
+      "fillRules": [],
+      "sourceLinks": []
     },
     {
       "code": "V001",
       "label": "小編代號",
-      "hint": "[LN]",
+      "hint": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
@@ -981,7 +1071,10 @@ window.SOP_DATA = {
       "category": "常用",
       "fillRules": [],
       "sourceNote": "",
-      "sourceUrl": ""
+      "sourceUrl": "",
+      "options": [],
+      "sourceLinks": [],
+      "defaultValue": "[LN]"
     },
     {
       "code": "V002",
@@ -992,13 +1085,17 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用",
-      "fillRules": []
+      "category": "物流相關",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V003",
       "label": "商城名字",
-      "category": "常用",
+      "category": "商家相關",
       "hint": "",
       "type": "text",
       "required": true,
@@ -1070,12 +1167,14 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "multiline": false,
-      "common": false
+      "common": false,
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V004",
       "label": "KAM回覆_歷史發問",
-      "category": "常用",
+      "category": "歷史發問",
       "hint": "",
       "type": "text",
       "required": true,
@@ -1084,12 +1183,14 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "multiline": true,
-      "common": false
+      "common": false,
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V005",
       "label": "分頁_歷史發問",
-      "category": "常用",
+      "category": "歷史發問",
       "hint": "",
       "type": "text",
       "required": true,
@@ -1098,14 +1199,16 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "multiline": false,
-      "common": false
+      "common": false,
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V006",
       "label": "是否是廠直",
-      "category": "常用",
-      "hint": "填「是」或「不是」",
-      "type": "text",
+      "category": "商家相關",
+      "hint": "選「是」或「不是」",
+      "type": "select",
       "required": true,
       "fillRules": [
         {
@@ -1119,7 +1222,8 @@ window.SOP_DATA = {
               "value": "歷史提問-廠直",
               "answerText": "",
               "answerPosition": "end",
-              "answerAnchor": ""
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         },
@@ -1135,7 +1239,8 @@ window.SOP_DATA = {
               "value": "歷史提問-24H",
               "answerText": "",
               "answerPosition": "end",
-              "answerAnchor": ""
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         }
@@ -1144,12 +1249,17 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "multiline": false,
-      "common": false
+      "common": false,
+      "options": [
+        "是",
+        "不是"
+      ],
+      "sourceLinks": []
     },
     {
       "code": "V007",
       "label": "發問內容_歷史發問",
-      "category": "未分類",
+      "category": "歷史發問",
       "hint": "填入歷史發問裡對應的發問內容",
       "type": "text",
       "required": true,
@@ -1158,12 +1268,14 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "common": false,
-      "multiline": true
+      "multiline": true,
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V008",
       "label": "商品品項",
-      "category": "未分類",
+      "category": "商品詢問",
       "hint": "貼上產品頁的完整標題",
       "type": "text",
       "required": true,
@@ -1172,12 +1284,14 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "common": false,
-      "multiline": false
+      "multiline": false,
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V009",
-      "label": "買家問題_整理後",
-      "category": "未分類",
+      "label": "買家問題_KAM",
+      "category": "KAM表",
       "hint": "整理客人問題後輸入",
       "type": "text",
       "required": true,
@@ -1186,41 +1300,15 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "common": false,
-      "multiline": true
+      "multiline": true,
+      "options": [],
+      "sourceLinks": []
     },
     {
       "code": "V010",
       "label": "商品規格",
-      "category": "未分類",
+      "category": "商品詢問",
       "hint": "如果客人有詢問再填",
-      "type": "text",
-      "required": false,
-      "fillRules": [],
-      "sourceNote": "",
-      "sourceUrl": "",
-      "autoDays": 0,
-      "common": false,
-      "multiline": false
-    },
-    {
-      "code": "V011",
-      "label": "分頁_KAM表",
-      "category": "未分類",
-      "hint": "會自動填入",
-      "type": "text",
-      "required": false,
-      "fillRules": [],
-      "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
-      "sourceUrl": "",
-      "autoDays": 0,
-      "common": false,
-      "multiline": false
-    },
-    {
-      "code": "V012",
-      "label": "問題分類_KAM",
-      "category": "未分類",
-      "hint": "選擇對應的分類",
       "type": "text",
       "required": true,
       "fillRules": [],
@@ -1228,7 +1316,212 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "autoDays": 0,
       "common": false,
-      "multiline": false
+      "multiline": false,
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceLinks": []
+    },
+    {
+      "code": "V011",
+      "label": "分頁_KAM表",
+      "category": "KAM表",
+      "hint": "會自動填入",
+      "type": "text",
+      "required": false,
+      "fillRules": [],
+      "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307",
+      "autoDays": 0,
+      "common": false,
+      "multiline": false,
+      "options": [],
+      "sourceLinks": [
+        {
+          "title": "KAM表",
+          "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307"
+        }
+      ],
+      "defaultValue": ""
+    },
+    {
+      "code": "V012",
+      "label": "問題分類_KAM",
+      "category": "KAM表",
+      "hint": "選擇對應的分類",
+      "type": "select",
+      "required": true,
+      "fillRules": [],
+      "sourceNote": "售前的話要選擇「售前-XXX」",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": false,
+      "options": [
+        "退換貨",
+        "退換貨-二次詢問",
+        "商品使用",
+        "商品規格",
+        "配件/贈品",
+        "保固相關",
+        "品質諮詢",
+        "其他",
+        "售前-商品使用",
+        "售前-商品規格",
+        "售前-配件/贈品",
+        "售前-保固相關",
+        "售前-品質諮詢"
+      ],
+      "sourceLinks": []
+    },
+    {
+      "code": "V013",
+      "label": "R/R 分類_KAM表",
+      "category": "KAM表",
+      "hint": "有訂單編號才需要選符合的選項，沒有的話不需要",
+      "type": "text",
+      "required": true,
+      "options": [
+        "換貨",
+        "補寄",
+        "冷鍊",
+        "沒有訂單編號所以不用選",
+        "沒有符合的選項所以不用選"
+      ],
+      "fillRules": [],
+      "sourceNote": "有訂單編號才需要選符合的選項，沒有的話不需要",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "multiline": true,
+      "common": false,
+      "defaultValue": "沒有訂單編號所以不用選",
+      "sourceLinks": []
+    },
+    {
+      "code": "V014",
+      "label": "已申退_KAM表",
+      "category": "KAM表",
+      "hint": "訂單已經申請退款嗎？",
+      "type": "select",
+      "required": true,
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "fillRules": [],
+      "sourceNote": "售後訂單已經申請退款才要勾\n\n如何查詢有沒有退款：\n1. CS Portal\n輸入 OSN、Username 或 Return SN 查詢訂單；在一般資訊區查看 Return 資訊、訂單狀態及時間序。\n\n2. Order Admin Portal\n進入 Return → Return & Refund Requests，利用欄位搜尋訂單；進入詳情後可查看 申請狀態、申請資訊及更新時序。\n\n3. InHouse CS System／聊聊控制台\n從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。\nProcessing：已申請，處理中\nAccepted：退貨退款已完成／接受\nCancelled：曾申請，但已取消\n沒有退貨退款編號或相關欄位：通常表示尚未申請",
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        }
+      ]
+    },
+    {
+      "code": "V015",
+      "label": "擴大安心退_KAM表",
+      "category": "KAM表",
+      "hint": "商品總金額是否低於 NT$1,380",
+      "type": "select",
+      "required": true,
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "符合「擴大安心退」需要同時符合以下 4 個條件：\n在 15 天鑑賞期內\n屬於 商品瑕疵，不是買家個人因素\n欲退商品總金額 低於 NT$1,380\n具備 商品及包裝照片",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V016",
+      "label": "PDP 建議_KAM表",
+      "category": "KAM表",
+      "hint": "看看這個問題覺得要不要上產品頁",
+      "type": "select",
+      "required": true,
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "fillRules": [],
+      "sourceNote": "看看這個問題覺得要不要上產品頁",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V017",
+      "label": "有沒有訂單編號_KAM表",
+      "category": "KAM表",
+      "hint": "",
+      "type": "select",
+      "required": true,
+      "options": [
+        "有",
+        "無"
+      ],
+      "defaultValue": "",
+      "fillRules": [
+        {
+          "values": [
+            "有"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "order_id",
+              "value": "",
+              "answerText": "",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V017"
+            }
+          ]
+        }
+      ],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V018",
+      "label": "買家名字（Buyer Username）",
+      "category": "常用",
+      "hint": "是填入Buyer Username／User Name",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "fillRules": [],
+      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n從 InHouse 聊聊介面找（最快）\n左側「買家列表」會顯示目前進線買家的名稱。\n點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n1. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n2. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
     }
   ],
   "decisions": [

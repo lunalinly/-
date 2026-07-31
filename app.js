@@ -121,15 +121,20 @@
   }
 
   function conditionalAnswerTexts() {
-    const texts = [];
+    const entries = [];
+    const seen = new Set();
     (data.fields || []).forEach(definition => (definition.fillRules || []).forEach(rule => {
       if (!ruleMatches(definition, rule)) return;
       (rule.assignments || []).forEach(assignment => {
         const text = String(assignment.answerText || "").trim();
-        if (text && !texts.includes(text)) texts.push(text);
+        if (!text) return;
+        const position = ["start", "after_question", "after_branch", "end"].includes(assignment.answerPosition) ? assignment.answerPosition : "end";
+        const anchor = String(assignment.answerAnchor || "");
+        const key = `${position}|${anchor}|${text}`;
+        if (!seen.has(key)) { seen.add(key); entries.push({ text, position, anchor }); }
       });
     }));
-    return texts;
+    return entries;
   }
 
   function applyFieldFillRules(variable) {
@@ -410,10 +415,17 @@
 
   function buildOutput(flow, variables) {
     const built = templatesFor(flow);
+    const conditional = conditionalAnswerTexts();
     const parts = [];
+    parts.push(...conditional.filter(item => item.position === "start").map(item => item.text));
     if (String(state.question.answerText || "").trim()) parts.push(state.question.answerText);
-    parts.push(...built.templates.map(item => item.template.text));
-    parts.push(...conditionalAnswerTexts());
+    parts.push(...conditional.filter(item => item.position === "after_question").map(item => item.text));
+    built.templates.forEach(item => {
+      parts.push(item.template.text);
+      const anchor = JSON.stringify({ question: item.part.question, branch: item.part.branch });
+      parts.push(...conditional.filter(entry => entry.position === "after_branch" && entry.anchor === anchor).map(entry => entry.text));
+    });
+    parts.push(...conditional.filter(item => item.position === "end").map(item => item.text));
     if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true, sources: [] };
     let text = parts.join("\n\n");
     const sourceMap = new Map();

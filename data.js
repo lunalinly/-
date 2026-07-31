@@ -300,6 +300,8 @@ window.SOP_DATA = {
       "code": "product_id",
       "label": "商品代碼_Product ID",
       "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "sourceUrl": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
@@ -342,6 +344,11 @@ window.SOP_DATA = {
       "q": "Q004",
       "branch": "商品頁有找到",
       "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁沒找到",
+      "text": "Product ID是：{{product_id}}"
     }
   ],
   "actions": [
@@ -367,7 +374,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T04:16:04.807Z",
+  "updatedAt": "2026-07-31T04:34:16.031Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -429,11 +436,13 @@ window.SOP_DATA = {
       "label": "商品代碼_Product ID",
       "hint": "貼上Product ID",
       "required": true,
-      "common": true,
+      "common": false,
       "category": "常用",
       "type": "text",
       "autoDays": 0,
-      "multiline": false
+      "multiline": false,
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "sourceUrl": ""
     },
     {
       "code": "shipping_status",

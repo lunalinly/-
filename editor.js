@@ -425,6 +425,31 @@
     return `<datalist id="decisionOptions_${index}">${(item?.options || []).map(option => `<option value="${esc(option)}"></option>`).join("")}</datalist>`;
   }
 
+  function compositionPreview(flow, parts, currentTemplateText = "") {
+    const chunks = [];
+    const question = data.questions.find(item => item.name === flow.question);
+    if (String(question?.answerText || "").trim()) chunks.push(friendlyFieldTemplate(question.answerText));
+    (parts || []).forEach(part => {
+      let text = "";
+      if (part.question === flow.question && part.branch === flow.branch) text = currentTemplateText;
+      else text = exactTemplate(qidForName(part.question), part.branch)?.text || "";
+      chunks.push(String(text).trim() ? friendlyFieldTemplate(text) : `{尚未設定答案：${part.question} · ${part.branch}}`);
+    });
+    return chunks.filter(Boolean).join("\n\n") || "目前尚無可預覽的答案文字。";
+  }
+
+  function updateAnswerCompositionPreview() {
+    if (state.mode !== "branches") return;
+    const preview = $("#answerCompositionPreview");
+    const flow = current();
+    const form = $("#studioForm");
+    if (!preview || !flow || !form) return;
+    const parts = [...form.querySelectorAll('[name^="answer_part_"]')].map(select => {
+      try { return JSON.parse(select.value); } catch { return null; }
+    }).filter(Boolean);
+    preview.value = compositionPreview(flow, parts, form.elements.template_text?.value || "");
+  }
+
   function branchForm(flow) {
     const q = qidForName(flow.question); const vars = exactVariables(q, flow.branch); const template = exactTemplate(q, flow.branch); const actions = exactActions(q, flow.branch);
     const steps = (flow.steps || []).map((step, i) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${i + 1}</b><button type="button" data-remove-step="${i}">移除</button></div>${field("判斷問題", `step_prompt_${i}`, step.prompt, { required: true, wide: true })}<label class="studio-field wide"><span>這條路徑的選項 ＊</span><input name="step_option_${i}" list="decisionOptions_${i}" value="${esc(step.option)}" required placeholder="可選既有選項或輸入新的中文選項">${decisionOptionSuggestions(step.prompt, i)}</label></div>`).join("");
@@ -445,11 +470,12 @@
     flow.answerParts = answerParts;
     const answerRows = answerParts.map((part, i) => answerPartCard(part, i, flow)).join("") || `<div class="no-steps">目前只會輸出問題本身的答案文字，尚未加入其他分支。</div>`;
     const friendly = friendlyTemplate(template?.text || "", q);
+    const preview = compositionPreview(flow, answerParts, template?.text || "");
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>可沿用既有判斷或建立新的判斷，且沒有層數上限。</small></div></div>${decisionControls}<div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>可沿用既有中文欄位，或建立全新欄位；自動計算設定也會一起沿用。</small></div></div>${reuseControls}<div class="branch-variable-list">${variableRows}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>欄位值轉向</b><small>輸入指定值後，自動跳到同一題目的另一個分支。</small></div><button type="button" data-add-route>＋ 新增轉向規則</button></div><div class="branch-route-list">${routeRows}</div></section>
-      <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案組合</b><small>依順序組合多個分支的獨立答案文字；同一分支可在不同流程重複使用。</small></div><button type="button" data-add-answer-part>＋ 加入答案分支</button></div><div class="branch-answer-list">${answerRows}</div></section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案組合</b><small>依順序組合多個分支的獨立答案文字；同一分支可在不同流程重複使用。</small></div><button type="button" data-add-answer-part>＋ 加入答案分支</button></div><div class="branch-answer-list">${answerRows}</div><label class="studio-field wide composition-preview"><span>組合後內容預覽</span><textarea id="answerCompositionPreview" rows="12" readonly>${esc(preview)}</textarea><small>依目前順序預覽；欄位保留為 {中文欄位}，符合值後才出現的條件文字會在實際操作時加入。</small></label></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>此分支的獨立答案文字</b><small>只編輯「${esc(flow.branch)}」本身的文字；組合設定不會複製或覆蓋它。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單{訂單編號}…" })}</section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>操作提醒</b><small>查表、填表、工單、Jira 或其他動作。</small></div><button type="button" data-add-action>＋ 新增操作</button></div><div class="branch-action-list">${actionRows}</div></section>`;
   }
@@ -487,6 +513,7 @@
   }
 
   function handleFormInput(event) {
+    if (state.mode === "branches") updateAnswerCompositionPreview();
     const match = event.target.name?.match(/^var_label_(\d+)$/);
     if (!match) return;
     const code = $("#studioForm [name=var_code_" + match[1] + "]")?.value;

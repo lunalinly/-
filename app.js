@@ -159,7 +159,7 @@
         || data.fields?.find(item => item.code === assignment.targetCode);
       if (targetVariable?.common) saveCommonValue(assignment.targetCode, state.values[assignment.targetCode]);
       const targetInput = document.getElementById(`field-${assignment.targetCode}`);
-      if (targetInput) targetInput.value = state.values[assignment.targetCode];
+      if (targetInput) setFieldInputValue(targetInput, state.values[assignment.targetCode]);
       affected += 1;
     }));
     return affected;
@@ -374,6 +374,14 @@
     }
   }
 
+  function setFieldInputValue(input, value) {
+    const text = String(value ?? "");
+    if (input?.tagName === "SELECT" && text && ![...input.options].some(option => option.value === text)) {
+      const option = document.createElement("option"); option.value = text; option.textContent = text; input.append(option);
+    }
+    if (input) input.value = text;
+  }
+
   function makeField(variable, flow, variables) {
     const wrap = document.createElement("div");
     wrap.className = "field" + (variable.multiline ? " full" : "");
@@ -382,16 +390,27 @@
     label.htmlFor = `field-${variable.code}`;
     label.append(document.createTextNode(variable.label));
     if (variable.required) { const req = document.createElement("span"); req.textContent = " ＊"; label.append(req); }
-    const input = variable.multiline ? document.createElement("textarea") : document.createElement("input");
+    let input;
+    if (variable.type === "select") {
+      input = document.createElement("select");
+      const placeholder = document.createElement("option");
+      placeholder.value = ""; placeholder.textContent = variable.hint || "請選擇…";
+      input.append(placeholder);
+      [...new Set(variable.options || [])].forEach(value => {
+        const option = document.createElement("option"); option.value = value; option.textContent = value; input.append(option);
+      });
+    } else {
+      input = variable.multiline ? document.createElement("textarea") : document.createElement("input");
+      input.placeholder = variable.hint || "";
+      if (!variable.multiline) input.type = variable.type === "date" ? "date" : "text";
+    }
     input.id = `field-${variable.code}`;
-    input.placeholder = variable.hint || "";
-    if (!variable.multiline) input.type = variable.type === "date" ? "date" : "text";
     if (variable.auto || variable.autoSource) {
       input.readOnly = true;
-      input.value = calculateAuto(variable);
+      setFieldInputValue(input, calculateAuto(variable));
       state.values[variable.code] = input.value;
     } else {
-      input.value = state.values[variable.code] ?? (variable.common ? (commonValues[variable.code] || "") : "");
+      setFieldInputValue(input, state.values[variable.code] ?? (variable.common ? (commonValues[variable.code] || "") : ""));
       state.values[variable.code] = input.value;
     }
     input.addEventListener("input", () => {
@@ -401,7 +420,7 @@
       variables.filter(v => v.auto || v.autoSource).forEach(autoVar => {
         state.values[autoVar.code] = calculateAuto(autoVar);
         const autoInput = document.getElementById(`field-${autoVar.code}`);
-        if (autoInput) autoInput.value = state.values[autoVar.code];
+        if (autoInput) setFieldInputValue(autoInput, state.values[autoVar.code]);
       });
       if (!applyVariableRoute(flow)) {
         refreshOutput(flow, variables);

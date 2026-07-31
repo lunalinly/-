@@ -9,7 +9,7 @@ window.SOP_DATA = {
       "keywords": "鑑賞期,七天,15天,十五天,退貨期限",
       "description": "依取貨日期產生鑑賞期說明",
       "enabled": true,
-      "answerText": ""
+      "answerText": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
     },
     {
       "id": "Q002",
@@ -17,7 +17,7 @@ window.SOP_DATA = {
       "keywords": "付款,付款方式,刷卡,分期,貨到付款",
       "description": "說明商城支援付款方式",
       "enabled": true,
-      "answerText": ""
+      "answerText": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。\n{{V001}}"
     },
     {
       "id": "Q003",
@@ -45,7 +45,8 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "共用"
-      ]
+      ],
+      "answerParts": []
     },
     {
       "question": "詢問付款方式",
@@ -55,7 +56,8 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "共用"
-      ]
+      ],
+      "answerParts": []
     },
     {
       "question": "詢問發票",
@@ -70,6 +72,12 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "查詢發票"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問發票",
+          "branch": "查詢發票"
+        }
       ]
     },
     {
@@ -85,6 +93,12 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "補打統編"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問發票",
+          "branch": "補打統編"
+        }
       ]
     },
     {
@@ -100,6 +114,12 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "統編／抬頭打錯"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問發票",
+          "branch": "統編／抬頭打錯"
+        }
       ]
     },
     {
@@ -115,6 +135,12 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "補發電子發票通知信"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問發票",
+          "branch": "補發電子發票通知信"
+        }
       ]
     },
     {
@@ -130,6 +156,12 @@ window.SOP_DATA = {
       "routes": [],
       "answerBranches": [
         "商品頁有找到"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問商品資訊",
+          "branch": "商品頁有找到"
+        }
       ]
     },
     {
@@ -141,21 +173,17 @@ window.SOP_DATA = {
           "option": "商品頁沒有找到"
         }
       ],
-      "routes": [
-        {
-          "sourceCode": "V003",
-          "value": "蝦皮直營 _ 生活超市 - 最快當日到",
-          "targetBranch": "商品頁有找到",
-          "values": [
-            "蝦皮直營 _ 生活超市 - 最快當日到"
-          ],
-          "assignments": []
-        }
-      ],
+      "routes": [],
       "answerBranches": [
         "商品頁沒有找到"
       ],
-      "next": "要去「歷史發問查詢」表查詢"
+      "next": "要去「歷史發問查詢」表查詢",
+      "answerParts": [
+        {
+          "question": "詢問商品資訊",
+          "branch": "商品頁沒有找到"
+        }
+      ]
     },
     {
       "question": "詢問商品資訊",
@@ -175,7 +203,17 @@ window.SOP_DATA = {
         "商品頁沒有找到",
         "歷史發問查詢沒有找到"
       ],
-      "next": "這個商城是要上KAM表還是廠直表"
+      "next": "這個商城是要上KAM表還是廠直表",
+      "answerParts": [
+        {
+          "question": "詢問商品資訊",
+          "branch": "商品頁沒有找到"
+        },
+        {
+          "question": "詢問商品資訊",
+          "branch": "歷史發問查詢沒有找到"
+        }
+      ]
     },
     {
       "question": "詢問商品資訊",
@@ -195,7 +233,30 @@ window.SOP_DATA = {
         "商品頁沒有找到",
         "歷史發問查詢有找到"
       ],
-      "next": "整理完回覆給客人"
+      "next": "整理完回覆給客人",
+      "answerParts": [
+        {
+          "question": "詢問商品資訊",
+          "branch": "商品頁沒有找到"
+        },
+        {
+          "question": "詢問商品資訊",
+          "branch": "歷史發問查詢有找到"
+        }
+      ]
+    },
+    {
+      "question": "詢問鑑賞期",
+      "branch": "新分支",
+      "steps": [],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問鑑賞期",
+          "branch": "新分支"
+        }
+      ],
+      "next": ""
     }
   ],
   "variables": [
@@ -306,34 +367,12 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": true
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "product_page_area",
-      "label": "產品頁的哪裡",
-      "hint": "例如：商品描述、規格表、圖片",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "found_keyword",
-      "label": "找到的關鍵字／內容",
-      "hint": "把商品頁看到的資訊貼上",
+      "branch": "歷史發問查詢有找到",
+      "code": "V004",
+      "label": "KAM回覆_歷史發問",
+      "hint": "",
+      "sourceNote": "歷史發問查詢的試算表的KAM回覆裡會有",
+      "sourceUrl": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
@@ -370,11 +409,67 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "歷史發問查詢有找到",
-      "code": "V004",
-      "label": "KAM回覆_歷史發問",
-      "hint": "",
-      "sourceNote": "歷史發問查詢的試算表的KAM回覆裡會有",
+      "branch": "商品頁沒有找到",
+      "code": "V005",
+      "label": "分頁_歷史發問",
+      "hint": "會自動填入",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁沒有找到",
+      "code": "customer_need",
+      "label": "客人要找",
+      "hint": "例如：尺寸、材質、商品圖片",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": true
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "customer_need",
+      "label": "客人要找",
+      "hint": "例如：尺寸、材質、商品圖片",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": true
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "product_page_area",
+      "label": "產品頁的哪裡",
+      "hint": "例如：商品描述、規格表、圖片",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "found_keyword",
+      "label": "找到的關鍵字／內容",
+      "hint": "把商品頁看到的資訊貼上",
+      "sourceNote": "",
       "sourceUrl": "",
       "type": "text",
       "autoDays": 0,
@@ -416,18 +511,18 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "商品頁有找到",
-      "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
+      "branch": "歷史發問查詢有找到",
+      "text": "查詢到曾經廠商有回覆過：{{V004}}\n整理完回覆給客人"
     },
     {
       "q": "Q004",
       "branch": "商品頁沒有找到",
-      "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}"
+      "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}，所以下面的分頁要選擇{{V005}}\n將{{product_id}}填入 PID 看看有沒有顧客詢問「{{customer_need}}」相關的問題"
     },
     {
       "q": "Q004",
-      "branch": "歷史發問查詢有找到",
-      "text": "查詢到曾經廠商有回覆過：{{V004}}\n整理完回覆給客人"
+      "branch": "商品頁有找到",
+      "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
     }
   ],
   "actions": [
@@ -453,7 +548,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T05:31:46.902Z",
+  "updatedAt": "2026-07-31T05:54:50.719Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -626,6 +721,15 @@ window.SOP_DATA = {
     },
     {
       "code": "V004",
+      "label": "新欄位",
+      "category": "未分類",
+      "hint": "",
+      "type": "text",
+      "required": true,
+      "fillRules": []
+    },
+    {
+      "code": "V005",
       "label": "新欄位",
       "category": "未分類",
       "hint": "",

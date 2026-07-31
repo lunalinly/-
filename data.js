@@ -244,19 +244,6 @@ window.SOP_DATA = {
           "branch": "歷史發問查詢有找到"
         }
       ]
-    },
-    {
-      "question": "詢問鑑賞期",
-      "branch": "新分支",
-      "steps": [],
-      "routes": [],
-      "answerParts": [
-        {
-          "question": "詢問鑑賞期",
-          "branch": "新分支"
-        }
-      ],
-      "next": ""
     }
   ],
   "variables": [
@@ -371,13 +358,15 @@ window.SOP_DATA = {
       "code": "V004",
       "label": "KAM回覆_歷史發問",
       "hint": "",
-      "sourceNote": "歷史發問查詢的試算表的KAM回覆裡會有",
+      "sourceNote": "",
       "sourceUrl": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
-      "multiline": true,
-      "common": false
+      "multiline": false,
+      "common": false,
+      "category": "常用",
+      "fillRules": []
     },
     {
       "q": "Q004",
@@ -398,28 +387,47 @@ window.SOP_DATA = {
       "branch": "商品頁沒有找到",
       "code": "V003",
       "label": "商城名字",
-      "hint": "產品頁查出商城名稱",
-      "sourceNote": "產品頁往下滑，電腦版的商店名稱在加入購物車下面，手機板在評論與精選影片下面",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁沒有找到",
-      "code": "V005",
-      "label": "分頁_歷史發問",
-      "hint": "會自動填入",
+      "hint": "",
       "sourceNote": "",
       "sourceUrl": "",
       "type": "text",
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "常用",
+      "fillRules": [
+        {
+          "values": [
+            "蝦皮直營 _ 生活超市 - 最快當日到",
+            "蝦皮超市",
+            "蝦皮直送 美妝",
+            "蝦皮直營 - 3C家電館"
+          ],
+          "assignments": [
+            {
+              "targetCode": "V005",
+              "value": "歷史提問-24H"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁沒有找到",
+      "code": "V005",
+      "label": "分頁_歷史發問",
+      "hint": "",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "category": "常用",
+      "fillRules": []
     },
     {
       "q": "Q004",
@@ -548,7 +556,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T05:54:50.719Z",
+  "updatedAt": "2026-07-31T06:22:56.341Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -712,30 +720,60 @@ window.SOP_DATA = {
     },
     {
       "code": "V003",
-      "label": "新欄位",
-      "category": "未分類",
+      "label": "商城名字",
+      "category": "常用",
       "hint": "",
       "type": "text",
       "required": true,
-      "fillRules": []
+      "fillRules": [
+        {
+          "values": [
+            "蝦皮直營 _ 生活超市 - 最快當日到",
+            "蝦皮超市",
+            "蝦皮直送 美妝",
+            "蝦皮直營 - 3C家電館"
+          ],
+          "assignments": [
+            {
+              "targetCode": "V005",
+              "value": "歷史提問-24H"
+            }
+          ]
+        }
+      ],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
     },
     {
       "code": "V004",
-      "label": "新欄位",
-      "category": "未分類",
+      "label": "KAM回覆_歷史發問",
+      "category": "常用",
       "hint": "",
       "type": "text",
       "required": true,
-      "fillRules": []
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
     },
     {
       "code": "V005",
-      "label": "新欄位",
-      "category": "未分類",
+      "label": "分頁_歷史發問",
+      "category": "常用",
       "hint": "",
       "type": "text",
       "required": true,
-      "fillRules": []
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
     }
   ],
   "decisions": [

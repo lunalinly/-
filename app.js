@@ -10,7 +10,7 @@
     progress: $("#progress"), decision: $("#decisionArea"), result: $("#resultArea"), toast: $("#toast")
   };
 
-  const state = { question: null, choices: [], values: {} };
+  const state = { question: null, choices: [], values: {}, routedBranch: null };
   const commonKey = "sop-helper-common-values-v1";
   let commonValues = readCommonValues();
 
@@ -59,6 +59,7 @@
     state.question = question;
     state.choices = [];
     state.values = {};
+    state.routedBranch = null;
     els.hero.hidden = true;
     els.questionSection.hidden = true;
     els.workspace.hidden = false;
@@ -73,6 +74,7 @@
     state.question = null;
     state.choices = [];
     state.values = {};
+    state.routedBranch = null;
     els.workspace.hidden = true;
     els.hero.hidden = false;
     els.questionSection.hidden = false;
@@ -90,7 +92,23 @@
   }
 
   function resolvedFlow() {
+    if (state.routedBranch) {
+      const routed = questionFlows().find(flow => flow.branch === state.routedBranch);
+      if (routed) return routed;
+      state.routedBranch = null;
+    }
     return flowsMatchingPrefix(questionFlows(), state.choices).find(flow => flow.steps.length === state.choices.length) || null;
+  }
+
+  function applyVariableRoute(flow) {
+    const route = (flow.routes || []).find(item => String(state.values[item.sourceCode] ?? "").trim() === String(item.value ?? "").trim());
+    if (!route || !route.targetBranch || route.targetBranch === flow.branch) return false;
+    const target = questionFlows().find(item => item.branch === route.targetBranch);
+    if (!target) return false;
+    state.routedBranch = target.branch;
+    renderWorkflow();
+    showToast(`已依欄位內容轉到：${target.branch}`);
+    return true;
   }
 
   function renderProgress(isResolved, hasVariables) {
@@ -139,6 +157,7 @@
         state.choices = state.choices.slice(0, level);
         state.choices[level] = option;
         state.values = {};
+        state.routedBranch = null;
         renderWorkflow();
         requestAnimationFrame(() => {
           const panels = els.decision.querySelectorAll(".panel");
@@ -238,7 +257,7 @@
         const autoInput = document.getElementById(`field-${autoVar.code}`);
         if (autoInput) autoInput.value = state.values[autoVar.code];
       });
-      refreshOutput(flow, variables);
+      if (!applyVariableRoute(flow)) refreshOutput(flow, variables);
     });
     const hint = document.createElement("span"); hint.className = "hint"; hint.textContent = variable.hint || "";
     wrap.append(label, input, hint);

@@ -37,13 +37,21 @@ window.SOP_DATA = {
       "question": "詢問鑑賞期",
       "steps": [],
       "branch": "共用",
-      "next": "填入取貨日期，產生鑑賞期回覆"
+      "next": "填入取貨日期，產生鑑賞期回覆",
+      "routes": [],
+      "answerBranches": [
+        "共用"
+      ]
     },
     {
       "question": "詢問付款方式",
       "steps": [],
       "branch": "共用",
-      "next": "直接複製付款方式說明"
+      "next": "直接複製付款方式說明",
+      "routes": [],
+      "answerBranches": [
+        "共用"
+      ]
     },
     {
       "question": "詢問發票",
@@ -54,7 +62,11 @@ window.SOP_DATA = {
         }
       ],
       "branch": "查詢發票",
-      "next": "請客人查會員編號、歸戶驗證碼，再到關貿平台查詢"
+      "next": "請客人查會員編號、歸戶驗證碼，再到關貿平台查詢",
+      "routes": [],
+      "answerBranches": [
+        "查詢發票"
+      ]
     },
     {
       "question": "詢問發票",
@@ -65,7 +77,11 @@ window.SOP_DATA = {
         }
       ],
       "branch": "補打統編",
-      "next": "引導客人到關貿平台補打統編，提醒申請期限"
+      "next": "引導客人到關貿平台補打統編，提醒申請期限",
+      "routes": [],
+      "answerBranches": [
+        "補打統編"
+      ]
     },
     {
       "question": "詢問發票",
@@ -76,7 +92,11 @@ window.SOP_DATA = {
         }
       ],
       "branch": "統編／抬頭打錯",
-      "next": "先取消目前三聯式資訊，再重新補打正確資料"
+      "next": "先取消目前三聯式資訊，再重新補打正確資料",
+      "routes": [],
+      "answerBranches": [
+        "統編／抬頭打錯"
+      ]
     },
     {
       "question": "詢問發票",
@@ -87,7 +107,11 @@ window.SOP_DATA = {
         }
       ],
       "branch": "補發電子發票通知信",
-      "next": "提供自助中心或關貿平台補發方式"
+      "next": "提供自助中心或關貿平台補發方式",
+      "routes": [],
+      "answerBranches": [
+        "補發電子發票通知信"
+      ]
     },
     {
       "question": "詢問商品資訊",
@@ -98,37 +122,11 @@ window.SOP_DATA = {
         }
       ],
       "branch": "商品頁有找到",
-      "next": "填寫在產品頁哪裡找到、找到什麼內容，整理後回覆客人"
-    },
-    {
-      "question": "詢問商品資訊",
-      "steps": [
-        {
-          "prompt": "商品頁有沒有找到客人要的資訊？",
-          "option": "商品頁沒有找到"
-        },
-        {
-          "prompt": "接下來要用哪一種方式詢問/查詢？",
-          "option": "廠商直送，填表問廠商"
-        }
-      ],
-      "branch": "廠商直送，填表問廠商",
-      "next": "到廠商直送表填資料，送出後等待廠商回覆"
-    },
-    {
-      "question": "詢問商品資訊",
-      "steps": [
-        {
-          "prompt": "商品頁有沒有找到客人要的資訊？",
-          "option": "商品頁沒有找到"
-        },
-        {
-          "prompt": "接下來要用哪一種方式詢問/查詢？",
-          "option": "自有物流/一般商品，填表問廠商"
-        }
-      ],
-      "branch": "自有物流/一般商品，填表問廠商",
-      "next": "到一般商品詢問表填資料，送出後等待回覆"
+      "next": "填寫在產品頁哪裡找到、找到什麼內容，整理後回覆客人",
+      "routes": [],
+      "answerBranches": [
+        "商品頁有找到"
+      ]
     }
   ],
   "variables": [
@@ -170,84 +168,6 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "廠商直送，填表問廠商",
-      "code": "order_id",
-      "label": "訂單編號_Order SN",
-      "hint": "貼上訂單編號",
-      "required": true,
-      "common": true,
-      "category": "常用",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
-    },
-    {
-      "q": "Q004",
-      "branch": "廠商直送，填表問廠商",
-      "code": "product_id",
-      "label": "商品代碼_Product ID",
-      "hint": "貼上Product ID",
-      "required": true,
-      "common": true,
-      "category": "常用",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
-    },
-    {
-      "q": "Q004",
-      "branch": "廠商直送，填表問廠商",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "required": true,
-      "common": true,
-      "category": "商品詢問",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
-    },
-    {
-      "q": "Q004",
-      "branch": "自有物流/一般商品，填表問廠商",
-      "code": "order_id",
-      "label": "訂單編號_Order SN",
-      "hint": "貼上訂單編號",
-      "required": true,
-      "common": true,
-      "category": "常用",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
-    },
-    {
-      "q": "Q004",
-      "branch": "自有物流/一般商品，填表問廠商",
-      "code": "product_id",
-      "label": "商品代碼_Product ID",
-      "hint": "貼上Product ID",
-      "required": true,
-      "common": true,
-      "category": "常用",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
-    },
-    {
-      "q": "Q004",
-      "branch": "自有物流/一般商品，填表問廠商",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "required": true,
-      "common": true,
-      "category": "商品詢問",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
     },
     {
       "q": "Q001",
@@ -362,16 +282,6 @@ window.SOP_DATA = {
       "text": "請先打開商品頁，確認商品圖片、商品規格與商品描述。\n客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
     },
     {
-      "q": "Q004",
-      "branch": "廠商直送，填表問廠商",
-      "text": "商品頁沒有看到客人詢問的 {{customer_need}}。\n此單／商品需要走廠商直送詢問，請到廠商直送表填資料：\n訂單編號：{{order_id}}\n商品代碼：{{product_id}}\n客人要找：{{customer_need}}\n送出後可先回覆客人：我們會再與廠商確認，最晚 2 個工作天（不含假日）內回覆。"
-    },
-    {
-      "q": "Q004",
-      "branch": "自有物流/一般商品，填表問廠商",
-      "text": "商品頁沒有看到客人詢問的 {{customer_need}}。\n請到一般商品詢問表填資料：\n訂單編號：{{order_id}}\n商品代碼：{{product_id}}\n客人要找：{{customer_need}}\n送出後可先回覆客人：我們會再與廠商確認，最晚 2 個工作天（不含假日）內回覆。"
-    },
-    {
       "q": "Q001",
       "branch": "共用",
       "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
@@ -404,20 +314,6 @@ window.SOP_DATA = {
   ],
   "actions": [
     {
-      "q": "Q004",
-      "branch": "廠商直送，填表問廠商",
-      "action": "填廠商直送詢問表",
-      "needed": true,
-      "note": "填訂單編號、商品代碼、客人要找的資訊"
-    },
-    {
-      "q": "Q004",
-      "branch": "自有物流/一般商品，填表問廠商",
-      "action": "填一般商品詢問表",
-      "needed": true,
-      "note": "填訂單編號、商品代碼、客人要找的資訊"
-    },
-    {
       "q": "Q001",
       "branch": "共用",
       "action": "不用建單",
@@ -439,7 +335,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T03:45:31.020Z",
+  "updatedAt": "2026-07-31T03:50:55.908Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

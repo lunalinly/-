@@ -198,7 +198,16 @@ window.SOP_DATA = {
           "option": "歷史發問查詢沒有找到"
         }
       ],
-      "routes": [],
+      "routes": [
+        {
+          "sourceCode": "V003",
+          "values": [
+            "S"
+          ],
+          "targetQuestion": "共用",
+          "targetBranch": "KAM表"
+        }
+      ],
       "answerBranches": [
         "商品頁沒有找到",
         "歷史發問查詢沒有找到"
@@ -210,8 +219,8 @@ window.SOP_DATA = {
           "branch": "商品頁沒有找到"
         },
         {
-          "question": "詢問商品資訊",
-          "branch": "歷史發問查詢沒有找到"
+          "question": "共用",
+          "branch": "KAM表"
         }
       ]
     },
@@ -244,6 +253,19 @@ window.SOP_DATA = {
           "branch": "歷史發問查詢有找到"
         }
       ]
+    },
+    {
+      "question": "共用",
+      "branch": "KAM表",
+      "steps": [],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "共用",
+          "branch": "KAM表"
+        }
+      ],
+      "next": "等待KAM回覆並告訴客人要等1~2個工作天"
     }
   ],
   "variables": [
@@ -560,6 +582,181 @@ window.SOP_DATA = {
       "multiline": true,
       "category": "未分類",
       "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "category": "未分類",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V003",
+      "label": "商城名字",
+      "hint": "",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "category": "常用",
+      "fillRules": [
+        {
+          "values": [
+            "蝦皮直營 _ 生活超市 - 最快當日到",
+            "蝦皮超市"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "蝦皮超市",
+            "蝦皮直送 美妝",
+            "蝦皮直營 - 3C家電館",
+            "蝦皮 免運直送",
+            "超級品牌運動",
+            "蝦皮日嚐選物所"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "V006",
+              "value": "",
+              "answerText": "且{{V006}}廠商直送或大型運送",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V003"
+            }
+          ]
+        },
+        {
+          "values": [
+            "蝦皮直營_餐券&禮券 - 最快當日到",
+            "蝦皮耗材館",
+            "OPPO產品旗艦店",
+            "realme產品旗艦店",
+            "Google產品旗艦店",
+            "電玩宅急便",
+            "蝦皮直營 - Apple品牌旗艦館",
+            "蝦皮直營 - 遊戲點數旗艦店",
+            "ASUS華碩官方旗艦店"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-SBS",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V009",
+      "label": "買家問題_整理後",
+      "hint": "整理客人問題後輸入",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "category": "未分類",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": false,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "category": "未分類",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V011",
+      "label": "分頁_KAM表",
+      "hint": "會自動填入",
+      "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": false,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "category": "未分類",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V012",
+      "label": "問題分類_KAM",
+      "hint": "選擇對應的分類",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "category": "未分類",
+      "fillRules": []
     }
   ],
   "templates": [
@@ -632,7 +829,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T07:10:37.564Z",
+  "updatedAt": "2026-07-31T07:50:01.067Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -962,6 +1159,76 @@ window.SOP_DATA = {
       "autoDays": 0,
       "common": false,
       "multiline": true
+    },
+    {
+      "code": "V008",
+      "label": "商品品項",
+      "category": "未分類",
+      "hint": "貼上產品頁的完整標題",
+      "type": "text",
+      "required": true,
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": false
+    },
+    {
+      "code": "V009",
+      "label": "買家問題_整理後",
+      "category": "未分類",
+      "hint": "整理客人問題後輸入",
+      "type": "text",
+      "required": true,
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": true
+    },
+    {
+      "code": "V010",
+      "label": "商品規格",
+      "category": "未分類",
+      "hint": "如果客人有詢問再填",
+      "type": "text",
+      "required": false,
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": false
+    },
+    {
+      "code": "V011",
+      "label": "分頁_KAM表",
+      "category": "未分類",
+      "hint": "會自動填入",
+      "type": "text",
+      "required": false,
+      "fillRules": [],
+      "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": false
+    },
+    {
+      "code": "V012",
+      "label": "問題分類_KAM",
+      "category": "未分類",
+      "hint": "選擇對應的分類",
+      "type": "text",
+      "required": true,
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "common": false,
+      "multiline": false
     }
   ],
   "decisions": [
@@ -986,6 +1253,12 @@ window.SOP_DATA = {
       "options": [
         "歷史發問查詢沒有找到",
         "歷史發問查詢有找到"
+      ]
+    },
+    {
+      "prompt": "這個商城是要上KAM表還是廠直表",
+      "options": [
+        "KAM表"
       ]
     }
   ]

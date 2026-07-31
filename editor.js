@@ -58,6 +58,7 @@
     $("#editorButton").addEventListener("click", openStudio);
     $("#studioClose").addEventListener("click", closeStudio);
     $("#studioAdd").addEventListener("click", addCurrent);
+    $("#reuseBranchButton").addEventListener("click", useExistingBranch);
     $("#studioDuplicate").addEventListener("click", duplicateCurrent);
     $("#studioDelete").addEventListener("click", deleteCurrent);
     $("#studioSave").addEventListener("click", () => saveCurrent(true));
@@ -109,6 +110,7 @@
           <aside class="studio-records">
             <div class="studio-record-head"><div><p id="studioListLabel"></p><span id="studioListCount"></span></div><button id="studioAdd" type="button"></button></div>
             <label class="studio-search"><span>⌕</span><input id="studioSearch" type="search" placeholder="搜尋…"></label>
+            <div class="branch-reuse-bar" id="branchReuseBar" hidden><select id="reuseBranchSelect" aria-label="選擇既有分支"></select><button id="reuseBranchButton" type="button">＋ 使用既有分支</button></div>
             <div class="studio-list" id="studioList"></div>
           </aside>
           <main class="studio-editor">
@@ -153,7 +155,27 @@
     $("#studioAdd").textContent = isQuestion ? "＋ 新增題目" : isBranch ? "＋ 新增分支" : "＋ 新增欄位";
     $("#studioEditorTitle").textContent = isQuestion ? "編輯問題" : isBranch ? "編輯分支" : "編輯欄位";
     $("#studioSave").textContent = isQuestion ? "儲存題目" : isBranch ? "儲存整個分支" : "儲存欄位";
-    renderList(); renderForm();
+    $("#studioAdd").textContent = isQuestion ? "＋ 新增題目" : isBranch ? "＋ 建立新分支" : "＋ 新增欄位";
+    renderBranchReuseBar(isBranch); renderList(); renderForm();
+  }
+
+  function renderBranchReuseBar(show) {
+    const bar = $("#branchReuseBar"); bar.hidden = !show;
+    if (!show) return;
+    const select = $("#reuseBranchSelect");
+    const unique = [...new Map(data.flows.map((flow, index) => [`${flow.question}|${flow.branch}`, { flow, index }])).values()];
+    select.innerHTML = unique.length ? `<option value="">選擇既有分支…</option>` + unique.map(item => `<option value="${item.index}">${esc(item.flow.question)} · ${esc(item.flow.branch)}</option>`).join("") : `<option value="">目前沒有既有分支</option>`;
+    $("#reuseBranchButton").disabled = !unique.length;
+  }
+
+  function useExistingBranch() {
+    if (state.mode !== "branches") return;
+    const raw = $("#reuseBranchSelect").value;
+    if (raw === "") { alert("請先選擇一個既有分支。"); return; }
+    const source = data.flows[Number(raw)];
+    if (!source) { alert("找不到這個既有分支。"); return; }
+    data.flows.push({ question: source.question, branch: source.branch, steps: [], routes: clone(source.routes || []), answerBranches: clone(source.answerBranches || [source.branch]), next: source.next || "" });
+    state.index = data.flows.length - 1; markDirty(); renderStudio(); setStatus(`已引用既有分支：${source.branch}`, true);
   }
 
   function titleFor(record, index) {
@@ -421,6 +443,7 @@
     const moved = captured.q !== oldQ || captured.branch !== oldBranch;
     flow.question = captured.question; flow.branch = captured.branch; flow.next = captured.next; flow.steps = captured.steps; flow.routes = captured.routes;
     flow.answerBranches = (captured.answerBranches.length ? captured.answerBranches : [captured.branch]).map(name => name === oldBranch ? captured.branch : name);
+    data.flows.forEach((item, index) => { if (index !== state.index && item.question === captured.question && item.branch === captured.branch) item.answerBranches = clone(flow.answerBranches); });
     if (!oldShared || !moved) {
       data.variables = data.variables.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.templates = data.templates.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.actions = data.actions.filter(v => !(v.q === oldQ && v.branch === oldBranch));
     }

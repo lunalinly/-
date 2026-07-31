@@ -238,6 +238,16 @@
     state.index = data.flows.length - 1; markDirty(); renderStudio(); setStatus(`已引用既有分支：${source.branch}`, true);
   }
 
+  function compareFieldCatalog(a, b) {
+    const categoryA = String(a?.category || "未分類");
+    const categoryB = String(b?.category || "未分類");
+    const commonA = categoryA === "常用" ? 0 : 1;
+    const commonB = categoryB === "常用" ? 0 : 1;
+    return commonA - commonB ||
+      categoryA.localeCompare(categoryB, "zh-Hant") ||
+      String(a?.label || "").localeCompare(String(b?.label || ""), "zh-Hant");
+  }
+
   function titleFor(record, index) {
     if (state.mode === "questions") return record.name || `題目 ${index + 1}`;
     if (state.mode === "branches") return `${record.question || "未選題目"} · ${isSharedBranch(record.branch) && record.question !== "共用" ? "基本流程" : (record.branch || "未命名分支")}`;
@@ -252,7 +262,7 @@
     const list = $("#studioList"); list.replaceChildren();
     let visible = currentList().map((record, index) => ({ record, index })).filter(x => !state.query || `${titleFor(x.record, x.index)} ${metaFor(x.record)}`.toLowerCase().includes(state.query));
     if (state.mode === "fields") {
-      visible = visible.sort((a, b) => String(a.record.category || "未分類").localeCompare(String(b.record.category || "未分類"), "zh-Hant") || String(a.record.label || "").localeCompare(String(b.record.label || ""), "zh-Hant"));
+      visible = visible.sort((a, b) => compareFieldCatalog(a.record, b.record));
     }
     $("#studioListCount").textContent = `${visible.length} 筆`;
     let lastCategory = null;
@@ -283,10 +293,7 @@
   function questionChoices(value) { return `<option value="共用" ${value === "共用" ? "selected" : ""}>共用（不綁題目）</option>` + data.questions.map(q => `<option value="${esc(q.name)}" ${q.name === value ? "selected" : ""}>${esc(q.name)}</option>`).join(""); }
   function branchSuggestions() { return [...new Set(["共用", ...data.flows.map(f => f.branch).filter(Boolean)])].map(x => `<option value="${esc(x)}"></option>`).join(""); }
   function groupedFieldOptions(items, value, emptyLabel = "選擇欄位…") {
-    const sorted = [...items].sort((a, b) =>
-      String(a.category || "未分類").localeCompare(String(b.category || "未分類"), "zh-Hant") ||
-      String(a.label || "").localeCompare(String(b.label || ""), "zh-Hant")
-    );
+    const sorted = [...items].sort(compareFieldCatalog);
     const groups = new Map();
     sorted.forEach(item => {
       const category = item.category || "未分類";
@@ -309,7 +316,7 @@
     const used = new Set(exactVariables(q, branch).map(v => v.code));
     return data.fields
       .map(variable => ({ variable, used: used.has(variable.code) }))
-      .sort((a, b) => String(a.variable.category || "未分類").localeCompare(String(b.variable.category || "未分類"), "zh-Hant") || String(a.variable.label).localeCompare(String(b.variable.label), "zh-Hant"));
+      .sort((a, b) => compareFieldCatalog(a.variable, b.variable));
   }
 
   function reusableVariableOptions(items) {
@@ -375,7 +382,7 @@
   function fieldForm(item) {
     const inputKind = item.multiline ? "textarea" : (item.type === "date" ? "date" : (item.type === "select" ? "select" : "text"));
     const typeOptions = `<option value="text" ${inputKind === "text" ? "selected" : ""}>單行文字</option><option value="textarea" ${inputKind === "textarea" ? "selected" : ""}>多行文字</option><option value="select" ${inputKind === "select" ? "selected" : ""}>下拉選單</option><option value="date" ${inputKind === "date" ? "selected" : ""}>日期</option>`;
-    const categories = [...new Set(data.fields.map(v => v.category || "未分類"))].sort((a, b) => a.localeCompare(b, "zh-Hant")).map(value => `<option value="${esc(value)}"></option>`).join("");
+    const categories = [...new Set(data.fields.map(v => v.category || "未分類"))].sort((a, b) => (a === "常用" ? 0 : 1) - (b === "常用" ? 0 : 1) || a.localeCompare(b, "zh-Hant")).map(value => `<option value="${esc(value)}"></option>`).join("");
     const sourceOptions = groupedFieldOptions(data.fields.filter(v => v.code !== item.code), item.autoSource || "", "不自動計算");
     item.fillRules ||= [];
     const fillRuleRows = item.fillRules.map((rule, index) => ({ rule, index })).reverse().map(({ rule, index }) => fieldFillRuleCard(rule, index, item)).join("") || `<div class="no-steps">目前沒有依欄位值自動填入其他變數。</div>`;
@@ -544,7 +551,10 @@
   function actionCard(a, i) {
     return `<div class="subrecord-card"><div class="subrecord-head"><b>操作 ${i + 1}｜${esc(a.action)}</b><button type="button" data-remove-action="${i}">移除</button></div><div class="editor-grid">${field("操作名稱", `action_name_${i}`, a.action, { required: true })}${field("是否需要", `action_needed_${i}`, a.needed, { type: "checkbox", checkLabel: "需要執行" })}${field("補充說明", `action_note_${i}`, a.note || "", { wide: true, type: "textarea", rows: 3 })}${field("連結（選填）", `action_url_${i}`, a.url || "", { wide: true, type: "url", placeholder: "https://…" })}</div></div>`;
   }
-  function variableTokens(vars, target = "template_text") { return `<div class="template-tokens wide"><span>${vars.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}" data-insert-target="${esc(target)}">＋ ${esc(v.label)}</button>`).join("")}</div>`; }
+  function variableTokens(vars, target = "template_text") {
+    const sorted = [...new Map(vars.map(variable => [variable.code, variable])).values()].sort(compareFieldCatalog);
+    return `<div class="template-tokens wide"><span>${sorted.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${sorted.map(v => `<button type="button" data-insert-token="${esc(v.label)}" data-insert-target="${esc(target)}">＋ ${esc(v.label)}</button>`).join("")}</div>`;
+  }
   function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); }); return result; }
   function storedTemplate(text, q, variables) {
     let result = String(text || "");

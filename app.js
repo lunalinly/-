@@ -152,17 +152,17 @@
   }
 
   function variablesFor(flow) {
-    return data.variables.filter(v => v.q === state.question.id && (v.branch === flow.branch || v.branch === "ALL"));
+    return data.variables.filter(v => v.q === state.question.id && (v.branch === flow.branch || v.branch === "共用" || v.branch === "ALL"));
   }
 
   function templateFor(flow) {
     return data.templates.find(t => t.q === state.question.id && t.branch === flow.branch)
-      || data.templates.find(t => t.q === state.question.id && t.branch === "ALL")
+      || data.templates.find(t => t.q === state.question.id && (t.branch === "共用" || t.branch === "ALL"))
       || null;
   }
 
   function actionsFor(flow) {
-    return data.actions.filter(a => a.q === state.question.id && (a.branch === flow.branch || a.branch === "ALL"));
+    return data.actions.filter(a => a.q === state.question.id && (a.branch === flow.branch || a.branch === "共用" || a.branch === "ALL"));
   }
 
   function renderResult(flow, variables) {

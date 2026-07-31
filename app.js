@@ -344,7 +344,7 @@
 
   function sourceLinksFor(item) {
     if (Array.isArray(item?.sourceLinks) && item.sourceLinks.length) return item.sourceLinks.filter(link => link?.url);
-    return item?.sourceUrl ? [{ title: "開啟來源", url: item.sourceUrl }] : [];
+    return (item?.sourceUrl || item?.url) ? [{ title: "開啟來源", url: item.sourceUrl || item.url }] : [];
   }
 
   function renderInputPanel(panel, flow, variables) {
@@ -368,17 +368,22 @@
       const box = document.createElement("details"); box.className = "action-box"; box.open = true;
       const summary = document.createElement("summary"); summary.textContent = "操作提示";
       const list = document.createElement("ul");
+      const shownSourceUrls = new Set();
       actions.forEach(item => {
         const li = document.createElement("li");
         li.append(document.createTextNode(`${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`));
-        if (item.url && /^https?:\/\//i.test(item.url)) {
+        if (item.sourceNote) li.append(document.createTextNode(`\n值從哪裡找：${item.sourceNote}`));
+        sourceLinksFor(item).forEach(sourceLink => {
+          if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
+          const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
+          if (shownSourceUrls.has(normalizedUrl)) return;
+          shownSourceUrls.add(normalizedUrl);
           const link = document.createElement("a");
-          link.href = item.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟連結 ↗";
+          link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
           li.append(document.createTextNode(" "), link);
-        }
+        });
         list.append(li);
       });
-      const shownSourceUrls = new Set();
       sources.forEach(source => {
         const li = document.createElement("li");
         const name = document.createElement("b"); name.textContent = `{${source.label}}`;

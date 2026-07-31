@@ -411,3 +411,20 @@ footer a:hover { color: var(--accent-dark); }
 }
 
 .action-box li { white-space: pre-wrap; }
+
+.editor-collapse-button {
+  flex: 0 0 auto;
+  border: 1px solid #d8dee3;
+  background: #fff;
+  color: #49545b;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.editor-block-collapsed > :not(.editor-section-title):not(.subrecord-head):not(.step-card-head) {
+  display: none !important;
+}
+.editor-block-collapsed {
+  padding-bottom: 12px !important;
+}

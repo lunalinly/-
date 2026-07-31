@@ -203,35 +203,48 @@
     return value === "共用" || value.toLowerCase() === "all";
   }
 
-  function answerBranchesFor(flow) {
-    const names = Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch];
-    return [...new Set(names)];
+  function answerPartsFor(flow) {
+    const parts = Array.isArray(flow.answerParts) && flow.answerParts.length
+      ? flow.answerParts
+      : (Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch]).map(branch => ({ question: flow.question, branch }));
+    return [...new Map(parts.map(part => [`${part.question}|${part.branch}`, part])).values()];
   }
+
+  function questionIdForName(name) { return data.questions.find(question => question.name === name)?.id || ""; }
 
   function variablesFor(flow) {
-    const branches = new Set(answerBranchesFor(flow));
+    const parts = answerPartsFor(flow);
     const questionText = String(state.question.answerText || "");
-    const matching = data.variables.filter(v => v.q === state.question.id && (branches.has(v.branch) || isSharedBranch(v.branch) || questionText.includes(`{{${v.code}}}`)));
-    return [...new Map(matching.map(v => [v.code, v])).values()];
+    const matching = data.variables.filter(variable => {
+      const belongsToPart = parts.some(part => variable.q === questionIdForName(part.question) && (variable.branch === part.branch || isSharedBranch(variable.branch)));
+      return belongsToPart || (variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`));
+    });
+    return [...new Map(matching.map(variable => [variable.code, variable])).values()];
   }
 
-  function templateForBranch(branch) {
-    const findTemplate = list => (list || []).find(t =>
-      t.q === state.question.id && String(t.text || "").trim() &&
-      (t.branch === branch || (isSharedBranch(branch) && isSharedBranch(t.branch)))
+  function templateForPart(part) {
+    const q = questionIdForName(part.question);
+    const findTemplate = list => (list || []).find(template =>
+      template.q === q && String(template.text || "").trim() &&
+      (template.branch === part.branch || (isSharedBranch(part.branch) && isSharedBranch(template.branch)))
     ) || null;
     return findTemplate(data.templates) || findTemplate(window.SOP_PUBLISHED_DATA?.templates);
   }
 
   function templatesFor(flow) {
-    const names = answerBranchesFor(flow);
-    const entries = names.map(branch => ({ branch, template: templateForBranch(branch) }));
-    return { templates: entries.filter(item => item.template), missing: entries.filter(item => !item.template).map(item => item.branch) };
+    const parts = answerPartsFor(flow);
+    const entries = parts.map(part => ({ part, template: templateForPart(part) }));
+    return {
+      templates: entries.filter(item => item.template),
+      missing: entries.filter(item => !item.template).map(item => `${item.part.question} · ${item.part.branch}`)
+    };
   }
 
   function actionsFor(flow) {
-    const branches = new Set(answerBranchesFor(flow));
-    return data.actions.filter(a => a.q === state.question.id && (branches.has(a.branch) || isSharedBranch(a.branch)));
+    const parts = answerPartsFor(flow);
+    return data.actions.filter(action => parts.some(part =>
+      action.q === questionIdForName(part.question) && (action.branch === part.branch || isSharedBranch(action.branch))
+    ));
   }
 
   function renderResult(flow, variables) {

@@ -524,7 +524,9 @@
     const flow = current();
     const form = $("#studioForm");
     if (!preview || !flow || !form) return;
-    const parts = [...form.querySelectorAll('[name^="answer_part_"]')].map(select => {
+    const parts = [...form.querySelectorAll('[name^="answer_part_"]')]
+      .sort((a, b) => Number(a.name.match(/(\d+)$/)?.[1] || 0) - Number(b.name.match(/(\d+)$/)?.[1] || 0))
+      .map(select => {
       try {
         const part = JSON.parse(select.value);
         const index = select.name.match(/(\d+)$/)?.[1];

@@ -289,7 +289,7 @@
     const chips = vars.length ? `<div class="template-tokens wide"><span>點一下插入欄位：</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}">＋ ${esc(v.label)}</button>`).join("")}</div>` : `<div class="template-tokens wide"><span>這個分支目前沒有變數欄位，可先到「變數欄位」新增。</span></div>`;
     return field("所屬題目", "q", r.q, { type: "select", choices: questionOptions(false, r.q), required: true }) +
       branchField(r.branch) + chips +
-      field("最終答案範本", "text", friendlyTemplate(r.text, r.q), { wide: true, type: "textarea", rows: 16, required: true, placeholder: "您好，訂單【訂單編號】…", hint: "直接使用中文欄位標記，不需要記變數代碼。" });
+      field("最終答案範本", "text", friendlyTemplate(r.text, r.q), { wide: true, type: "textarea", rows: 16, required: true, placeholder: "您好，訂單【訂單編號】…", hint: "直接使用中文欄位標記，不用記任何系統代碼。" });
   }
 
   function actionForm(r) {

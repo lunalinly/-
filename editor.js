@@ -27,6 +27,15 @@
     const catalog = new Map(data.fields.map(item => [item.code, fieldCopy(item)]));
     data.variables.forEach(item => { if (!catalog.has(item.code)) catalog.set(item.code, fieldCopy(item)); });
     data.fields = [...catalog.values()].map(item => ({ ...item, category: item.category || "未分類", fillRules: Array.isArray(item.fillRules) ? item.fillRules : [] }));
+    data.fields.forEach(fieldItem => {
+      if (String(fieldItem.label || "").trim() !== "新欄位") return;
+      const namedUse = data.variables.find(variable =>
+        variable.code === fieldItem.code &&
+        String(variable.label || "").trim() &&
+        String(variable.label || "").trim() !== "新欄位"
+      );
+      if (namedUse) fieldItem.label = String(namedUse.label).trim();
+    });
     const isSharedBranch = value => {
       const branch = String(value || "").trim();
       return branch === "共用" || branch.toLowerCase() === "all";
@@ -567,6 +576,18 @@
     }
     data.variables = data.variables.filter(v => !(v.q === captured.q && v.branch === captured.branch)); data.actions = data.actions.filter(v => !(v.q === captured.q && v.branch === captured.branch)); data.templates = data.templates.filter(v => !(v.q === captured.q && v.branch === captured.branch));
     data.variables.push(...captured.variables); data.actions.push(...captured.actions);
+    captured.variables.forEach(variable => {
+      const catalogItem = data.fields.find(fieldItem => fieldItem.code === variable.code);
+      if (!catalogItem) return;
+      const category = catalogItem.category || "未分類";
+      const fillRules = clone(catalogItem.fillRules || []);
+      Object.assign(catalogItem, clone(variable), { category, fillRules });
+      delete catalogItem.q; delete catalogItem.branch;
+      data.variables.filter(item => item.code === variable.code).forEach(item => {
+        const q = item.q, branch = item.branch;
+        Object.assign(item, clone(catalogItem), { q, branch });
+      });
+    });
     if (captured.templateText) data.templates.push({ q: captured.q, branch: captured.branch, text: storedTemplate(captured.templateText, captured.q, captured.variables) });
     markDirty(); renderStudio(); if (show) setStatus("整個分支已保存於瀏覽器"); return true;
   }

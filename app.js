@@ -43,7 +43,7 @@
       button.type = "button";
       button.className = "question-card";
       button.setAttribute("aria-label", `選擇 ${q.name}`);
-      const number = document.createElement("span"); number.className = "number"; number.textContent = q.id;
+      const number = document.createElement("span"); number.className = "number"; number.textContent = "題目";
       const title = document.createElement("strong"); title.textContent = q.name;
       const desc = document.createElement("p"); desc.textContent = q.description;
       const arrow = document.createElement("span"); arrow.className = "arrow"; arrow.textContent = "↗"; arrow.setAttribute("aria-hidden", "true");
@@ -62,7 +62,7 @@
     els.hero.hidden = true;
     els.questionSection.hidden = true;
     els.workspace.hidden = false;
-    els.qId.textContent = question.id;
+    els.qId.textContent = "操作流程";
     els.qName.textContent = question.name;
     els.qDesc.textContent = question.description;
     renderWorkflow();
@@ -247,11 +247,14 @@
     return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
   }
 
-  function calculateAuto(rule) {
-    const pickup = parseLocalDate(state.values.pickup_date || "");
-    if (!pickup) return "";
-    const days = rule === "pickup+15" ? 15 : 1;
-    const result = new Date(pickup); result.setDate(result.getDate() + days);
+  function calculateAuto(variable) {
+    const sourceCode = variable.autoSource || "pickup_date";
+    const sourceDate = parseLocalDate(state.values[sourceCode] || "");
+    if (!sourceDate) return "";
+    const legacyDays = variable.auto === "pickup+15" ? 15 : 1;
+    const days = Number(variable.autoDays ?? legacyDays);
+    const result = new Date(sourceDate);
+    result.setDate(result.getDate() + (Number.isFinite(days) ? days : 0));
     return formatDate(result);
   }
 

@@ -141,11 +141,27 @@ window.SOP_DATA = {
           "option": "商品頁沒有找到"
         }
       ],
-      "routes": [],
+      "routes": [
+        {
+          "sourceCode": "V003",
+          "value": "蝦皮直營 _ 生活超市 - 最快當日到",
+          "targetBranch": "商品頁有找到"
+        }
+      ],
       "answerBranches": [
         "商品頁沒有找到"
       ],
-      "next": "那在歷史發問查詢有找到嗎?"
+      "next": "要去「歷史發問查詢」表查詢"
+    },
+    {
+      "question": "詢問商品資訊",
+      "branch": "歷史發問查詢沒有找到",
+      "steps": [],
+      "routes": [],
+      "answerBranches": [
+        "歷史發問查詢沒有找到"
+      ],
+      "next": "這個商城是要上KAM表還是廠直表"
     }
   ],
   "variables": [
@@ -303,6 +319,20 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁沒有找到",
+      "code": "V003",
+      "label": "商城名字",
+      "hint": "產品頁查出商城名稱",
+      "sourceNote": "產品頁往下滑，電腦版的商店名稱在加入購物車下面，手機板在評論與精選影片下面",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
     }
   ],
   "templates": [
@@ -344,7 +374,7 @@ window.SOP_DATA = {
     {
       "q": "Q004",
       "branch": "商品頁沒有找到",
-      "text": "Product ID是：{{product_id}}"
+      "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}"
     }
   ],
   "actions": [
@@ -370,7 +400,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T04:52:32.905Z",
+  "updatedAt": "2026-07-31T05:08:37.208Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -518,6 +548,14 @@ window.SOP_DATA = {
       "multiline": false,
       "common": false,
       "category": "常用"
+    },
+    {
+      "code": "V003",
+      "label": "新欄位",
+      "category": "未分類",
+      "hint": "",
+      "type": "text",
+      "required": true
     }
   ]
 };

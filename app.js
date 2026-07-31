@@ -100,14 +100,29 @@
     return flowsMatchingPrefix(questionFlows(), state.choices).find(flow => flow.steps.length === state.choices.length) || null;
   }
 
+  function splitRouteValues(value) {
+    return String(value ?? "").split(/\r?\n|,|、|;/).map(item => item.trim()).filter(Boolean);
+  }
+
   function applyVariableRoute(flow) {
-    const route = (flow.routes || []).find(item => String(state.values[item.sourceCode] ?? "").trim() === String(item.value ?? "").trim());
+    const route = (flow.routes || []).find(item => {
+      const actual = splitRouteValues(state.values[item.sourceCode]);
+      const expected = (Array.isArray(item.values) ? item.values : [item.value]).map(value => String(value ?? "").trim()).filter(Boolean);
+      return expected.some(value => actual.includes(value));
+    });
     if (!route || !route.targetBranch || route.targetBranch === flow.branch) return false;
+    (route.assignments || []).forEach(assignment => {
+      if (!assignment.targetCode) return;
+      state.values[assignment.targetCode] = String(assignment.value ?? "");
+      const variable = data.variables.find(item => item.q === state.question.id && item.code === assignment.targetCode);
+      if (variable?.common) saveCommonValue(assignment.targetCode, state.values[assignment.targetCode]);
+    });
     const target = questionFlows().find(item => item.branch === route.targetBranch);
     if (!target) return false;
     state.routedBranch = target.branch;
     renderWorkflow();
-    showToast(`已依欄位內容轉到：${target.branch}`);
+    const filled = (route.assignments || []).filter(item => item.targetCode).length;
+    showToast(`已轉到：${target.branch}${filled ? `，並自動填入 ${filled} 個變數` : ""}`);
     return true;
   }
 

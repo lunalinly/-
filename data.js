@@ -1802,7 +1802,7 @@ window.SOP_DATA = {
     {
       "q": "GLOBAL",
       "branch": "KAM表",
-      "text": "進入KAM表後\nproduct id 填入：{{product_id}}\n商品品項 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題 填入：{{V009}}\n問題分類 填入：{{V012}}\nR/R 分類 填入：{{V013}}"
+      "text": "進入KAM表的{{V011}}分頁後\nproduct id 填入：{{product_id}}\n商品品項 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題 填入：{{V009}}\n問題分類 填入：{{V012}}\nR/R 分類 填入：{{V013}}\n已申退 填入：{{V014}}\n擴大安心退 填入：{{V015}}\nOrder SN / User 填入：因為{{V017}}\n個案擁有者 填入：{{V019}}\n詢問時間 填入：{{V020}}\n工單號 填入：{{work_order}}\n備註 填入：{{V021}}\n結 填入：{{V022}}"
     }
   ],
   "actions": [
@@ -1851,7 +1851,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-07-31T11:17:14.613Z",
+  "updatedAt": "2026-07-31T11:23:45.579Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

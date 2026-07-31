@@ -145,7 +145,11 @@ window.SOP_DATA = {
         {
           "sourceCode": "V003",
           "value": "蝦皮直營 _ 生活超市 - 最快當日到",
-          "targetBranch": "商品頁有找到"
+          "targetBranch": "商品頁有找到",
+          "values": [
+            "蝦皮直營 _ 生活超市 - 最快當日到"
+          ],
+          "assignments": []
         }
       ],
       "answerBranches": [
@@ -156,12 +160,42 @@ window.SOP_DATA = {
     {
       "question": "詢問商品資訊",
       "branch": "歷史發問查詢沒有找到",
-      "steps": [],
+      "steps": [
+        {
+          "prompt": "商品頁有沒有找到客人要的資訊？",
+          "option": "商品頁沒有找到"
+        },
+        {
+          "prompt": "那在歷史發問查詢有找到嗎?",
+          "option": "歷史發問查詢沒有找到"
+        }
+      ],
       "routes": [],
       "answerBranches": [
+        "商品頁沒有找到",
         "歷史發問查詢沒有找到"
       ],
       "next": "這個商城是要上KAM表還是廠直表"
+    },
+    {
+      "question": "詢問商品資訊",
+      "branch": "歷史發問查詢有找到",
+      "steps": [
+        {
+          "prompt": "商品頁有沒有找到客人要的資訊？",
+          "option": "商品頁沒有找到"
+        },
+        {
+          "prompt": "那在歷史發問查詢有找到嗎?",
+          "option": "歷史發問查詢有找到"
+        }
+      ],
+      "routes": [],
+      "answerBranches": [
+        "商品頁沒有找到",
+        "歷史發問查詢有找到"
+      ],
+      "next": "整理完回覆給客人"
     }
   ],
   "variables": [
@@ -333,6 +367,20 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "歷史發問查詢有找到",
+      "code": "V004",
+      "label": "KAM回覆_歷史發問",
+      "hint": "",
+      "sourceNote": "歷史發問查詢的試算表的KAM回覆裡會有",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false
     }
   ],
   "templates": [
@@ -375,6 +423,11 @@ window.SOP_DATA = {
       "q": "Q004",
       "branch": "商品頁沒有找到",
       "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}"
+    },
+    {
+      "q": "Q004",
+      "branch": "歷史發問查詢有找到",
+      "text": "查詢到曾經廠商有回覆過：{{V004}}\n整理完回覆給客人"
     }
   ],
   "actions": [
@@ -400,7 +453,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T05:08:37.208Z",
+  "updatedAt": "2026-07-31T05:31:46.902Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -411,7 +464,8 @@ window.SOP_DATA = {
       "category": "發票相關",
       "autoDays": 0,
       "multiline": false,
-      "common": false
+      "common": false,
+      "fillRules": []
     },
     {
       "code": "customer_need",
@@ -422,7 +476,8 @@ window.SOP_DATA = {
       "category": "商品詢問",
       "type": "text",
       "autoDays": 0,
-      "multiline": false
+      "multiline": false,
+      "fillRules": []
     },
     {
       "code": "product_page_area",
@@ -433,7 +488,8 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "multiline": false,
-      "common": false
+      "common": false,
+      "fillRules": []
     },
     {
       "code": "found_keyword",
@@ -444,7 +500,8 @@ window.SOP_DATA = {
       "category": "商品詢問",
       "type": "text",
       "autoDays": 0,
-      "common": false
+      "common": false,
+      "fillRules": []
     },
     {
       "code": "order_id",
@@ -455,7 +512,8 @@ window.SOP_DATA = {
       "category": "常用",
       "type": "text",
       "autoDays": 0,
-      "multiline": false
+      "multiline": false,
+      "fillRules": []
     },
     {
       "code": "product_id",
@@ -468,7 +526,8 @@ window.SOP_DATA = {
       "autoDays": 0,
       "multiline": false,
       "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
-      "sourceUrl": ""
+      "sourceUrl": "",
+      "fillRules": []
     },
     {
       "code": "shipping_status",
@@ -479,7 +538,8 @@ window.SOP_DATA = {
       "category": "常用",
       "type": "text",
       "autoDays": 0,
-      "common": false
+      "common": false,
+      "fillRules": []
     },
     {
       "code": "work_order",
@@ -490,7 +550,8 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "multiline": false,
-      "common": false
+      "common": false,
+      "fillRules": []
     },
     {
       "code": "pickup_date",
@@ -501,7 +562,8 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用"
+      "category": "常用",
+      "fillRules": []
     },
     {
       "code": "return_start",
@@ -513,7 +575,8 @@ window.SOP_DATA = {
       "required": false,
       "multiline": false,
       "common": false,
-      "category": "鑑賞期"
+      "category": "鑑賞期",
+      "fillRules": []
     },
     {
       "code": "return_deadline",
@@ -525,7 +588,8 @@ window.SOP_DATA = {
       "required": false,
       "multiline": false,
       "common": false,
-      "category": "鑑賞期"
+      "category": "鑑賞期",
+      "fillRules": []
     },
     {
       "code": "V001",
@@ -536,7 +600,8 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用"
+      "category": "常用",
+      "fillRules": []
     },
     {
       "code": "V002",
@@ -547,7 +612,8 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用"
+      "category": "常用",
+      "fillRules": []
     },
     {
       "code": "V003",
@@ -555,7 +621,42 @@ window.SOP_DATA = {
       "category": "未分類",
       "hint": "",
       "type": "text",
-      "required": true
+      "required": true,
+      "fillRules": []
+    },
+    {
+      "code": "V004",
+      "label": "新欄位",
+      "category": "未分類",
+      "hint": "",
+      "type": "text",
+      "required": true,
+      "fillRules": []
+    }
+  ],
+  "decisions": [
+    {
+      "prompt": "客人是哪一種發票需求？",
+      "options": [
+        "查詢發票",
+        "補打統編",
+        "統編／抬頭打錯",
+        "補發電子發票通知信"
+      ]
+    },
+    {
+      "prompt": "商品頁有沒有找到客人要的資訊？",
+      "options": [
+        "商品頁有找到",
+        "商品頁沒有找到"
+      ]
+    },
+    {
+      "prompt": "那在歷史發問查詢有找到嗎?",
+      "options": [
+        "歷史發問查詢沒有找到",
+        "歷史發問查詢有找到"
+      ]
     }
   ]
 };

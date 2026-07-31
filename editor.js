@@ -36,6 +36,11 @@
     const branchMap = new Map();
     data.flows.forEach(flow => {
       flow.steps ||= []; flow.routes ||= [];
+      flow.routes = flow.routes.map(route => ({
+        ...route,
+        values: Array.isArray(route.values) && route.values.length ? route.values : [String(route.value || "")],
+        assignments: Array.isArray(route.assignments) ? route.assignments : []
+      }));
       const old = flow.branch;
       const friendly = isSharedBranch(old) ? "共用" : (flow.steps.at(-1)?.option || old || "共用");
       branchMap.set(`${qidByName.get(flow.question)}|${old}`, friendly);
@@ -281,8 +286,19 @@
     return `<div class="subrecord-card answer-part-card"><div class="subrecord-head"><b>答案區塊 ${i + 1}</b><div><button type="button" data-move-answer-up="${i}" ${i === 0 ? "disabled" : ""}>上移</button><button type="button" data-move-answer-down="${i}" ${i === (flow.answerBranches || []).length - 1 ? "disabled" : ""}>下移</button><button type="button" data-remove-answer-part="${i}">移除</button></div></div>${field("使用哪個分支的獨立答案", `answer_branch_${i}`, branch, { type: "select", choices: answerBranchChoices(flow, branch), required: true, wide: true })}</div>`;
   }
 
+  function assignmentVariableChoices(q, value) {
+    const unique = [...new Map(data.variables.filter(v => v.q === q).map(v => [v.code, v])).values()];
+    return `<option value="">選擇要自動填入的變數…</option>` + unique.map(v => `<option value="${esc(v.code)}" ${v.code === value ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+  }
+
+  function routeAssignmentCard(assignment, routeIndex, assignmentIndex, q) {
+    return `<div class="subrecord-card route-assignment-card"><div class="subrecord-head"><b>自動填入 ${assignmentIndex + 1}</b><button type="button" data-remove-route-assignment="${routeIndex}" data-assignment-index="${assignmentIndex}">移除</button></div><div class="editor-grid">${field("要填入哪個變數", `route_assign_code_${routeIndex}_${assignmentIndex}`, assignment.targetCode || "", { type: "select", choices: assignmentVariableChoices(q, assignment.targetCode || ""), required: true })}${field("自動填入的內容", `route_assign_value_${routeIndex}_${assignmentIndex}`, assignment.value || "", { type: "textarea", rows: 3, required: true, placeholder: "可輸入一個或多個值" })}</div></div>`;
+  }
+
   function routeCard(route, i, flow, q, vars) {
-    return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("等於這個值", `route_value_${i}`, route.value || "", { required: true, placeholder: "例如：A" })}${field("跳到哪個分支", `route_target_${i}`, route.targetBranch || "", { type: "select", choices: routeTargetChoices(flow, route.targetBranch || ""), required: true, wide: true })}</div></div>`;
+    const values = Array.isArray(route.values) ? route.values.join("\n") : String(route.value || "");
+    const assignments = (route.assignments || []).map((assignment, j) => routeAssignmentCard(assignment, i, j, q)).join("") || `<div class="no-steps">這條規則目前不會自動填入其他變數。</div>`;
+    return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("符合以下任一值", `route_values_${i}`, values, { type: "textarea", rows: 3, required: true, placeholder: "每行輸入一個值" })}${field("跳到哪個分支", `route_target_${i}`, route.targetBranch || "", { type: "select", choices: routeTargetChoices(flow, route.targetBranch || ""), required: true, wide: true })}</div><div class="route-assignment-head"><b>自動填入變數（選填，可新增多個）</b><button type="button" data-add-route-assignment="${i}">＋ 新增自動填入</button></div><div class="route-assignment-list">${assignments}</div></div>`;
   }
 
   function branchForm(flow) {
@@ -344,6 +360,8 @@
     const removeAnswer = event.target.closest("[data-remove-answer-part]"); if (removeAnswer) { removeAnswerPart(Number(removeAnswer.dataset.removeAnswerPart)); return; }
     const moveAnswerUp = event.target.closest("[data-move-answer-up]"); if (moveAnswerUp) { moveAnswerPart(Number(moveAnswerUp.dataset.moveAnswerUp), -1); return; }
     const moveAnswerDown = event.target.closest("[data-move-answer-down]"); if (moveAnswerDown) { moveAnswerPart(Number(moveAnswerDown.dataset.moveAnswerDown), 1); return; }
+    const addAssignment = event.target.closest("[data-add-route-assignment]"); if (addAssignment) { addRouteAssignment(Number(addAssignment.dataset.addRouteAssignment)); return; }
+    const removeAssignment = event.target.closest("[data-remove-route-assignment]"); if (removeAssignment) { removeRouteAssignment(Number(removeAssignment.dataset.removeRouteAssignment), Number(removeAssignment.dataset.assignmentIndex)); return; }
     if (event.target.closest("[data-add-route]")) { addRoute(); return; }
     const removeRoute = event.target.closest("[data-remove-route]"); if (removeRoute) { removeRouteAt(Number(removeRoute.dataset.removeRoute)); return; }
     if (event.target.closest("[data-use-existing-variable]")) { useExistingVariable(); return; }
@@ -433,7 +451,15 @@
     const form = $("#studioForm"); if (!form.reportValidity()) return null; const fd = new FormData(form);
     const question = String(fd.get("question") || "").trim(); const branch = String(fd.get("branch") || "共用").trim() || "共用"; const q = qidForName(question);
     const steps = (flow.steps || []).map((_, i) => ({ prompt: String(fd.get(`step_prompt_${i}`) || "").trim(), option: String(fd.get(`step_option_${i}`) || "").trim() }));
-    const routes = (flow.routes || []).map((_, i) => ({ sourceCode: String(fd.get(`route_source_${i}`) || ""), value: String(fd.get(`route_value_${i}`) || "").trim(), targetBranch: String(fd.get(`route_target_${i}`) || "") }));
+    const routes = (flow.routes || []).map((route, i) => ({
+      sourceCode: String(fd.get(`route_source_${i}`) || ""),
+      values: String(fd.get(`route_values_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
+      targetBranch: String(fd.get(`route_target_${i}`) || ""),
+      assignments: (route.assignments || []).map((_, j) => ({
+        targetCode: String(fd.get(`route_assign_code_${i}_${j}`) || ""),
+        value: String(fd.get(`route_assign_value_${i}_${j}`) || "").trim()
+      }))
+    }));
     const answerBranches = (flow.answerBranches || [flow.branch]).map((_, i) => String(fd.get(`answer_branch_${i}`) || "")).filter(Boolean);
     const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), sourceNote: String(fd.get(`var_source_note_${i}`) || "").trim(), sourceUrl: String(fd.get(`var_source_url_${i}`) || "").trim(), type: String(fd.get(`var_type_${i}`) || "text"), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), multiline: fd.has(`var_multiline_${i}`), common: fd.has(`var_common_${i}`) }));
     variables.forEach(v => { if (!v.autoSource) delete v.autoSource; });
@@ -501,7 +527,16 @@
     const target = data.flows.find(item => item.question === flow.question && item !== flow);
     if (!available.length) { alert("請先在這個分支加入要判斷的欄位。"); return; }
     if (!target) { alert("請先為這個題目建立另一個目標分支。"); return; }
-    flow.routes ||= []; flow.routes.push({ sourceCode: available[0].code, value: "", targetBranch: target.branch }); markDirty(); renderForm();
+    flow.routes ||= []; flow.routes.push({ sourceCode: available[0].code, values: [""], targetBranch: target.branch, assignments: [] }); markDirty(); renderForm();
+  }
+  function addRouteAssignment(routeIndex) {
+    if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
+    const candidates = [...new Map(data.variables.filter(v => v.q === q).map(v => [v.code, v])).values()];
+    if (!candidates.length) { alert("請先為這個題目建立可自動填入的變數。"); return; }
+    flow.routes[routeIndex].assignments ||= []; flow.routes[routeIndex].assignments.push({ targetCode: candidates[0].code, value: "" }); markDirty(); renderForm();
+  }
+  function removeRouteAssignment(routeIndex, assignmentIndex) {
+    if (!saveBranch(false)) return; current().routes[routeIndex]?.assignments?.splice(assignmentIndex, 1); markDirty(); renderForm();
   }
   function removeRouteAt(index) { if (!saveBranch(false)) return; current().routes.splice(index, 1); markDirty(); renderForm(); }
   function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "" }); markDirty(); renderForm(); }

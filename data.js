@@ -374,7 +374,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T04:34:16.031Z",
+  "updatedAt": "2026-07-31T04:35:33.783Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

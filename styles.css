@@ -304,3 +304,8 @@ footer a:hover { color: var(--accent-dark); }
   .studio-savebar span { display: none; }
   .studio-savebar button { width: 100%; }
 }
+
+.template-tokens { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; padding: 11px; border: 1px dashed #d7dde0; border-radius: 9px; background: #fafbfb; }
+.template-tokens > span { margin-right: 3px; color: #6f7a81; font-size: 11px; }
+.template-tokens button { padding: 5px 9px; border: 1px solid #efc1b2; border-radius: 99px; color: #b84421; background: #fff2ed; cursor: pointer; font-size: 11px; }
+.template-tokens button:hover { border-color: #e86138; background: #ffe5dc; }

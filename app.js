@@ -267,6 +267,9 @@
       const grid = document.createElement("div"); grid.className = "variable-grid";
       variables.forEach(variable => grid.append(makeField(variable, flow, variables)));
       panel.append(grid);
+      variables.forEach(variable => {
+        if (String(state.values[variable.code] ?? "").trim()) applyFieldFillRules(variable);
+      });
     }
 
     const actions = actionsFor(flow);

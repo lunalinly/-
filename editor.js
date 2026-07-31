@@ -26,7 +26,7 @@
     };
     const catalog = new Map(data.fields.map(item => [item.code, fieldCopy(item)]));
     data.variables.forEach(item => { if (!catalog.has(item.code)) catalog.set(item.code, fieldCopy(item)); });
-    data.fields = [...catalog.values()];
+    data.fields = [...catalog.values()].map(item => ({ ...item, category: item.category || "未分類" }));
     const isSharedBranch = value => {
       const branch = String(value || "").trim();
       return branch === "共用" || branch.toLowerCase() === "all";
@@ -161,7 +161,7 @@
   function metaFor(record) {
     if (state.mode === "questions") return `${data.flows.filter(f => f.question === record.name).length} 個分支　${record.keywords || "尚無關鍵字"}`;
     if (state.mode === "branches") return (record.steps || []).map(s => s.option).join(" → ") || "直接回答（無判斷）";
-    return `${data.variables.filter(v => v.code === record.code).length} 個分支使用　${record.type === "date" ? "日期" : "文字"}`;
+    return `${record.category || "未分類"}　${data.variables.filter(v => v.code === record.code).length} 個分支使用　${record.type === "date" ? "日期" : "文字"}`;
   }
   function renderList() {
     const list = $("#studioList"); list.replaceChildren();
@@ -197,7 +197,17 @@
     const used = new Set(exactVariables(q, branch).map(v => v.code));
     return data.fields
       .map(variable => ({ variable, used: used.has(variable.code) }))
-      .sort((a, b) => String(a.variable.label).localeCompare(String(b.variable.label), "zh-Hant"));
+      .sort((a, b) => String(a.variable.category || "未分類").localeCompare(String(b.variable.category || "未分類"), "zh-Hant") || String(a.variable.label).localeCompare(String(b.variable.label), "zh-Hant"));
+  }
+
+  function reusableVariableOptions(items) {
+    const groups = new Map();
+    items.forEach(item => {
+      const category = item.variable.category || "未分類";
+      if (!groups.has(category)) groups.set(category, []);
+      groups.get(category).push(item);
+    });
+    return [...groups].map(([category, group]) => `<optgroup label="${esc(category)}">${group.map(({ variable, used }) => `<option value="${esc(variable.code)}" ${used ? "disabled" : ""}>${esc(variable.label)}${used ? "（目前分支已使用）" : ""}</option>`).join("")}</optgroup>`).join("");
   }
 
   function renderForm() {
@@ -215,10 +225,11 @@
 
   function fieldForm(item) {
     const typeOptions = `<option value="text" ${item.type !== "date" ? "selected" : ""}>文字</option><option value="date" ${item.type === "date" ? "selected" : ""}>日期</option>`;
+    const categories = [...new Set(data.fields.map(v => v.category || "未分類"))].sort((a, b) => a.localeCompare(b, "zh-Hant")).map(value => `<option value="${esc(value)}"></option>`).join("");
     const sourceOptions = `<option value="">不自動計算</option>` + data.fields.filter(v => v.code !== item.code).map(v => `<option value="${esc(v.code)}" ${v.code === item.autoSource ? "selected" : ""}>${esc(v.label)}</option>`).join("");
     const used = data.variables.filter(v => v.code === item.code);
     const usage = used.length ? `<div class="linked-branches">${used.map(v => `<div class="linked-branch"><strong>${esc(qnameForId(v.q))} · ${esc(v.branch)}</strong><span>正在使用此欄位</span></div>`).join("")}</div>` : `<div class="no-steps">目前尚未被任何分支使用。</div>`;
-    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}${field("輸入提示", "field_hint", item.hint || "")}${field("輸入類型", "field_type", item.type || "text", { type: "select", choices: typeOptions })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("多行輸入", "field_multiline", item.multiline, { type: "checkbox", checkLabel: "大型文字欄" })}${field("常用參數", "field_common", item.common, { type: "checkbox", checkLabel: "沿用上次輸入" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
+    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}<label class="studio-field"><span>欄位分類 ＊</span><input name="field_category" list="fieldCategorySuggestions" value="${esc(item.category || "未分類")}" required placeholder="例如：訂單資料"><datalist id="fieldCategorySuggestions">${categories}</datalist><small>可選既有分類，或直接輸入新的中文分類。</small></label>${field("輸入提示", "field_hint", item.hint || "")}${field("輸入類型", "field_type", item.type || "text", { type: "select", choices: typeOptions })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("多行輸入", "field_multiline", item.multiline, { type: "checkbox", checkLabel: "大型文字欄" })}${field("常用參數", "field_common", item.common, { type: "checkbox", checkLabel: "沿用上次輸入" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
   }
 
   function branchForm(flow) {
@@ -228,7 +239,7 @@
     const reusable = reusableVariables(q, flow.branch);
     const canReuse = reusable.some(item => !item.used);
     const reuseControls = reusable.length
-      ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusable.map(({ variable, used }) => `<option value="${esc(variable.code)}" ${used ? "disabled" : ""}>${esc(variable.label)}${used ? "（目前分支已使用）" : ""}</option>`).join("")}</select><button type="button" data-use-existing-variable ${canReuse ? "" : "disabled"}>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
+      ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusableVariableOptions(reusable)}</select><button type="button" data-use-existing-variable ${canReuse ? "" : "disabled"}>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
       : `<div class="field-add-tools"><span>目前沒有既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
     const friendly = friendlyTemplate(template?.text || "", q);
@@ -274,7 +285,7 @@
   function nextId(prefix, ids) { const nums = ids.map(x => Number(String(x || "").replace(/\D/g, ""))).filter(Number.isFinite); return prefix + String(Math.max(0, ...nums) + 1).padStart(3, "0"); }
   function addCurrent() { state.mode === "questions" ? addQuestion() : state.mode === "branches" ? addBranch(data.questions[0]?.name || "") : addField(); }
   function addField() {
-    data.fields.push({ code: nextId("V", [...data.fields, ...data.variables].map(v => v.code)), label: "新欄位", hint: "", type: "text", required: true });
+    data.fields.push({ code: nextId("V", [...data.fields, ...data.variables].map(v => v.code)), label: "新欄位", category: "未分類", hint: "", type: "text", required: true });
     state.mode = "fields"; state.index = data.fields.length - 1; markDirty(); renderStudio();
   }
   function addQuestion() { data.questions.push({ id: nextId("Q", data.questions.map(q => q.id)), name: "新題目", keywords: "", description: "", enabled: true }); state.mode = "questions"; state.index = data.questions.length - 1; markDirty(); renderStudio(); }
@@ -332,7 +343,7 @@
     const label = String(fd.get("field_label") || "").trim();
     if (data.fields.some((fieldItem, index) => index !== state.index && fieldItem.label === label)) { alert("這個中文欄位名稱已經存在。"); return false; }
     Object.assign(item, {
-      label, hint: String(fd.get("field_hint") || "").trim(), type: String(fd.get("field_type") || "text"),
+      label, category: String(fd.get("field_category") || "未分類").trim() || "未分類", hint: String(fd.get("field_hint") || "").trim(), type: String(fd.get("field_type") || "text"),
       autoSource: String(fd.get("field_source") || "") || undefined, autoDays: Number(fd.get("field_days") || 0),
       required: fd.has("field_required"), multiline: fd.has("field_multiline"), common: fd.has("field_common")
     });
@@ -384,7 +395,7 @@
 
   function addVariable() {
     if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
-    const item = { code: nextId("V", [...data.fields, ...data.variables].map(v => v.code)), label: "新欄位", hint: "", type: "text", required: true };
+    const item = { code: nextId("V", [...data.fields, ...data.variables].map(v => v.code)), label: "新欄位", category: "未分類", hint: "", type: "text", required: true };
     data.fields.push(clone(item)); data.variables.push({ ...item, q, branch: flow.branch }); markDirty(); renderForm();
   }
   function removeVariable(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactVariables(q, flow.branch), target = list[index]; if (target) data.variables.splice(data.variables.indexOf(target), 1); markDirty(); renderForm(); }

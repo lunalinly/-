@@ -309,3 +309,45 @@ footer a:hover { color: var(--accent-dark); }
 .template-tokens > span { margin-right: 3px; color: #6f7a81; font-size: 11px; }
 .template-tokens button { padding: 5px 9px; border: 1px solid #efc1b2; border-radius: 99px; color: #b84421; background: #fff2ed; cursor: pointer; font-size: 11px; }
 .template-tokens button:hover { border-color: #e86138; background: #ffe5dc; }
+
+
+/* Unified question / branch editor */
+.studio-layout-v2 { grid-template-columns: 190px 330px minmax(0, 1fr); }
+.studio-form-v2 { display: block; padding: 18px; }
+.editor-section { margin-bottom: 16px; padding: 17px; border: 1px solid #dfe4e7; border-radius: 12px; background: #fff; }
+.editor-section:last-child { margin-bottom: 0; }
+.editor-section-title { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+.editor-section-title b, .editor-section-title small { display: block; }
+.editor-section-title b { color: #313b42; font-size: 14px; }
+.editor-section-title small { margin-top: 2px; color: #879198; font-size: 10px; }
+.editor-section-title > button {
+  flex: 0 0 auto; padding: 7px 10px; border: 1px solid #efb8a5; border-radius: 8px;
+  color: #bb4623; background: #fff2ed; cursor: pointer; font-size: 11px; font-weight: 700;
+}
+.editor-section-title > button:hover { border-color: #e86138; background: #ffe7de; }
+.editor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.linked-branches { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 9px; }
+.linked-branch {
+  display: block; padding: 12px; border: 1px solid #dfe4e7; border-radius: 10px;
+  background: #f8fafb; text-align: left; cursor: pointer;
+}
+.linked-branch:hover { border-color: #edaa93; background: #fff5f1; }
+.linked-branch strong, .linked-branch span { display: block; }
+.linked-branch strong { color: #374149; font-size: 12px; }
+.linked-branch span { margin-top: 3px; overflow: hidden; color: #879198; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.unlimited-steps, .branch-variable-list, .branch-action-list { display: grid; gap: 11px; }
+.subrecord-card { padding: 14px; border: 1px solid #dfe4e7; border-radius: 11px; background: #f8fafb; }
+.subrecord-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.subrecord-head b { color: #40505a; font-size: 12px; }
+.subrecord-head button { border: 0; color: #aa4747; background: transparent; cursor: pointer; font-size: 11px; }
+.studio-form-v2 .step-card { margin-bottom: 0; }
+@media (max-width: 1000px) {
+  .studio-layout-v2 { grid-template-columns: 76px 285px minmax(0, 1fr); }
+}
+@media (max-width: 680px) {
+  .studio-layout-v2 { grid-template-columns: 1fr; grid-template-rows: auto 210px minmax(0, 1fr); }
+  .editor-grid { grid-template-columns: 1fr; }
+  .editor-section { padding: 13px; }
+  .editor-section-title { align-items: flex-start; }
+  .linked-branches { grid-template-columns: 1fr; }
+}

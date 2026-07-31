@@ -131,6 +131,25 @@ window.SOP_DATA = {
       "answerBranches": [
         "商品頁有找到"
       ]
+    },
+    {
+      "question": "詢問商品資訊",
+      "branch": "商品頁沒找到",
+      "steps": [
+        {
+          "prompt": "有",
+          "option": "整理後回覆給客人"
+        },
+        {
+          "prompt": "沒有",
+          "option": "他是哪個商城的商品？"
+        }
+      ],
+      "routes": [],
+      "answerBranches": [
+        "商品頁沒找到"
+      ],
+      "next": "那在歷史發問查詢有找到嗎?"
     }
   ],
   "variables": [
@@ -274,6 +293,18 @@ window.SOP_DATA = {
       "required": true,
       "multiline": true,
       "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁沒找到",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
     }
   ],
   "templates": [
@@ -336,7 +367,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T03:53:45.975Z",
+  "updatedAt": "2026-07-31T04:16:04.807Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

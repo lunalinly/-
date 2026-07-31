@@ -595,9 +595,12 @@
   function addAnswerPart() {
     if (!saveBranch(false)) return; const flow = current();
     const parts = [...new Map(data.flows.filter(item => !isSharedBranch(item.branch) && (item.question === flow.question || item.question === "共用")).map(item => [`${item.question}|${item.branch}`, { question: item.question, branch: item.branch }])).values()];
-    flow.answerParts ||= [{ question: flow.question, branch: flow.branch }];
+    flow.answerParts ||= [];
+    if (!parts.length) { alert("目前沒有屬於這個問題或全域共用的分支可加入。"); return; }
     const used = new Set(flow.answerParts.map(part => `${part.question}|${part.branch}`));
-    flow.answerParts.push(parts.find(part => !used.has(`${part.question}|${part.branch}`)) || { question: flow.question, branch: flow.branch });
+    const next = parts.find(part => !used.has(`${part.question}|${part.branch}`));
+    if (!next) { alert("可用的答案分支都已加入。"); return; }
+    flow.answerParts.push(next);
     markDirty(); renderForm();
   }
   function removeAnswerPart(index) {

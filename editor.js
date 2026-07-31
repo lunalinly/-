@@ -35,6 +35,14 @@
         String(variable.label || "").trim() !== "新欄位"
       );
       if (namedUse) fieldItem.label = String(namedUse.label).trim();
+      fieldItem.fillRules = (fieldItem.fillRules || []).map(rule => ({
+        ...rule,
+        assignments: (rule.assignments || []).map(assignment => ({
+          ...assignment,
+          action: assignment.action === "reveal" ? "reveal" : "fill",
+          answerText: assignment.answerText || ""
+        }))
+      }));
     });
     const isSharedBranch = value => {
       const branch = String(value || "").trim();
@@ -310,17 +318,20 @@
   }
 
   function fieldRuleTargetChoices(sourceCode, value) {
-    return `<option value="">選擇要自動填入的變數…</option>` + data.fields.filter(fieldItem => fieldItem.code !== sourceCode).map(fieldItem => `<option value="${esc(fieldItem.code)}" ${fieldItem.code === value ? "selected" : ""}>${esc(fieldItem.label)}</option>`).join("");
+    return `<option value="">選擇目標欄位…</option>` + data.fields.filter(fieldItem => fieldItem.code !== sourceCode).map(fieldItem => `<option value="${esc(fieldItem.code)}" ${fieldItem.code === value ? "selected" : ""}>${esc(fieldItem.label)}</option>`).join("");
   }
 
   function fieldRuleAssignmentCard(assignment, ruleIndex, assignmentIndex, sourceCode) {
-    return `<div class="subrecord-card route-assignment-card"><div class="subrecord-head"><b>自動填入 ${assignmentIndex + 1}</b><button type="button" data-remove-field-assignment="${ruleIndex}" data-assignment-index="${assignmentIndex}">移除</button></div><div class="editor-grid">${field("要填入哪個變數", `field_rule_target_${ruleIndex}_${assignmentIndex}`, assignment.targetCode || "", { type: "select", choices: fieldRuleTargetChoices(sourceCode, assignment.targetCode || ""), required: true })}${field("自動填入的內容", `field_rule_value_${ruleIndex}_${assignmentIndex}`, assignment.value || "", { type: "textarea", rows: 3, required: true, placeholder: "可輸入一個或多個值" })}</div></div>`;
+    const action = assignment.action === "reveal" ? "reveal" : "fill";
+    const actionChoices = `<option value="fill" ${action === "fill" ? "selected" : ""}>自動填入欄位</option><option value="reveal" ${action === "reveal" ? "selected" : ""}>顯示欄位讓我確認</option>`;
+    const answerText = friendlyFieldTemplate(assignment.answerText || "");
+    return `<div class="subrecord-card route-assignment-card"><div class="subrecord-head"><b>符合後動作 ${assignmentIndex + 1}</b><button type="button" data-remove-field-assignment="${ruleIndex}" data-assignment-index="${assignmentIndex}">移除</button></div><div class="editor-grid">${field("符合後要做什麼", `field_rule_action_${ruleIndex}_${assignmentIndex}`, action, { type: "select", choices: actionChoices, required: true })}${field("目標欄位", `field_rule_target_${ruleIndex}_${assignmentIndex}`, assignment.targetCode || "", { type: "select", choices: fieldRuleTargetChoices(sourceCode, assignment.targetCode || ""), required: true })}${field("自動填入的內容", `field_rule_value_${ruleIndex}_${assignmentIndex}`, assignment.value || "", { type: "textarea", rows: 3, placeholder: "選擇「顯示欄位」時可留空" })}${field("符合時加入答案文字（選填）", `field_rule_answer_${ruleIndex}_${assignmentIndex}`, answerText, { type: "textarea", rows: 3, wide: true, placeholder: "例如：且{是不是廠商直送}廠商直送" })}</div></div>`;
   }
 
   function fieldFillRuleCard(rule, ruleIndex, item) {
     const values = (rule.values || []).join("\n");
-    const assignments = (rule.assignments || []).map((assignment, assignmentIndex) => fieldRuleAssignmentCard(assignment, ruleIndex, assignmentIndex, item.code)).join("") || `<div class="no-steps">尚未指定要自動填入的變數。</div>`;
-    return `<div class="subrecord-card"><div class="subrecord-head"><b>符合值規則 ${ruleIndex + 1}</b><button type="button" data-remove-field-rule="${ruleIndex}">移除</button></div>${field("符合以下任一值", `field_rule_values_${ruleIndex}`, values, { type: "textarea", rows: 3, required: true, wide: true, placeholder: "每行輸入一個值" })}<div class="route-assignment-head"><b>要自動填入的變數（可新增多個）</b><button type="button" data-add-field-assignment="${ruleIndex}">＋ 新增自動填入</button></div><div class="route-assignment-list">${assignments}</div></div>`;
+    const assignments = (rule.assignments || []).map((assignment, assignmentIndex) => fieldRuleAssignmentCard(assignment, ruleIndex, assignmentIndex, item.code)).join("") || `<div class="no-steps">尚未設定符合後要執行的動作。</div>`;
+    return `<div class="subrecord-card"><div class="subrecord-head"><b>符合值規則 ${ruleIndex + 1}</b><button type="button" data-remove-field-rule="${ruleIndex}">移除</button></div>${field("符合以下任一值", `field_rule_values_${ruleIndex}`, values, { type: "textarea", rows: 3, required: true, wide: true, placeholder: "每行輸入一個值" })}<div class="route-assignment-head"><b>符合後動作（可不設，也可新增多個）</b><button type="button" data-add-field-assignment="${ruleIndex}">＋ 新增動作</button></div><div class="route-assignment-list">${assignments}</div></div>`;
   }
 
   function fieldForm(item) {
@@ -331,7 +342,7 @@
     const fillRuleRows = item.fillRules.map((rule, index) => fieldFillRuleCard(rule, index, item)).join("") || `<div class="no-steps">目前沒有依欄位值自動填入其他變數。</div>`;
     const used = data.variables.filter(v => v.code === item.code);
     const usage = used.length ? `<div class="linked-branches">${used.map(v => `<div class="linked-branch"><strong>${esc(qnameForId(v.q))} · ${esc(v.branch)}</strong><span>正在使用此欄位</span></div>`).join("")}</div>` : `<div class="no-steps">目前尚未被任何分支使用。</div>`;
-    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}<label class="studio-field"><span>欄位分類 ＊</span><input name="field_category" list="fieldCategorySuggestions" value="${esc(item.category || "未分類")}" required placeholder="例如：訂單資料"><datalist id="fieldCategorySuggestions">${categories}</datalist><small>可選既有分類，或直接輸入新的中文分類。</small></label>${field("輸入提示", "field_hint", item.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", "field_source_note", item.sourceNote || "", { wide: true, placeholder: "例如：訂單後台 → 訂單詳情 → 物流資訊" })}${field("來源連結（選填）", "field_source_url", item.sourceUrl || "", { wide: true, type: "url", placeholder: "https://…" })}${field("輸入類型", "field_type", item.type || "text", { type: "select", choices: typeOptions })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("多行輸入", "field_multiline", item.multiline, { type: "checkbox", checkLabel: "大型文字欄" })}${field("自動帶入", "field_common", item.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>符合值後自動填入</b><small>當此變數符合任一指定值時，可自動填入多個其他變數。</small></div><button type="button" data-add-field-rule>＋ 新增符合值規則</button></div><div class="branch-route-list">${fillRuleRows}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
+    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}<label class="studio-field"><span>欄位分類 ＊</span><input name="field_category" list="fieldCategorySuggestions" value="${esc(item.category || "未分類")}" required placeholder="例如：訂單資料"><datalist id="fieldCategorySuggestions">${categories}</datalist><small>可選既有分類，或直接輸入新的中文分類。</small></label>${field("輸入提示", "field_hint", item.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", "field_source_note", item.sourceNote || "", { wide: true, placeholder: "例如：訂單後台 → 訂單詳情 → 物流資訊" })}${field("來源連結（選填）", "field_source_url", item.sourceUrl || "", { wide: true, type: "url", placeholder: "https://…" })}${field("輸入類型", "field_type", item.type || "text", { type: "select", choices: typeOptions })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("多行輸入", "field_multiline", item.multiline, { type: "checkbox", checkLabel: "大型文字欄" })}${field("自動帶入", "field_common", item.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>符合值後的動作</b><small>完全選填；每個規則可顯示確認欄位、自動填入多個欄位，並加入答案文字。</small></div><button type="button" data-add-field-rule>＋ 新增符合值規則</button></div><div class="branch-route-list">${fillRuleRows}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
   }
 
   function routeVariableChoices(q, vars, value) {
@@ -416,6 +427,19 @@
   function storedTemplate(text, q, variables) {
     let result = String(text || "");
     variables.forEach(v => {
+      result = result.split(`{${v.label}}`).join(`{{${v.code}}}`);
+      result = result.split(`【${v.label}】`).join(`{{${v.code}}}`);
+    });
+    return result;
+  }
+  function friendlyFieldTemplate(text) {
+    let result = String(text || "");
+    data.fields.forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); });
+    return result;
+  }
+  function storedFieldTemplate(text) {
+    let result = String(text || "");
+    data.fields.forEach(v => {
       result = result.split(`{${v.label}}`).join(`{{${v.code}}}`);
       result = result.split(`【${v.label}】`).join(`{{${v.code}}}`);
     });
@@ -518,8 +542,10 @@
     const fillRules = (item.fillRules || []).map((rule, ruleIndex) => ({
       values: String(fd.get(`field_rule_values_${ruleIndex}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
       assignments: (rule.assignments || []).map((_, assignmentIndex) => ({
+        action: String(fd.get(`field_rule_action_${ruleIndex}_${assignmentIndex}`) || "fill") === "reveal" ? "reveal" : "fill",
         targetCode: String(fd.get(`field_rule_target_${ruleIndex}_${assignmentIndex}`) || ""),
-        value: String(fd.get(`field_rule_value_${ruleIndex}_${assignmentIndex}`) || "").trim()
+        value: String(fd.get(`field_rule_value_${ruleIndex}_${assignmentIndex}`) || "").trim(),
+        answerText: storedFieldTemplate(String(fd.get(`field_rule_answer_${ruleIndex}_${assignmentIndex}`) || "").trim())
       }))
     }));
     if (data.fields.some((fieldItem, index) => index !== state.index && fieldItem.label === label)) { alert("這個中文欄位名稱已經存在。"); return false; }
@@ -666,7 +692,7 @@
     if (!saveField(false)) return; const item = current();
     const target = data.fields.find(fieldItem => fieldItem.code !== item.code);
     if (!target) { alert("請先建立另一個可自動填入的變數。"); return; }
-    item.fillRules[ruleIndex].assignments ||= []; item.fillRules[ruleIndex].assignments.push({ targetCode: target.code, value: "" }); markDirty(); renderForm();
+    item.fillRules[ruleIndex].assignments ||= []; item.fillRules[ruleIndex].assignments.push({ action: "fill", targetCode: target.code, value: "", answerText: "" }); markDirty(); renderForm();
   }
   function removeFieldAssignment(ruleIndex, assignmentIndex) {
     if (!saveField(false)) return; current().fillRules[ruleIndex]?.assignments?.splice(assignmentIndex, 1); markDirty(); renderForm();

@@ -375,6 +375,11 @@ footer a:hover { color: var(--accent-dark); }
 .field-add-tools button:hover { border-color: #e86138; background: #ffe7de; }
 .field-add-tools span { margin-right: auto; color: #879198; font-size: 10px; }
 .unlimited-steps, .branch-variable-list, .branch-route-list, .branch-action-list { display: grid; gap: 11px; }
+.route-assignment-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 14px 0 9px; padding-top: 12px; border-top: 1px dashed #d7dee2; }
+.route-assignment-head b { color: #556169; font-size: 11px; }
+.route-assignment-head button { padding: 7px 9px; border: 1px solid #efb8a5; border-radius: 8px; color: #bb4623; background: #fff2ed; cursor: pointer; font-size: 10px; font-weight: 700; }
+.route-assignment-list { display: grid; gap: 9px; }
+.route-assignment-card { margin-left: 16px; border-style: dashed; background: #fff; }
 .subrecord-card { padding: 14px; border: 1px solid #dfe4e7; border-radius: 11px; background: #f8fafb; }
 .subrecord-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .subrecord-head b { color: #40505a; font-size: 12px; }

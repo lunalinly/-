@@ -95,7 +95,10 @@
 
   function resolvedFlow() {
     if (state.routedBranch) {
-      const routed = questionFlows().find(flow => flow.branch === state.routedBranch);
+      const target = typeof state.routedBranch === "string"
+        ? { question: state.question.name, branch: state.routedBranch }
+        : state.routedBranch;
+      const routed = data.flows.find(flow => flow.question === target.question && flow.branch === target.branch);
       if (routed) return routed;
       state.routedBranch = null;
     }
@@ -168,12 +171,14 @@
       const expected = (Array.isArray(item.values) ? item.values : [item.value]).map(value => String(value ?? "").trim()).filter(Boolean);
       return expected.some(value => actual.includes(value));
     });
-    if (!route || !route.targetBranch || route.targetBranch === flow.branch) return false;
-    const target = questionFlows().find(item => item.branch === route.targetBranch);
+    if (!route || !route.targetBranch) return false;
+    const targetQuestion = route.targetQuestion || flow.question;
+    if (targetQuestion === flow.question && route.targetBranch === flow.branch) return false;
+    const target = data.flows.find(item => item.question === targetQuestion && item.branch === route.targetBranch);
     if (!target) return false;
-    state.routedBranch = target.branch;
+    state.routedBranch = { question: target.question, branch: target.branch };
     renderWorkflow();
-    showToast(`已轉到：${target.branch}`);
+    showToast(`已轉到：${target.question === "共用" ? "共用 · " : ""}${target.branch}`);
     return true;
   }
 

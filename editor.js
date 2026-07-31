@@ -183,6 +183,12 @@
     return `<option value="" ${!value ? "selected" : ""}>不自動計算</option>` + unique.map(v => `<option value="${esc(v.code)}" ${v.code === value ? "selected" : ""}>${esc(v.label)}</option>`).join("");
   }
 
+  function reusableVariables(q, branch) {
+    const used = new Set(exactVariables(q, branch).map(v => v.code));
+    return [...new Map(data.variables.filter(v => !used.has(v.code)).map(v => [v.code, v])).values()]
+      .sort((a, b) => String(a.label).localeCompare(String(b.label), "zh-Hant"));
+  }
+
   function renderForm() {
     const form = $("#studioForm"); const record = current();
     $("#studioDuplicate").disabled = !record; $("#studioDelete").disabled = !record; $("#studioSave").disabled = !record;
@@ -200,11 +206,15 @@
     const q = qidForName(flow.question); const vars = exactVariables(q, flow.branch); const template = exactTemplate(q, flow.branch); const actions = exactActions(q, flow.branch);
     const steps = (flow.steps || []).map((step, i) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${i + 1}</b><button type="button" data-remove-step="${i}">移除</button></div>${field("判斷問題", `step_prompt_${i}`, step.prompt, { required: true, wide: true })}${field("這條路徑的選項", `step_option_${i}`, step.option, { required: true, wide: true })}</div>`).join("");
     const variableRows = vars.map((v, i) => variableCard(v, i, q, vars)).join("") || `<div class="no-steps">這個分支目前不需要填入欄位。</div>`;
+    const reusable = reusableVariables(q, flow.branch);
+    const reuseControls = reusable.length
+      ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusable.map(v => `<option value="${esc(v.code)}">${esc(v.label)}</option>`).join("")}</select><button type="button" data-use-existing-variable>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
+      : `<div class="field-add-tools"><span>目前沒有其他既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
     const friendly = friendlyTemplate(template?.text || "", q);
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>沒有層數上限；依實際操作順序一直增加即可。</small></div><button type="button" data-add-step>＋ 增加一層判斷</button></div><div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
-      <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>自動計算可指定任何日期欄位及增減天數。</small></div><button type="button" data-add-variable>＋ 新增欄位</button></div><div class="branch-variable-list">${variableRows}</div></section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>可沿用既有中文欄位，或建立全新欄位；自動計算設定也會一起沿用。</small></div></div>${reuseControls}<div class="branch-variable-list">${variableRows}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案範本</b><small>點中文欄位按鈕插入，不必接觸系統代碼。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單【訂單編號】…" })}</section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>操作提醒</b><small>查表、填表、工單、Jira 或其他動作。</small></div><button type="button" data-add-action>＋ 新增操作</button></div><div class="branch-action-list">${actionRows}</div></section>`;
   }
@@ -225,6 +235,7 @@
     const addFor = event.target.closest("[data-add-branch-for]"); if (addFor) { addBranch(addFor.dataset.addBranchFor); return; }
     if (event.target.closest("[data-add-step]")) { saveBranch(false); current().steps.push({ prompt: "", option: "" }); markDirty(); renderForm(); return; }
     const removeStep = event.target.closest("[data-remove-step]"); if (removeStep) { saveBranch(false); current().steps.splice(Number(removeStep.dataset.removeStep), 1); markDirty(); renderForm(); return; }
+    if (event.target.closest("[data-use-existing-variable]")) { useExistingVariable(); return; }
     if (event.target.closest("[data-add-variable]")) { addVariable(); return; }
     const removeVar = event.target.closest("[data-remove-variable]"); if (removeVar) { removeVariable(Number(removeVar.dataset.removeVariable)); return; }
     if (event.target.closest("[data-add-action]")) { addAction(); return; }
@@ -299,6 +310,19 @@
     data.variables.push(...captured.variables); data.actions.push(...captured.actions);
     if (captured.templateText) data.templates.push({ q: captured.q, branch: captured.branch, text: storedTemplate(captured.templateText, captured.q, captured.variables) });
     markDirty(); renderStudio(); if (show) setStatus("整個分支已保存於瀏覽器"); return true;
+  }
+
+  function useExistingVariable() {
+    const select = $("#studioForm [name=existing_variable_code]");
+    const code = select?.value || "";
+    if (!code) { alert("請先選擇一個既有欄位。"); select?.focus(); return; }
+    const source = data.variables.find(v => v.code === code);
+    if (!source) { alert("找不到這個既有欄位，請重新選擇。"); return; }
+    if (!saveBranch(false)) return;
+    const flow = current(), q = qidForName(flow.question);
+    if (exactVariables(q, flow.branch).some(v => v.code === code)) { alert("這個分支已經有此欄位。"); return; }
+    data.variables.push({ ...clone(source), q, branch: flow.branch });
+    markDirty(); renderForm(); setStatus(`已沿用欄位：${source.label}`, true);
   }
 
   function addVariable() {

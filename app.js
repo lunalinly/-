@@ -204,13 +204,13 @@
   }
 
   function answerPartsFor(flow) {
-    const parts = Array.isArray(flow.answerParts) && flow.answerParts.length
+    const parts = Array.isArray(flow.answerParts)
       ? flow.answerParts
       : (Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch]).map(branch => ({ question: flow.question, branch }));
     return [...new Map(parts.map(part => [`${part.question}|${part.branch}`, part])).values()];
   }
 
-  function questionIdForName(name) { return data.questions.find(question => question.name === name)?.id || ""; }
+  function questionIdForName(name) { return name === "共用" ? "GLOBAL" : (data.questions.find(question => question.name === name)?.id || ""); }
 
   function variablesFor(flow) {
     const parts = answerPartsFor(flow);

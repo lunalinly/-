@@ -175,23 +175,34 @@
     return value === "共用" || value.toLowerCase() === "all";
   }
 
+  function answerBranchesFor(flow) {
+    const names = Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch];
+    return [...new Set(names)];
+  }
+
   function variablesFor(flow) {
-    const matching = data.variables.filter(v => v.q === state.question.id && (v.branch === flow.branch || isSharedBranch(v.branch)));
+    const branches = new Set(answerBranchesFor(flow));
+    const matching = data.variables.filter(v => v.q === state.question.id && (branches.has(v.branch) || isSharedBranch(v.branch)));
     return [...new Map(matching.map(v => [v.code, v])).values()];
   }
 
-  function templateFor(flow) {
-    const findTemplate = list => {
-      const candidates = (list || []).filter(t => t.q === state.question.id && String(t.text || "").trim());
-      return candidates.find(t => t.branch === flow.branch)
-        || candidates.find(t => isSharedBranch(t.branch))
-        || null;
-    };
-    return findTemplate(data.templates) || findTemplate(window.SOP_PUBLISHED_DATA?.templates) || null;
+  function templateForBranch(branch) {
+    const findTemplate = list => (list || []).find(t =>
+      t.q === state.question.id && String(t.text || "").trim() &&
+      (t.branch === branch || (isSharedBranch(branch) && isSharedBranch(t.branch)))
+    ) || null;
+    return findTemplate(data.templates) || findTemplate(window.SOP_PUBLISHED_DATA?.templates);
+  }
+
+  function templatesFor(flow) {
+    const names = answerBranchesFor(flow);
+    const entries = names.map(branch => ({ branch, template: templateForBranch(branch) }));
+    return { templates: entries.filter(item => item.template), missing: entries.filter(item => !item.template).map(item => item.branch) };
   }
 
   function actionsFor(flow) {
-    return data.actions.filter(a => a.q === state.question.id && (a.branch === flow.branch || isSharedBranch(a.branch)));
+    const branches = new Set(answerBranchesFor(flow));
+    return data.actions.filter(a => a.q === state.question.id && (branches.has(a.branch) || isSharedBranch(a.branch)));
   }
 
   function renderResult(flow, variables) {
@@ -293,15 +304,16 @@
   }
 
   function buildOutput(flow, variables) {
-    const template = templateFor(flow);
-    if (!template) return { text: "這個分支尚未在試算表的「範本表」設定答案。\n\n可以先依照左側的「下一步」與「需要做的動作」操作，再到 GitHub 編輯 data.js 補上正式範本。", missing: true };
-    let text = template.text;
+    const built = templatesFor(flow);
+    if (!built.templates.length) return { text: "這個答案組合尚未設定任何分支文字。", missing: true };
+    let text = built.templates.map(item => item.template.text).join("\n\n");
     variables.forEach(variable => {
       const raw = state.values[variable.code] || "";
       const value = displayValue(variable, raw) || `{請填：${variable.label}}`;
       text = text.split(`{{${variable.code}}}`).join(value);
     });
-    return { text, missing: false };
+    if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;
+    return { text, missing: built.missing.length > 0 };
   }
 
   function renderOutputPanel(panel, flow, variables) {

@@ -133,7 +133,7 @@
     const isQuestion = state.mode === "questions";
     $("#studioListLabel").textContent = isQuestion ? "題目清單" : "分支清單";
     $("#studioAdd").textContent = isQuestion ? "＋ 新增題目" : "＋ 新增分支";
-    $("#studioEditorTitle").textContent = isQuestion ? "編輯題目" : "編輯分支";
+    $("#studioEditorTitle").textContent = isQuestion ? "編輯問題" : "編輯分支";
     $("#studioSave").textContent = isQuestion ? "儲存題目" : "儲存整個分支";
     renderList(); renderForm();
   }

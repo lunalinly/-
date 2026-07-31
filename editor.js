@@ -230,9 +230,19 @@
   }
   function renderList() {
     const list = $("#studioList"); list.replaceChildren();
-    const visible = currentList().map((record, index) => ({ record, index })).filter(x => !state.query || `${titleFor(x.record, x.index)} ${metaFor(x.record)}`.toLowerCase().includes(state.query));
+    let visible = currentList().map((record, index) => ({ record, index })).filter(x => !state.query || `${titleFor(x.record, x.index)} ${metaFor(x.record)}`.toLowerCase().includes(state.query));
+    if (state.mode === "fields") {
+      visible = visible.sort((a, b) => String(a.record.category || "未分類").localeCompare(String(b.record.category || "未分類"), "zh-Hant") || String(a.record.label || "").localeCompare(String(b.record.label || ""), "zh-Hant"));
+    }
     $("#studioListCount").textContent = `${visible.length} 筆`;
+    let lastCategory = null;
     visible.forEach(({ record, index }) => {
+      if (state.mode === "fields") {
+        const category = record.category || "未分類";
+        if (category !== lastCategory) {
+          const heading = document.createElement("div"); heading.className = "studio-list-category"; heading.textContent = category; list.append(heading); lastCategory = category;
+        }
+      }
       const button = document.createElement("button"); button.type = "button"; button.dataset.index = index; button.className = "studio-list-item" + (index === state.index ? " active" : "");
       const strong = document.createElement("strong"); strong.textContent = titleFor(record, index);
       const small = document.createElement("small"); small.textContent = metaFor(record);

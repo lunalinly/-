@@ -120,8 +120,13 @@ kbd { padding: 3px 8px; border: 1px solid var(--line); border-bottom-width: 2px;
 .hint:empty { display: none; }
 
 .action-box { margin-top: 17px; padding: 15px; border-radius: 13px; background: var(--amber-soft); color: #604016; }
-.action-box strong { display: block; margin-bottom: 6px; }
+.action-box summary { cursor: pointer; font-weight: 800; }
+.action-box[open] summary { margin-bottom: 8px; }
+.action-box strong { font-weight: 800; }
 .action-box ul { margin: 0; padding-left: 20px; }
+.action-box li + li { margin-top: 4px; }
+.action-box a { color: #9b421f; font-weight: 700; text-decoration: none; }
+.action-box a:hover { text-decoration: underline; }
 .next-step { margin-bottom: 14px; padding: 13px 15px; border-radius: 12px; background: var(--green-soft); color: #1e5b48; }
 .output-panel { position: sticky; top: 90px; }
 .output {

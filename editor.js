@@ -390,9 +390,35 @@
     return groupedFieldOptions(unique, value, "選擇欄位…");
   }
 
-  function routeTargetChoices(flow, value) {
-    const targets = data.flows.filter(item => item.question === flow.question && item !== flow);
-    return `<option value="">選擇目標分支…</option>` + targets.map(item => `<option value="${esc(item.branch)}" ${item.branch === value ? "selected" : ""}>${esc(item.branch)}</option>`).join("");
+  function routeTargetValue(question, branch) {
+    return JSON.stringify({ question, branch });
+  }
+
+  function parseRouteTargetValue(value, fallbackQuestion) {
+    try {
+      const parsed = JSON.parse(String(value || ""));
+      if (parsed?.question && parsed?.branch) return parsed;
+    } catch {}
+    return { question: fallbackQuestion, branch: String(value || "") };
+  }
+
+  function routeTargetChoices(flow, route) {
+    const targets = data.flows.filter(item =>
+      item !== flow && (item.question === flow.question || (flow.question !== "共用" && item.question === "共用"))
+    );
+    const selected = routeTargetValue(route.targetQuestion || flow.question, route.targetBranch || "");
+    const groups = new Map();
+    targets.forEach(item => {
+      const label = item.question === "共用" ? "共用（不綁題目）" : item.question;
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(item);
+    });
+    return `<option value="">選擇目標分支…</option>` + [...groups].map(([label, items]) =>
+      `<optgroup label="${esc(label)}">${items.map(item => {
+        const value = routeTargetValue(item.question, item.branch);
+        return `<option value="${esc(value)}" ${value === selected ? "selected" : ""}>${esc(item.branch)}</option>`;
+      }).join("")}</optgroup>`
+    ).join("");
   }
 
   function answerPartValue(part) { return JSON.stringify({ question: part.question, branch: part.branch }); }
@@ -412,7 +438,7 @@
 
   function routeCard(route, i, flow, q, vars) {
     const values = Array.isArray(route.values) ? route.values.join("\n") : String(route.value || "");
-    return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("符合以下任一值", `route_values_${i}`, values, { type: "textarea", rows: 3, required: true, placeholder: "每行輸入一個值" })}${field("主動跳到下一個分支", `route_target_${i}`, route.targetBranch || "", { type: "select", choices: routeTargetChoices(flow, route.targetBranch || ""), required: true, wide: true })}</div></div>`;
+    return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("符合以下任一值", `route_values_${i}`, values, { type: "textarea", rows: 3, required: true, placeholder: "每行輸入一個值" })}${field("主動跳到下一個分支", `route_target_${i}`, routeTargetValue(route.targetQuestion || flow.question, route.targetBranch || ""), { type: "select", choices: routeTargetChoices(flow, route), required: true, wide: true })}</div></div>`;
   }
 
   function reusableDecisionOptions(flow) {
@@ -673,11 +699,15 @@
     const form = $("#studioForm"); if (!form.reportValidity()) return null; const fd = new FormData(form);
     const question = String(fd.get("question") || "").trim(); const branch = String(fd.get("branch") || "共用").trim() || "共用"; const q = qidForName(question);
     const steps = (flow.steps || []).map((_, i) => ({ prompt: String(fd.get(`step_prompt_${i}`) || "").trim(), option: String(fd.get(`step_option_${i}`) || "").trim() }));
-    const routes = (flow.routes || []).map((route, i) => ({
-      sourceCode: String(fd.get(`route_source_${i}`) || ""),
-      values: String(fd.get(`route_values_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
-      targetBranch: String(fd.get(`route_target_${i}`) || "")
-    }));
+    const routes = (flow.routes || []).map((route, i) => {
+      const target = parseRouteTargetValue(fd.get(`route_target_${i}`), question);
+      return {
+        sourceCode: String(fd.get(`route_source_${i}`) || ""),
+        values: String(fd.get(`route_values_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
+        targetQuestion: target.question,
+        targetBranch: target.branch
+      };
+    });
     const answerParts = (flow.answerParts || [{ question: flow.question, branch: flow.branch }]).map((_, i) => {
       try { return JSON.parse(String(fd.get(`answer_part_${i}`) || "")); } catch { return null; }
     }).filter(part => part?.question && part?.branch);
@@ -789,10 +819,10 @@
     if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
     const inherited = inheritedVariablesFor(flow).map(entry => entry.variable);
     const available = [...new Map([...exactVariables(q, "共用"), ...inherited, ...exactVariables(q, flow.branch)].map(variable => [variable.code, variable])).values()];
-    const target = data.flows.find(item => item.question === flow.question && item !== flow);
+    const target = data.flows.find(item => item !== flow && (item.question === flow.question || (flow.question !== "共用" && item.question === "共用")));
     if (!available.length) { alert("請先在這個分支加入要判斷的欄位。"); return; }
-    if (!target) { alert("請先為這個題目建立另一個目標分支。"); return; }
-    flow.routes ||= []; flow.routes.push({ sourceCode: available[0].code, values: [""], targetBranch: target.branch, assignments: [] }); markDirty(); renderForm();
+    if (!target) { alert("請先建立同題目或共用的目標分支。"); return; }
+    flow.routes ||= []; flow.routes.push({ sourceCode: available[0].code, values: [""], targetQuestion: target.question, targetBranch: target.branch, assignments: [] }); markDirty(); renderForm();
   }
   function addFieldRule() {
     if (!saveField(false)) return; const item = current();

@@ -222,6 +222,12 @@ footer a:hover { color: var(--accent-dark); }
 .studio-search { display: flex; align-items: center; gap: 8px; margin: 0 14px 10px; padding: 7px 10px; border: 1px solid #dce1e4; border-radius: 9px; background: white; }
 .studio-search span { color: #8d979e; }
 .studio-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; }
+.branch-reuse-bar { display: grid; gap: 7px; padding: 0 13px 11px; }
+.branch-reuse-bar[hidden] { display: none; }
+.branch-reuse-bar select, .branch-reuse-bar button { width: 100%; padding: 8px 9px; border: 1px solid #d8dfe3; border-radius: 8px; color: #374149; background: #fff; font-size: 11px; }
+.branch-reuse-bar button { border-color: #efb8a5; color: #bb4623; background: #fff2ed; cursor: pointer; font-weight: 700; }
+.branch-reuse-bar button:hover { border-color: #e86138; background: #ffe7de; }
+.branch-reuse-bar button:disabled { opacity: .5; cursor: not-allowed; }
 .studio-list { min-height: 0; flex: 1; overflow-y: auto; padding: 0 9px 18px; }
 .studio-list-item {
   display: block; width: 100%; padding: 12px; border: 1px solid transparent; border-radius: 10px;

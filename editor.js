@@ -246,7 +246,7 @@
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>沒有層數上限；依實際操作順序一直增加即可。</small></div><button type="button" data-add-step>＋ 增加一層判斷</button></div><div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>可沿用既有中文欄位，或建立全新欄位；自動計算設定也會一起沿用。</small></div></div>${reuseControls}<div class="branch-variable-list">${variableRows}</div></section>
-      <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案範本</b><small>點中文欄位按鈕插入，不必接觸系統代碼。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單【訂單編號】…" })}</section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案範本</b><small>點中文欄位按鈕插入，不必接觸系統代碼。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單{訂單編號}…" })}</section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>操作提醒</b><small>查表、填表、工單、Jira 或其他動作。</small></div><button type="button" data-add-action>＋ 新增操作</button></div><div class="branch-action-list">${actionRows}</div></section>`;
   }
 
@@ -258,8 +258,15 @@
     return `<div class="subrecord-card"><div class="subrecord-head"><b>操作 ${i + 1}｜${esc(a.action)}</b><button type="button" data-remove-action="${i}">移除</button></div><div class="editor-grid">${field("操作名稱", `action_name_${i}`, a.action, { required: true })}${field("是否需要", `action_needed_${i}`, a.needed, { type: "checkbox", checkLabel: "需要執行" })}${field("補充說明", `action_note_${i}`, a.note || "", { wide: true, type: "textarea", rows: 3 })}</div></div>`;
   }
   function variableTokens(vars) { return `<div class="template-tokens wide"><span>${vars.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}">＋ ${esc(v.label)}</button>`).join("")}</div>`; }
-  function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`【${v.label}】`); }); return result; }
-  function storedTemplate(text, q, variables) { let result = String(text || ""); variables.forEach(v => { result = result.split(`【${v.label}】`).join(`{{${v.code}}}`); }); return result; }
+  function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); }); return result; }
+  function storedTemplate(text, q, variables) {
+    let result = String(text || "");
+    variables.forEach(v => {
+      result = result.split(`{${v.label}}`).join(`{{${v.code}}}`);
+      result = result.split(`【${v.label}】`).join(`{{${v.code}}}`);
+    });
+    return result;
+  }
 
   function handleFormInput(event) {
     const match = event.target.name?.match(/^var_label_(\d+)$/);
@@ -401,7 +408,7 @@
   function removeVariable(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactVariables(q, flow.branch), target = list[index]; if (target) data.variables.splice(data.variables.indexOf(target), 1); markDirty(); renderForm(); }
   function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "" }); markDirty(); renderForm(); }
   function removeActionAt(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactActions(q, flow.branch), target = list[index]; if (target) data.actions.splice(data.actions.indexOf(target), 1); markDirty(); renderForm(); }
-  function insertToken(label) { const textarea = $("#studioForm [name=template_text]"); if (!textarea) return; const marker = `【${label}】`; textarea.setRangeText(marker, textarea.selectionStart ?? textarea.value.length, textarea.selectionEnd ?? textarea.value.length, "end"); textarea.focus(); }
+  function insertToken(label) { const textarea = $("#studioForm [name=template_text]"); if (!textarea) return; const marker = `{${label}}`; textarea.setRangeText(marker, textarea.selectionStart ?? textarea.value.length, textarea.selectionEnd ?? textarea.value.length, "end"); textarea.focus(); }
 
   function markDirty() { data.updatedAt = new Date().toISOString(); data.version = new Date().toLocaleDateString("zh-TW"); localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); localStorage.removeItem(OLD_DRAFT_KEY); state.dirty = true; setStatus("有尚未同步到 GitHub 的修改", true); }
   function setStatus(text, pending = false) { $("#studioStatus").textContent = text; $(".studio-status")?.classList.toggle("pending", pending); }

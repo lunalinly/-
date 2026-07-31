@@ -279,7 +279,7 @@
     let text = template.text;
     variables.forEach(variable => {
       const raw = state.values[variable.code] || "";
-      const value = displayValue(variable, raw) || `【請填：${variable.label}】`;
+      const value = displayValue(variable, raw) || `{請填：${variable.label}}`;
       text = text.split(`{{${variable.code}}}`).join(value);
     });
     return { text, missing: false };

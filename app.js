@@ -330,6 +330,11 @@
     els.result.append(layout);
   }
 
+  function sourceLinksFor(item) {
+    if (Array.isArray(item?.sourceLinks) && item.sourceLinks.length) return item.sourceLinks.filter(link => link?.url);
+    return item?.sourceUrl ? [{ title: "開啟來源", url: item.sourceUrl }] : [];
+  }
+
   function renderInputPanel(panel, flow, variables) {
     const label = document.createElement("div"); label.className = "panel-label"; label.textContent = `已到達 ${flow.branch}`;
     const title = document.createElement("h3"); title.textContent = variables.length ? "填入這題需要的資料" : "這題不需要填資料";
@@ -365,9 +370,12 @@
         const li = document.createElement("li");
         const name = document.createElement("b"); name.textContent = `{${source.label}}`;
         li.append(name, document.createTextNode(` 的值從這裡找：${source.note || "請開啟來源連結"}`));
-        if (source.url && /^https?:\/\//i.test(source.url)) {
-          const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟來源 ↗"; li.append(document.createTextNode(" "), link);
-        }
+        (source.links || []).forEach(sourceLink => {
+          if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
+          const link = document.createElement("a");
+          link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
+          li.append(document.createTextNode(" "), link);
+        });
         list.append(li);
       });
       box.append(summary, list); panel.append(box);
@@ -483,8 +491,9 @@
     });
     const sourceMap = new Map();
     variables.forEach(variable => {
-      if (text.includes(`{{${variable.code}}}`) && (variable.sourceNote || variable.sourceUrl) && !sourceMap.has(variable.code)) {
-        sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", url: variable.sourceUrl || "" });
+      const links = sourceLinksFor(variable);
+      if (text.includes(`{{${variable.code}}}`) && (variable.sourceNote || links.length) && !sourceMap.has(variable.code)) {
+        sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", links });
       }
     });
     variables.forEach(variable => {
@@ -494,11 +503,9 @@
     });
     if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;
     const sources = [...sourceMap.values()];
-    if (sources.length) {
-      const lines = sources.map(source => {
-        const location = [source.note, source.url].filter(Boolean).join(" ");
-        return `{${source.label}}：${location}`;
-      });
+    const answerSources = sources.filter(source => String(source.note || "").trim());
+    if (answerSources.length) {
+      const lines = answerSources.map(source => `{${source.label}}：${source.note}`);
       text += `\n\n參數值取得位置：\n${lines.join("\n")}`;
     }
     return { text, missing: built.missing.length > 0, sources };

@@ -298,8 +298,11 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false,
-      "category": "常用"
+      "common": true,
+      "category": "常用",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": ""
     },
     {
       "q": "Q003",
@@ -311,8 +314,11 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false,
-      "category": "常用"
+      "common": true,
+      "category": "常用",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": ""
     },
     {
       "q": "Q003",
@@ -370,6 +376,50 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "customer_need",
+      "label": "客人要找",
+      "hint": "例如：尺寸、材質、商品圖片",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": true,
+      "category": "商品詢問",
+      "fillRules": []
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "product_page_area",
+      "label": "產品頁的哪裡",
+      "hint": "例如：商品描述、規格表、圖片",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "found_keyword",
+      "label": "找到的關鍵字／內容",
+      "hint": "把商品頁看到的資訊貼上",
+      "sourceNote": "",
+      "sourceUrl": "",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false
+    },
+    {
+      "q": "Q004",
       "branch": "商品頁沒有找到",
       "code": "product_id",
       "label": "商品代碼_Product ID",
@@ -380,7 +430,9 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
+      "common": false,
+      "category": "常用",
+      "fillRules": []
     },
     {
       "q": "Q004",
@@ -400,14 +452,32 @@ window.SOP_DATA = {
         {
           "values": [
             "蝦皮直營 _ 生活超市 - 最快當日到",
-            "蝦皮超市",
+            "蝦皮超市"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": ""
+            }
+          ]
+        },
+        {
+          "values": [
             "蝦皮直送 美妝",
             "蝦皮直營 - 3C家電館"
           ],
           "assignments": [
             {
-              "targetCode": "V005",
-              "value": "歷史提問-24H"
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "且{{V006}}廠商直送或大型運送",
+              "answerPosition": "after_question",
+              "answerAnchor": ""
             }
           ]
         }
@@ -441,49 +511,9 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": true
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": true
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "product_page_area",
-      "label": "產品頁的哪裡",
-      "hint": "例如：商品描述、規格表、圖片",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "found_keyword",
-      "label": "找到的關鍵字／內容",
-      "hint": "把商品頁看到的資訊貼上",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": true,
-      "common": false
+      "common": true,
+      "category": "商品詢問",
+      "fillRules": []
     }
   ],
   "templates": [
@@ -524,13 +554,13 @@ window.SOP_DATA = {
     },
     {
       "q": "Q004",
-      "branch": "商品頁沒有找到",
-      "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}，所以下面的分頁要選擇{{V005}}\n將{{product_id}}填入 PID 看看有沒有顧客詢問「{{customer_need}}」相關的問題"
+      "branch": "商品頁有找到",
+      "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
     },
     {
       "q": "Q004",
-      "branch": "商品頁有找到",
-      "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
+      "branch": "商品頁沒有找到",
+      "text": "去商品頁網址找出Product ID與內文查出商城名稱，Product ID是：{{product_id}}；商城名稱是：{{V003}}\n前往「歷史發問查詢」，因為他是{{V003}}，所以下面的分頁要選擇{{V005}}\n將{{product_id}}填入 PID 看看有沒有顧客詢問「{{customer_need}}」相關的問題"
     }
   ],
   "actions": [
@@ -556,7 +586,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T06:22:56.341Z",
+  "updatedAt": "2026-07-31T06:46:28.515Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -580,7 +610,9 @@ window.SOP_DATA = {
       "type": "text",
       "autoDays": 0,
       "multiline": false,
-      "fillRules": []
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": ""
     },
     {
       "code": "product_page_area",
@@ -702,9 +734,11 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false,
+      "common": true,
       "category": "常用",
-      "fillRules": []
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": ""
     },
     {
       "code": "V002",
@@ -729,14 +763,32 @@ window.SOP_DATA = {
         {
           "values": [
             "蝦皮直營 _ 生活超市 - 最快當日到",
-            "蝦皮超市",
+            "蝦皮超市"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": ""
+            }
+          ]
+        },
+        {
+          "values": [
             "蝦皮直送 美妝",
             "蝦皮直營 - 3C家電館"
           ],
           "assignments": [
             {
-              "targetCode": "V005",
-              "value": "歷史提問-24H"
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "且{{V006}}廠商直送或大型運送",
+              "answerPosition": "after_question",
+              "answerAnchor": ""
             }
           ]
         }
@@ -769,6 +821,52 @@ window.SOP_DATA = {
       "type": "text",
       "required": true,
       "fillRules": [],
+      "sourceNote": "",
+      "sourceUrl": "",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "code": "V006",
+      "label": "是否是廠直",
+      "category": "常用",
+      "hint": "填「是」或「不是」",
+      "type": "text",
+      "required": true,
+      "fillRules": [
+        {
+          "values": [
+            "是"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-廠直",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "不是",
+            "否"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": ""
+            }
+          ]
+        }
+      ],
       "sourceNote": "",
       "sourceUrl": "",
       "autoDays": 0,

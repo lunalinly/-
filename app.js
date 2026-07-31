@@ -410,7 +410,8 @@
       setFieldInputValue(input, calculateAuto(variable));
       state.values[variable.code] = input.value;
     } else {
-      setFieldInputValue(input, state.values[variable.code] ?? (variable.common ? (commonValues[variable.code] || "") : ""));
+      const initialValue = state.values[variable.code] ?? (variable.common ? (commonValues[variable.code] || variable.defaultValue || "") : (variable.defaultValue || ""));
+      setFieldInputValue(input, initialValue);
       state.values[variable.code] = input.value;
     }
     input.addEventListener("input", () => {

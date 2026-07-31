@@ -306,7 +306,7 @@
     }
     const answerOrderText = [
       questionText,
-      ...parts.map(part => templateForPart(part)?.text || ""),
+      ...parts.flatMap(part => [part.beforeText || "", templateForPart(part)?.text || ""]),
       ...(data.fields || []).flatMap(field => (field.fillRules || []).flatMap(rule =>
         (rule.assignments || []).map(assignment => assignment.answerText || "")
       ))
@@ -330,6 +330,7 @@
     const parts = answerPartsFor(flow);
     const entries = parts.map(part => ({ part, template: templateForPart(part) }));
     return {
+      entries,
       templates: entries.filter(item => item.template),
       missing: entries.filter(item => !item.template).map(item => `${item.part.question} · ${item.part.branch}`)
     };
@@ -507,8 +508,9 @@
     parts.push(...conditional.filter(item => item.position === "start").map(item => item.text));
     if (String(state.question.answerText || "").trim()) parts.push(state.question.answerText);
     parts.push(...conditional.filter(item => item.position === "after_question").map(item => item.text));
-    built.templates.forEach(item => {
-      parts.push(item.template.text);
+    built.entries.forEach(item => {
+      if (String(item.part.beforeText || "").trim()) parts.push(item.part.beforeText);
+      if (item.template) parts.push(item.template.text);
       const anchor = JSON.stringify({ question: item.part.question, branch: item.part.branch });
       parts.push(...conditional.filter(entry => entry.position === "after_branch" && entry.anchor === anchor).map(entry => entry.text));
     });

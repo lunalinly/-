@@ -31,6 +31,7 @@
       const branch = String(value || "").trim();
       return branch === "共用" || branch.toLowerCase() === "all";
     };
+    data.questions.forEach(question => { question.answerText ||= ""; });
     const qidByName = new Map(data.questions.map(q => [q.name, q.id]));
     const branchMap = new Map();
     data.flows.forEach(flow => {
@@ -245,7 +246,9 @@
   function questionForm(q) {
     const linked = data.flows.map((flow, index) => ({ flow, index })).filter(x => x.flow.question === q.name);
     const branches = linked.length ? linked.map(x => `<button type="button" class="linked-branch" data-edit-branch="${x.index}"><strong>${esc(x.flow.branch)}</strong><span>${esc((x.flow.steps || []).map(s => s.option).join(" → ") || "直接回答")}</span></button>`).join("") : `<div class="no-steps">這個題目尚未建立分支。</div>`;
-    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>題目基本資料</b><small>系統代碼會自動處理，只需填中文。</small></div></div><div class="editor-grid">${field("題目名稱", "name", q.name, { required: true, wide: true, placeholder: "例如：詢問保固" })}${field("搜尋關鍵字", "keywords", q.keywords, { wide: true, placeholder: "保固,維修,故障" })}${field("題目說明", "description", q.description, { wide: true, type: "textarea", rows: 3 })}${field("前台顯示", "enabled", q.enabled, { type: "checkbox", checkLabel: "啟用這個題目" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>這個題目的分支</b><small>可直接跳到分支完整編輯頁。</small></div><button type="button" data-add-branch-for="${esc(q.name)}">＋ 新增分支</button></div><div class="linked-branches">${branches}</div></section>`;
+    const questionVars = [...new Map(data.variables.filter(v => v.q === q.id).map(v => [v.code, v])).values()];
+    const answerText = friendlyTemplate(q.answerText || "", q.id);
+    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>題目基本資料</b><small>系統代碼會自動處理，只需填中文。</small></div></div><div class="editor-grid">${field("題目名稱", "name", q.name, { required: true, wide: true, placeholder: "例如：詢問保固" })}${field("搜尋關鍵字", "keywords", q.keywords, { wide: true, placeholder: "保固,維修,故障" })}${field("題目說明", "description", q.description, { wide: true, type: "textarea", rows: 3 })}${field("前台顯示", "enabled", q.enabled, { type: "checkbox", checkLabel: "啟用這個題目" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>問題本身的答案文字</b><small>最終回答一定先放這段，再依序接上各分支內容。</small></div></div>${variableTokens(questionVars, "question_answer_text")}${field("答案內容", "question_answer_text", answerText, { wide: true, type: "textarea", rows: 8, placeholder: "這段文字會放在所有分支答案之前…" })}</section><section class="editor-section wide"><div class="editor-section-title"><div><b>這個題目的分支</b><small>可直接跳到分支完整編輯頁。</small></div><button type="button" data-add-branch-for="${esc(q.name)}">＋ 新增分支</button></div><div class="linked-branches">${branches}</div></section>`;
   }
 
   function fieldForm(item) {
@@ -313,7 +316,7 @@
   function actionCard(a, i) {
     return `<div class="subrecord-card"><div class="subrecord-head"><b>操作 ${i + 1}｜${esc(a.action)}</b><button type="button" data-remove-action="${i}">移除</button></div><div class="editor-grid">${field("操作名稱", `action_name_${i}`, a.action, { required: true })}${field("是否需要", `action_needed_${i}`, a.needed, { type: "checkbox", checkLabel: "需要執行" })}${field("補充說明", `action_note_${i}`, a.note || "", { wide: true, type: "textarea", rows: 3 })}</div></div>`;
   }
-  function variableTokens(vars) { return `<div class="template-tokens wide"><span>${vars.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}">＋ ${esc(v.label)}</button>`).join("")}</div>`; }
+  function variableTokens(vars, target = "template_text") { return `<div class="template-tokens wide"><span>${vars.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${vars.map(v => `<button type="button" data-insert-token="${esc(v.label)}" data-insert-target="${esc(target)}">＋ ${esc(v.label)}</button>`).join("")}</div>`; }
   function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); }); return result; }
   function storedTemplate(text, q, variables) {
     let result = String(text || "");
@@ -348,7 +351,7 @@
     const removeVar = event.target.closest("[data-remove-variable]"); if (removeVar) { removeVariable(Number(removeVar.dataset.removeVariable)); return; }
     if (event.target.closest("[data-add-action]")) { addAction(); return; }
     const removeAction = event.target.closest("[data-remove-action]"); if (removeAction) { removeActionAt(Number(removeAction.dataset.removeAction)); return; }
-    const token = event.target.closest("[data-insert-token]"); if (token) insertToken(token.dataset.insertToken);
+    const token = event.target.closest("[data-insert-token]"); if (token) insertToken(token.dataset.insertToken, token.dataset.insertTarget);
   }
 
   function nextId(prefix, ids) { const nums = ids.map(x => Number(String(x || "").replace(/\D/g, ""))).filter(Number.isFinite); return prefix + String(Math.max(0, ...nums) + 1).padStart(3, "0"); }
@@ -402,6 +405,8 @@
     const q = current(); if (!q) return false; const form = $("#studioForm"); if (!form.reportValidity()) return false; const fd = new FormData(form); const oldName = q.name; const name = String(fd.get("name") || "").trim();
     if (!name) return false; if (data.questions.some((x, i) => i !== state.index && x.name === name)) { alert("這個中文題目名稱已經存在。"); return false; }
     q.name = name; q.keywords = String(fd.get("keywords") || "").trim(); q.description = String(fd.get("description") || "").trim(); q.enabled = fd.has("enabled");
+    const questionVars = [...new Map(data.variables.filter(v => v.q === q.id).map(v => [v.code, v])).values()];
+    q.answerText = storedTemplate(String(fd.get("question_answer_text") || "").trim(), q.id, questionVars);
     if (oldName !== name) data.flows.forEach(f => { if (f.question === oldName) f.question = name; });
     markDirty(); renderStudio(); if (show) setStatus("題目已保存於瀏覽器"); return true;
   }
@@ -500,7 +505,7 @@
   function removeRouteAt(index) { if (!saveBranch(false)) return; current().routes.splice(index, 1); markDirty(); renderForm(); }
   function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "" }); markDirty(); renderForm(); }
   function removeActionAt(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactActions(q, flow.branch), target = list[index]; if (target) data.actions.splice(data.actions.indexOf(target), 1); markDirty(); renderForm(); }
-  function insertToken(label) { const textarea = $("#studioForm [name=template_text]"); if (!textarea) return; const marker = `{${label}}`; textarea.setRangeText(marker, textarea.selectionStart ?? textarea.value.length, textarea.selectionEnd ?? textarea.value.length, "end"); textarea.focus(); }
+  function insertToken(label, target = "template_text") { const textarea = $("#studioForm [name=" + target + "]"); if (!textarea) return; const marker = `{${label}}`; textarea.setRangeText(marker, textarea.selectionStart ?? textarea.value.length, textarea.selectionEnd ?? textarea.value.length, "end"); textarea.focus(); }
 
   function markDirty() { data.updatedAt = new Date().toISOString(); data.version = new Date().toLocaleDateString("zh-TW"); localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); localStorage.removeItem(OLD_DRAFT_KEY); state.dirty = true; setStatus("有尚未同步到 GitHub 的修改", true); }
   function setStatus(text, pending = false) { $("#studioStatus").textContent = text; $(".studio-status")?.classList.toggle("pending", pending); }

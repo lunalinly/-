@@ -202,19 +202,11 @@ window.SOP_DATA = {
         {
           "sourceCode": "V003",
           "values": [
-            "蝦皮直營 _ 生活超市 - 最快當日到",
-            "蝦皮直營_餐券&禮券 - 最快當日到",
-            "蝦皮耗材館",
-            "OPPO產品旗艦店",
-            "realme產品旗艦店",
-            "Google產品旗艦店",
-            "電玩宅急便",
-            "蝦皮直營 - Apple品牌旗艦館",
-            "蝦皮直營 - 遊戲點數旗艦店",
-            "ASUS華碩官方旗艦店"
+            "蝦皮直營 _ 生活超市 - 最快當日到"
           ],
           "targetQuestion": "共用",
-          "targetBranch": "KAM表"
+          "targetBranch": "KAM表",
+          "assignments": []
         },
         {
           "sourceCode": "V006",
@@ -222,7 +214,26 @@ window.SOP_DATA = {
             "不是"
           ],
           "targetQuestion": "共用",
-          "targetBranch": "廠直表"
+          "targetBranch": "廠直表",
+          "assignments": []
+        },
+        {
+          "sourceCode": "V003",
+          "values": [
+            "電玩宅急便",
+            "OPPO",
+            "ASUS",
+            "realme",
+            "Google 產品官方授權旗艦店",
+            "蝦皮耗材館",
+            "電玩快客",
+            "高雄物產館",
+            "美食餐券、票券",
+            "Apple產品旗艦館"
+          ],
+          "targetQuestion": "共用",
+          "targetBranch": "廠直表．SMS",
+          "assignments": []
         }
       ],
       "answerBranches": [
@@ -286,13 +297,26 @@ window.SOP_DATA = {
     },
     {
       "question": "共用",
+      "branch": "廠直表．SMS",
+      "steps": [],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "共用",
+          "branch": "廠直表．SMS"
+        }
+      ],
+      "next": ""
+    },
+    {
+      "question": "共用",
       "branch": "廠直表",
       "steps": [],
       "routes": [],
       "answerParts": [
         {
           "question": "共用",
-          "branch": "廠直表"
+          "branch": "廠直表．SMS"
         }
       ],
       "next": ""
@@ -548,15 +572,16 @@ window.SOP_DATA = {
         },
         {
           "values": [
-            "蝦皮直營_餐券&禮券 - 最快當日到",
-            "蝦皮耗材館",
-            "OPPO產品旗艦店",
-            "realme產品旗艦店",
-            "Google產品旗艦店",
             "電玩宅急便",
-            "蝦皮直營 - Apple品牌旗艦館",
-            "蝦皮直營 - 遊戲點數旗艦店",
-            "ASUS華碩官方旗艦店"
+            "OPPO",
+            "ASUS",
+            "realme",
+            "Google 產品官方授權旗艦店",
+            "蝦皮耗材館",
+            "電玩快客",
+            "高雄物產館",
+            "美食餐券、票券",
+            "Apple產品旗艦館"
           ],
           "assignments": [
             {
@@ -1260,7 +1285,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-07-31T10:22:37.334Z",
+  "updatedAt": "2026-07-31T10:28:21.471Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -1533,15 +1558,16 @@ window.SOP_DATA = {
         },
         {
           "values": [
-            "蝦皮直營_餐券&禮券 - 最快當日到",
-            "蝦皮耗材館",
-            "OPPO產品旗艦店",
-            "realme產品旗艦店",
-            "Google產品旗艦店",
             "電玩宅急便",
-            "蝦皮直營 - Apple品牌旗艦館",
-            "蝦皮直營 - 遊戲點數旗艦店",
-            "ASUS華碩官方旗艦店"
+            "OPPO",
+            "ASUS",
+            "realme",
+            "Google 產品官方授權旗艦店",
+            "蝦皮耗材館",
+            "電玩快客",
+            "高雄物產館",
+            "美食餐券、票券",
+            "Apple產品旗艦館"
           ],
           "assignments": [
             {

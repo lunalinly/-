@@ -342,6 +342,20 @@ footer a:hover { color: var(--accent-dark); }
 .linked-branch strong, .linked-branch span { display: block; }
 .linked-branch strong { color: #374149; font-size: 12px; }
 .linked-branch span { margin-top: 3px; overflow: hidden; color: #879198; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.field-add-tools {
+  display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap;
+  gap: 8px; margin: -2px 0 13px;
+}
+.field-add-tools select {
+  min-width: 190px; padding: 8px 10px; border: 1px solid #d8dfe3; border-radius: 8px;
+  color: #374149; background: #fff; font-size: 11px;
+}
+.field-add-tools button {
+  padding: 8px 10px; border: 1px solid #efb8a5; border-radius: 8px;
+  color: #bb4623; background: #fff2ed; cursor: pointer; font-size: 11px; font-weight: 700;
+}
+.field-add-tools button:hover { border-color: #e86138; background: #ffe7de; }
+.field-add-tools span { margin-right: auto; color: #879198; font-size: 10px; }
 .unlimited-steps, .branch-variable-list, .branch-action-list { display: grid; gap: 11px; }
 .subrecord-card { padding: 14px; border: 1px solid #dfe4e7; border-radius: 11px; background: #f8fafb; }
 .subrecord-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }

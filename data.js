@@ -1,4 +1,4 @@
-// 由 SOP 視覺化編輯室使用；內部代碼由系統自動管理，操作畫面只顯示中文。
+// 由 SOP 視覺化編輯室產生；操作畫面僅使用中文。
 window.SOP_DATA = {
   "version": "2026/7/31",
   "sourceUrl": "https://docs.google.com/spreadsheets/d/1cDKewCq-QZ6ln3f8keneZ8p8N7NXTCGnYPAouxmyveI/edit?gid=101001#gid=101001",
@@ -50,13 +50,13 @@ window.SOP_DATA = {
     {
       "question": "詢問鑑賞期",
       "steps": [],
-      "branch": "共用",
+      "branch": "All",
       "next": "填入取貨日期，產生鑑賞期回覆"
     },
     {
       "question": "詢問付款方式",
       "steps": [],
-      "branch": "共用",
+      "branch": "All",
       "next": "直接複製付款方式說明"
     },
     {
@@ -205,35 +205,6 @@ window.SOP_DATA = {
     }
   ],
   "variables": [
-    {
-      "q": "Q001",
-      "branch": "共用",
-      "code": "pickup_date",
-      "label": "取貨日期",
-      "hint": "日期，例如 2026/7/30",
-      "required": true,
-      "type": "date"
-    },
-    {
-      "q": "Q001",
-      "branch": "共用",
-      "code": "return_start",
-      "label": "第一天（鑑賞期）",
-      "hint": "由取貨日期自動計算",
-      "required": false,
-      "autoSource": "pickup_date",
-      "autoDays": 1
-    },
-    {
-      "q": "Q001",
-      "branch": "共用",
-      "code": "return_deadline",
-      "label": "最後一天（鑑賞期）",
-      "hint": "由取貨日期自動計算",
-      "required": false,
-      "autoSource": "pickup_date",
-      "autoDays": 15
-    },
     {
       "q": "Q003",
       "branch": "補打統編",
@@ -436,19 +407,47 @@ window.SOP_DATA = {
       "hint": "填客人反應的狀況",
       "required": true,
       "multiline": true
+    },
+    {
+      "q": "Q001",
+      "branch": "All",
+      "code": "pickup_date",
+      "label": "取貨日期",
+      "hint": "日期，例如 2026/7/30",
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q001",
+      "branch": "All",
+      "code": "return_start",
+      "label": "第一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "type": "text",
+      "autoSource": "pickup_date",
+      "autoDays": 1,
+      "required": false,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q001",
+      "branch": "All",
+      "code": "return_deadline",
+      "label": "最後一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "type": "text",
+      "autoSource": "pickup_date",
+      "autoDays": 15,
+      "required": false,
+      "multiline": false,
+      "common": false
     }
   ],
   "templates": [
-    {
-      "q": "Q001",
-      "branch": "共用",
-      "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
-    },
-    {
-      "q": "Q002",
-      "branch": "共用",
-      "text": "▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。"
-    },
     {
       "q": "Q003",
       "branch": "補打統編",
@@ -498,6 +497,16 @@ window.SOP_DATA = {
       "q": "Q006",
       "branch": "不用回報廠商",
       "text": "目前可依現有資訊回覆客人，暫時不用建立工單或 Jira。\n問題描述：{{issue_detail}}"
+    },
+    {
+      "q": "Q001",
+      "branch": "All",
+      "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
+    },
+    {
+      "q": "Q002",
+      "branch": "All",
+      "text": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。"
     }
   ],
   "actions": [
@@ -544,13 +553,6 @@ window.SOP_DATA = {
       "note": "把 Jira 單號填回變數區"
     },
     {
-      "q": "Q001",
-      "branch": "共用",
-      "action": "不用建單",
-      "needed": false,
-      "note": "只需回覆客人"
-    },
-    {
       "q": "Q004",
       "branch": "廠商直送，填表問廠商",
       "action": "填廠商直送詢問表",
@@ -570,7 +572,14 @@ window.SOP_DATA = {
       "action": "不用 key Jira",
       "needed": false,
       "note": "直接整理回覆"
+    },
+    {
+      "q": "Q001",
+      "branch": "All",
+      "action": "不用建單",
+      "needed": true,
+      "note": "只需回覆客人"
     }
   ],
-  "updatedAt": "2026-07-31T02:01:16.027Z"
+  "updatedAt": "2026-07-31T02:29:07.801Z"
 };

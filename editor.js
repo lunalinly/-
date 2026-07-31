@@ -8,6 +8,8 @@
   const clone = value => JSON.parse(JSON.stringify(value));
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  window.SOP_PUBLISHED_DATA = clone(window.SOP_DATA);
+
   try {
     const saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || localStorage.getItem(OLD_DRAFT_KEY) || "null");
     if (saved && Array.isArray(saved.questions) && Array.isArray(saved.flows)) window.SOP_DATA = saved;

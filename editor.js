@@ -119,6 +119,8 @@
     $("#reuseBranchButton").addEventListener("click", useExistingBranch);
     $("#studioDuplicate").addEventListener("click", duplicateCurrent);
     $("#studioDelete").addEventListener("click", deleteCurrent);
+    $("#studioCollapseAll").addEventListener("click", () => setAllEditorBlocksCollapsed(true));
+    $("#studioExpandAll").addEventListener("click", () => setAllEditorBlocksCollapsed(false));
     $("#studioSave").addEventListener("click", () => saveCurrent(true));
     $("#studioSync").addEventListener("click", openSync);
     $("#studioReload").addEventListener("click", discardDraft);
@@ -172,7 +174,7 @@
             <div class="studio-list" id="studioList"></div>
           </aside>
           <main class="studio-editor">
-            <div class="studio-editor-head"><div><p class="eyebrow">VISUAL EDITOR</p><h2 id="studioEditorTitle"></h2></div><div class="studio-editor-actions"><button id="studioDuplicate" type="button">建立副本</button><button id="studioDelete" class="danger" type="button">刪除</button></div></div>
+            <div class="studio-editor-head"><div><p class="eyebrow">VISUAL EDITOR</p><h2 id="studioEditorTitle"></h2></div><div class="studio-editor-actions"><button id="studioCollapseAll" type="button">全部縮小</button><button id="studioExpandAll" type="button">全部恢復</button><button id="studioDuplicate" type="button">建立副本</button><button id="studioDelete" class="danger" type="button">刪除</button></div></div>
             <form id="studioForm" class="studio-form studio-form-v2" autocomplete="off"></form>
             <div class="studio-savebar"><span id="studioSaveHint">先保存瀏覽器草稿，再同步到 GitHub 永久保存。</span><button id="studioSave" type="button">儲存</button></div>
           </main>
@@ -354,6 +356,36 @@
     $("#studioDuplicate").disabled = !record; $("#studioDelete").disabled = !record; $("#studioSave").disabled = !record;
     if (!record) { form.innerHTML = `<div class="studio-blank"><b>尚無資料</b><span>請按左上方新增。</span></div>`; return; }
     form.innerHTML = state.mode === "questions" ? questionForm(record) : state.mode === "branches" ? branchForm(record) : fieldForm(record);
+    installEditorCollapseControls();
+  }
+
+  function setEditorBlockCollapsed(block, collapsed) {
+    block.classList.toggle("editor-block-collapsed", collapsed);
+    const button = block.querySelector(":scope > .editor-section-title > [data-collapse-block], :scope > .subrecord-head > [data-collapse-block], :scope > .step-card-head > [data-collapse-block]");
+    if (button) {
+      button.textContent = collapsed ? "恢復" : "縮小";
+      button.setAttribute("aria-expanded", String(!collapsed));
+    }
+  }
+
+  function installEditorCollapseControls() {
+    const blocks = $("#studioForm").querySelectorAll(".editor-section, .subrecord-card, .step-card");
+    blocks.forEach(block => {
+      const header = block.querySelector(":scope > .editor-section-title, :scope > .subrecord-head, :scope > .step-card-head");
+      if (!header || header.querySelector("[data-collapse-block]")) return;
+      const button = document.createElement("button");
+      button.type = "button"; button.dataset.collapseBlock = ""; button.className = "editor-collapse-button";
+      button.textContent = "縮小"; button.setAttribute("aria-expanded", "true");
+      button.addEventListener("click", event => {
+        event.stopPropagation();
+        setEditorBlockCollapsed(block, !block.classList.contains("editor-block-collapsed"));
+      });
+      header.append(button);
+    });
+  }
+
+  function setAllEditorBlocksCollapsed(collapsed) {
+    $("#studioForm").querySelectorAll(".editor-section, .subrecord-card, .step-card").forEach(block => setEditorBlockCollapsed(block, collapsed));
   }
 
   function questionForm(q) {

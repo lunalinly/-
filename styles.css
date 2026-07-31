@@ -356,7 +356,7 @@ footer a:hover { color: var(--accent-dark); }
 }
 .field-add-tools button:hover { border-color: #e86138; background: #ffe7de; }
 .field-add-tools span { margin-right: auto; color: #879198; font-size: 10px; }
-.unlimited-steps, .branch-variable-list, .branch-action-list { display: grid; gap: 11px; }
+.unlimited-steps, .branch-variable-list, .branch-route-list, .branch-action-list { display: grid; gap: 11px; }
 .subrecord-card { padding: 14px; border: 1px solid #dfe4e7; border-radius: 11px; background: #f8fafb; }
 .subrecord-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .subrecord-head b { color: #40505a; font-size: 12px; }

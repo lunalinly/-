@@ -8,28 +8,32 @@ window.SOP_DATA = {
       "name": "詢問鑑賞期",
       "keywords": "鑑賞期,七天,15天,十五天,退貨期限",
       "description": "依取貨日期產生鑑賞期說明",
-      "enabled": true
+      "enabled": true,
+      "answerText": ""
     },
     {
       "id": "Q002",
       "name": "詢問付款方式",
       "keywords": "付款,付款方式,刷卡,分期,貨到付款",
       "description": "說明商城支援付款方式",
-      "enabled": true
+      "enabled": true,
+      "answerText": ""
     },
     {
       "id": "Q003",
       "name": "詢問發票",
       "keywords": "發票,電子發票,統編,抬頭,補發,補打",
       "description": "依發票需求分支產生不同 SOP",
-      "enabled": true
+      "enabled": true,
+      "answerText": ""
     },
     {
       "id": "Q004",
       "name": "詢問商品資訊",
       "keywords": "規格,款式,圖片,商品資訊,尺寸,材質,功能",
       "description": "依商品頁是否有資訊決定回覆或查廠商",
-      "enabled": true
+      "enabled": true,
+      "answerText": "請先打開商品頁，確認商品圖片、商品規格與商品描述。"
     }
   ],
   "flows": [
@@ -130,45 +134,6 @@ window.SOP_DATA = {
     }
   ],
   "variables": [
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "required": true,
-      "common": true,
-      "category": "商品詢問",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "product_page_area",
-      "label": "產品頁的哪裡",
-      "hint": "例如：商品描述、規格表、圖片",
-      "required": true,
-      "category": "商品詢問",
-      "type": "text",
-      "autoDays": 0,
-      "multiline": false,
-      "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "found_keyword",
-      "label": "找到的關鍵字／內容",
-      "hint": "把商品頁看到的資訊貼上",
-      "required": true,
-      "multiline": true,
-      "category": "商品詢問",
-      "type": "text",
-      "autoDays": 0,
-      "common": false
-    },
     {
       "q": "Q001",
       "branch": "共用",
@@ -273,14 +238,45 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false
-    }
-  ],
-  "templates": [
+    },
     {
       "q": "Q004",
       "branch": "商品頁有找到",
-      "text": "請先打開商品頁，確認商品圖片、商品規格與商品描述。\n客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
+      "code": "customer_need",
+      "label": "客人要找",
+      "hint": "例如：尺寸、材質、商品圖片",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": true
     },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "product_page_area",
+      "label": "產品頁的哪裡",
+      "hint": "例如：商品描述、規格表、圖片",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "found_keyword",
+      "label": "找到的關鍵字／內容",
+      "hint": "把商品頁看到的資訊貼上",
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false
+    }
+  ],
+  "templates": [
     {
       "q": "Q001",
       "branch": "共用",
@@ -310,6 +306,11 @@ window.SOP_DATA = {
       "q": "Q003",
       "branch": "補發電子發票通知信",
       "text": "可透過以下兩種方式申請補發：\n\n方式一｜自助服務中心申請\n前往「發票開立通知補發申請表單」（連結：https://reurl.cc/DYdVlR）提出申請。\n若填寫資料正確，通知信將於 3～5 個工作天（不含假日）補發至客人填寫的電子信箱。客人可透過「查詢進度」（連結：https://reurl.cc/gN0qeX）查看申請狀態。\n\n方式二｜關貿網路電子發票平台申請\n請先查詢「會員編號」及「歸戶驗證碼」：\n▪ App 版操作：  \n進入【我的】➜ 點選右上角【⚙️】進入帳號設定 ➜ 點選【我的電子發票】即可查看。\n▪ 網頁版操作：  \n進入【賣家中心】➜ 點選左側【賣場設定】➜【帳號與隱私設定】➜ 於【我的電子發票】旁點選【查看】即可。\n取得資料後，請依下列步驟申請：\n▪ 前往「關貿網路電子發票平台」（連結：https://reurl.cc/0k2NaM） \n▪ 填寫會員及發票相關資訊  \n▪ 選擇欲查詢的發票日期  \n▪ 點選【補發開立通知】  \n▪ 點選【變更】並輸入欲收取通知信的電子信箱  \n▪ 點選【寄送】，即可完成申請  \n通知信將於 1～2 個工作天（不含假日）補發至客人填寫的電子信箱。\n\n申請補發時填寫的電子信箱，可與帳號原先設定的收信信箱不同。"
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
     }
   ],
   "actions": [
@@ -335,7 +336,7 @@ window.SOP_DATA = {
       "note": "先取消再補打"
     }
   ],
-  "updatedAt": "2026-07-31T03:50:55.908Z",
+  "updatedAt": "2026-07-31T03:53:45.975Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

@@ -289,6 +289,8 @@
     const label = document.createElement("div"); label.className = "panel-label"; label.textContent = "最終可複製答案";
     const title = document.createElement("h3"); title.textContent = "確認後一鍵複製";
     const pre = document.createElement("pre"); pre.id = "finalOutput"; pre.className = "output";
+    pre.style.setProperty("color", "#fffaf5", "important");
+    pre.style.setProperty("-webkit-text-fill-color", "#fffaf5", "important");
     const actions = document.createElement("div"); actions.className = "output-actions";
     const copy = document.createElement("button"); copy.type = "button"; copy.className = "primary-button"; copy.textContent = "複製答案";
     const clear = document.createElement("button"); clear.type = "button"; clear.className = "secondary-button"; clear.textContent = "清除欄位";
@@ -315,6 +317,9 @@
     const built = buildOutput(flow, variables);
     pre.textContent = built.text;
     pre.classList.toggle("missing", built.missing);
+    const textColor = built.missing ? "#604016" : "#fffaf5";
+    pre.style.setProperty("color", textColor, "important");
+    pre.style.setProperty("-webkit-text-fill-color", textColor, "important");
   }
 
   els.search.addEventListener("input", renderQuestions);

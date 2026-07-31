@@ -10,7 +10,7 @@
     progress: $("#progress"), decision: $("#decisionArea"), result: $("#resultArea"), toast: $("#toast")
   };
 
-  const state = { question: null, choices: [], values: {}, routedBranch: null };
+  const state = { question: null, choices: [], values: {}, routedBranch: null, revealedFields: new Set() };
   const commonKey = "sop-helper-common-values-v1";
   let commonValues = readCommonValues();
 
@@ -60,6 +60,7 @@
     state.choices = [];
     state.values = {};
     state.routedBranch = null;
+    state.revealedFields = new Set();
     els.hero.hidden = true;
     els.questionSection.hidden = true;
     els.workspace.hidden = false;
@@ -75,6 +76,7 @@
     state.choices = [];
     state.values = {};
     state.routedBranch = null;
+    state.revealedFields = new Set();
     els.workspace.hidden = true;
     els.hero.hidden = false;
     els.questionSection.hidden = false;
@@ -104,24 +106,54 @@
     return String(value ?? "").split(/\r?\n|,|、|;/).map(item => item.trim()).filter(Boolean);
   }
 
+  function ruleMatches(definition, rule) {
+    const actual = splitRouteValues(state.values[definition.code]);
+    const expected = (rule.values || []).map(value => String(value ?? "").trim()).filter(Boolean);
+    return expected.some(value => actual.includes(value));
+  }
+
+  function revealTargetCodes() {
+    return new Set((data.fields || []).flatMap(definition =>
+      (definition.fillRules || []).flatMap(rule =>
+        (rule.assignments || []).filter(assignment => assignment.action === "reveal").map(assignment => assignment.targetCode)
+      )
+    ).filter(Boolean));
+  }
+
+  function conditionalAnswerTexts() {
+    const texts = [];
+    (data.fields || []).forEach(definition => (definition.fillRules || []).forEach(rule => {
+      if (!ruleMatches(definition, rule)) return;
+      (rule.assignments || []).forEach(assignment => {
+        const text = String(assignment.answerText || "").trim();
+        if (text && !texts.includes(text)) texts.push(text);
+      });
+    }));
+    return texts;
+  }
+
   function applyFieldFillRules(variable) {
     const definition = data.fields?.find(item => item.code === variable.code) || variable;
-    const actual = splitRouteValues(state.values[variable.code]);
-    const matched = (definition.fillRules || []).filter(rule => {
-      const expected = (rule.values || []).map(value => String(value ?? "").trim()).filter(Boolean);
-      return expected.some(value => actual.includes(value));
-    });
-    let filled = 0;
+    const matched = (definition.fillRules || []).filter(rule => ruleMatches(definition, rule));
+    let affected = 0;
     matched.forEach(rule => (rule.assignments || []).forEach(assignment => {
       if (!assignment.targetCode) return;
+      if (assignment.action === "reveal") {
+        state.revealedFields.add(assignment.targetCode);
+        const targetInput = document.getElementById(`field-${assignment.targetCode}`);
+        if (targetInput?.closest(".field")) targetInput.closest(".field").hidden = false;
+        affected += 1;
+        return;
+      }
       state.values[assignment.targetCode] = String(assignment.value ?? "");
-      const targetVariable = data.variables.find(item => item.q === state.question.id && item.code === assignment.targetCode);
+      const targetVariable = data.variables.find(item => item.q === state.question.id && item.code === assignment.targetCode)
+        || data.fields?.find(item => item.code === assignment.targetCode);
       if (targetVariable?.common) saveCommonValue(assignment.targetCode, state.values[assignment.targetCode]);
       const targetInput = document.getElementById(`field-${assignment.targetCode}`);
       if (targetInput) targetInput.value = state.values[assignment.targetCode];
-      filled += 1;
+      affected += 1;
     }));
-    return filled;
+    return affected;
   }
 
   function applyVariableRoute(flow) {
@@ -186,6 +218,7 @@
         state.choices[level] = option;
         state.values = {};
         state.routedBranch = null;
+        state.revealedFields = new Set();
         renderWorkflow();
         requestAnimationFrame(() => {
           const panels = els.decision.querySelectorAll(".panel");
@@ -219,7 +252,19 @@
       const belongsToPart = parts.some(part => variable.q === questionIdForName(part.question) && (variable.branch === part.branch || isSharedBranch(variable.branch)));
       return belongsToPart || (variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`));
     });
-    return [...new Map(matching.map(variable => [variable.code, variable])).values()];
+    const catalog = new Map(matching.map(variable => [variable.code, variable]));
+    let added = true;
+    while (added) {
+      added = false;
+      [...catalog.values()].forEach(variable => {
+        const definition = data.fields?.find(item => item.code === variable.code) || variable;
+        (definition.fillRules || []).forEach(rule => (rule.assignments || []).forEach(assignment => {
+          const target = data.fields?.find(item => item.code === assignment.targetCode);
+          if (target && !catalog.has(target.code)) { catalog.set(target.code, target); added = true; }
+        }));
+      });
+    }
+    return [...catalog.values()];
   }
 
   function templateForPart(part) {
@@ -299,6 +344,7 @@
   function makeField(variable, flow, variables) {
     const wrap = document.createElement("div");
     wrap.className = "field" + (variable.multiline ? " full" : "");
+    wrap.hidden = revealTargetCodes().has(variable.code) && !state.revealedFields.has(variable.code);
     const label = document.createElement("label");
     label.htmlFor = `field-${variable.code}`;
     label.append(document.createTextNode(variable.label));
@@ -367,6 +413,7 @@
     const parts = [];
     if (String(state.question.answerText || "").trim()) parts.push(state.question.answerText);
     parts.push(...built.templates.map(item => item.template.text));
+    parts.push(...conditionalAnswerTexts());
     if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true, sources: [] };
     let text = parts.join("\n\n");
     const sourceMap = new Map();
@@ -404,7 +451,10 @@
     const copy = document.createElement("button"); copy.type = "button"; copy.className = "primary-button"; copy.textContent = "複製答案";
     const clear = document.createElement("button"); clear.type = "button"; clear.className = "secondary-button"; clear.textContent = "清除欄位";
     copy.addEventListener("click", async () => {
-      const missingRequired = variables.filter(v => v.required && !state.values[v.code]);
+      const missingRequired = variables.filter(v => {
+        const input = document.getElementById(`field-${v.code}`);
+        return v.required && input && !input.closest(".field")?.hidden && !state.values[v.code];
+      });
       if (missingRequired.length) { showToast(`請先填寫：${missingRequired.map(v => v.label).join("、")}`); return; }
       const built = buildOutput(flow, variables);
       if (built.missing) { showToast("這個分支尚未設定答案範本"); return; }
@@ -413,6 +463,7 @@
     });
     clear.addEventListener("click", () => {
       variables.forEach(v => { state.values[v.code] = ""; if (v.common) saveCommonValue(v.code, ""); });
+      state.revealedFields = new Set();
       renderWorkflow(); showToast("欄位已清除");
     });
     actions.append(copy, clear);

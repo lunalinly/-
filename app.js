@@ -271,14 +271,7 @@
       });
       if (!applyVariableRoute(flow)) refreshOutput(flow, variables);
     });
-    const hint = document.createElement("span"); hint.className = "hint";
-    if (variable.hint) hint.append(document.createTextNode(variable.hint));
-    if (variable.sourceNote) {
-      const source = document.createElement("span"); source.className = "value-source"; source.textContent = `值的來源：${variable.sourceNote}`; hint.append(source);
-    }
-    if (variable.sourceUrl && /^https?:\/\//i.test(variable.sourceUrl)) {
-      const link = document.createElement("a"); link.href = variable.sourceUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟來源 ↗"; hint.append(link);
-    }
+    const hint = document.createElement("span"); hint.className = "hint"; hint.textContent = variable.hint || "";
     wrap.append(label, input, hint);
     return wrap;
   }
@@ -316,15 +309,21 @@
     const parts = [];
     if (String(state.question.answerText || "").trim()) parts.push(state.question.answerText);
     parts.push(...built.templates.map(item => item.template.text));
-    if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true };
+    if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true, sources: [] };
     let text = parts.join("\n\n");
+    const sourceMap = new Map();
+    variables.forEach(variable => {
+      if (text.includes(`{{${variable.code}}}`) && (variable.sourceNote || variable.sourceUrl) && !sourceMap.has(variable.code)) {
+        sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", url: variable.sourceUrl || "" });
+      }
+    });
     variables.forEach(variable => {
       const raw = state.values[variable.code] || "";
       const value = displayValue(variable, raw) || `{請填：${variable.label}}`;
       text = text.split(`{{${variable.code}}}`).join(value);
     });
     if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;
-    return { text, missing: built.missing.length > 0 };
+    return { text, missing: built.missing.length > 0, sources: [...sourceMap.values()] };
   }
 
   function renderOutputPanel(panel, flow, variables) {
@@ -334,6 +333,7 @@
     pre.readOnly = true; pre.setAttribute("aria-label", "最終可複製答案");
     pre.style.setProperty("color", "#211d1a", "important");
     pre.style.setProperty("-webkit-text-fill-color", "#211d1a", "important");
+    const sourceGuide = document.createElement("section"); sourceGuide.id = "finalOutputSources"; sourceGuide.className = "output-source-guide"; sourceGuide.hidden = true;
     const actions = document.createElement("div"); actions.className = "output-actions";
     const copy = document.createElement("button"); copy.type = "button"; copy.className = "primary-button"; copy.textContent = "複製答案";
     const clear = document.createElement("button"); clear.type = "button"; clear.className = "secondary-button"; clear.textContent = "清除欄位";
@@ -350,7 +350,7 @@
       renderWorkflow(); showToast("欄位已清除");
     });
     actions.append(copy, clear);
-    panel.append(label, title, pre, actions);
+    panel.append(label, title, pre, sourceGuide, actions);
     refreshOutput(flow, variables);
   }
 
@@ -364,6 +364,26 @@
     const textColor = built.missing ? "#604016" : "#211d1a";
     pre.style.setProperty("color", textColor, "important");
     pre.style.setProperty("-webkit-text-fill-color", textColor, "important");
+    const guide = document.getElementById("finalOutputSources");
+    if (!guide) return;
+    guide.replaceChildren();
+    const sources = built.sources || [];
+    guide.hidden = !sources.length;
+    if (sources.length) {
+      const heading = document.createElement("strong"); heading.textContent = "參數值取得位置（不會複製）";
+      const list = document.createElement("ul");
+      sources.forEach(source => {
+        const item = document.createElement("li");
+        const name = document.createElement("b"); name.textContent = `{${source.label}}`;
+        item.append(name);
+        if (source.note) item.append(document.createTextNode(`：${source.note}`));
+        if (source.url && /^https?:\/\//i.test(source.url)) {
+          const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟來源 ↗"; item.append(document.createTextNode(" "), link);
+        }
+        list.append(item);
+      });
+      guide.append(heading, list);
+    }
   }
 
   els.search.addEventListener("input", renderQuestions);

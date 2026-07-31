@@ -181,6 +181,10 @@
   function exactVariables(q, branch) { return data.variables.filter(v => v.q === q && v.branch === branch); }
   function exactActions(q, branch) { return data.actions.filter(v => v.q === q && v.branch === branch); }
   function exactTemplate(q, branch) { return data.templates.find(v => v.q === q && v.branch === branch) || null; }
+  function isSharedBranch(value) {
+    const branch = String(value || "").trim();
+    return branch === "共用" || branch.toLowerCase() === "all";
+  }
 
   function renderStudio() {
     $("#questionCount").textContent = data.questions.length; $("#branchCount").textContent = data.flows.length; $("#fieldCount").textContent = data.fields.length;

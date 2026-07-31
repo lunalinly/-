@@ -409,3 +409,5 @@ footer a:hover { color: var(--accent-dark); }
 @media (max-width: 680px) {
   .studio-layout-v2 #studioTabs { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
 }
+
+.action-box li { white-space: pre-wrap; }

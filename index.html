@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f36f45">
+  <meta name="description" content="可搜尋、逐步判斷並產生答案的 SOP 操作小抄">
+  <title>SOP 操作小抄</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="回到首頁">
+      <span class="brand-mark">S</span>
+      <span><strong>SOP 操作小抄</strong><small>搜尋 → 判斷 → 填入 → 複製</small></span>
+    </a>
+    <nav>
+      <a class="ghost-button" href="https://github.com/lunalinly/-/edit/main/data.js" target="_blank" rel="noopener">編輯資料</a>
+      <button class="ghost-button" id="resetButton" type="button">重新開始</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero" id="heroSection">
+      <div>
+        <p class="eyebrow">操作助手</p>
+        <h1>客人現在問什麼？</h1>
+        <p>輸入關鍵字，或直接選擇下方題目。系統只會顯示這條流程需要的欄位。</p>
+      </div>
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="例如：統編、出貨、尺寸、瑕疵…">
+        <kbd>/</kbd>
+      </label>
+    </section>
+
+    <section id="questionSection" aria-labelledby="questionTitle">
+      <div class="section-heading">
+        <h2 id="questionTitle">選擇題目</h2>
+        <span id="resultCount" class="counter"></span>
+      </div>
+      <div id="questionGrid" class="question-grid"></div>
+      <div id="emptyState" class="empty-state" hidden>
+        <strong>找不到相符題目</strong>
+        <span>換一個關鍵字，或按右上角「編輯資料」新增題目。</span>
+      </div>
+    </section>
+
+    <section id="workspace" class="workspace" hidden>
+      <div class="workspace-head">
+        <button class="back-button" id="backButton" type="button">← 換題目</button>
+        <div>
+          <p class="eyebrow" id="selectedQuestionId"></p>
+          <h2 id="selectedQuestionName"></h2>
+          <p id="selectedQuestionDescription"></p>
+        </div>
+      </div>
+
+      <ol id="progress" class="progress" aria-label="操作進度"></ol>
+      <div id="decisionArea" class="panel-stack"></div>
+      <div id="resultArea"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <footer>
+    <span>資料版本 <span id="dataVersion"></span></span>
+    <a href="https://github.com/lunalinly/-" target="_blank" rel="noopener">GitHub 版本紀錄</a>
+    <a id="sourceLink" href="#" target="_blank" rel="noopener">原始試算表</a>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

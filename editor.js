@@ -70,8 +70,8 @@
       flow.branch = friendly;
       const legacyAnswerBranches = Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [friendly];
       flow.answerParts = Array.isArray(flow.answerParts) && flow.answerParts.length
-        ? flow.answerParts.map(part => ({ question: part.question || flow.question, branch: isSharedBranch(part.branch) ? "共用" : part.branch }))
-        : legacyAnswerBranches.map(name => ({ question: flow.question, branch: name === old ? friendly : (isSharedBranch(name) ? "共用" : name) }));
+        ? flow.answerParts.map(part => ({ ...part, question: part.question || flow.question, branch: isSharedBranch(part.branch) ? "共用" : part.branch, beforeText: part.beforeText || "" }))
+        : legacyAnswerBranches.map(name => ({ question: flow.question, branch: name === old ? friendly : (isSharedBranch(name) ? "共用" : name), beforeText: "" }));
     });
     data.flows.forEach(flow => (flow.routes || []).forEach(route => {
       if (!(route.assignments || []).length) return;
@@ -460,7 +460,8 @@
   }
 
   function answerPartCard(part, i, flow) {
-    return `<div class="subrecord-card answer-part-card"><div class="subrecord-head"><b>答案區塊 ${i + 1}</b><div><button type="button" data-move-answer-up="${i}" ${i === (flow.answerParts || []).length - 1 ? "disabled" : ""}>上移</button><button type="button" data-move-answer-down="${i}" ${i === 0 ? "disabled" : ""}>下移</button><button type="button" data-remove-answer-part="${i}">移除</button></div></div>${field("使用哪個既有分支的獨立答案", `answer_part_${i}`, answerPartValue(part), { type: "select", choices: answerBranchChoices(flow, part), required: true, wide: true })}</div>`;
+    const beforeText = friendlyFieldTemplate(part.beforeText || "");
+    return `<div class="subrecord-card answer-part-card"><div class="subrecord-head"><b>答案區塊 ${i + 1}</b><div><button type="button" data-move-answer-up="${i}" ${i === (flow.answerParts || []).length - 1 ? "disabled" : ""}>上移</button><button type="button" data-move-answer-down="${i}" ${i === 0 ? "disabled" : ""}>下移</button><button type="button" data-remove-answer-part="${i}">移除</button></div></div>${field("使用哪個既有分支的獨立答案", `answer_part_${i}`, answerPartValue(part), { type: "select", choices: answerBranchChoices(flow, part), required: true, wide: true })}${variableTokens(data.fields, `answer_before_${i}`)}${field("這個答案區塊前要加入的文字（選填）", `answer_before_${i}`, beforeText, { type: "textarea", rows: 4, wide: true, placeholder: "例如：另外請注意：" })}</div>`;
   }
 
   function routeCard(route, i, flow, q, vars) {
@@ -508,6 +509,7 @@
     const question = data.questions.find(item => item.name === flow.question);
     if (String(question?.answerText || "").trim()) chunks.push(friendlyFieldTemplate(question.answerText));
     (parts || []).forEach(part => {
+      if (String(part.beforeText || "").trim()) chunks.push(friendlyFieldTemplate(part.beforeText));
       let text = "";
       if (part.question === flow.question && part.branch === flow.branch) text = currentTemplateText;
       else text = exactTemplate(qidForName(part.question), part.branch)?.text || "";
@@ -523,7 +525,12 @@
     const form = $("#studioForm");
     if (!preview || !flow || !form) return;
     const parts = [...form.querySelectorAll('[name^="answer_part_"]')].map(select => {
-      try { return JSON.parse(select.value); } catch { return null; }
+      try {
+        const part = JSON.parse(select.value);
+        const index = select.name.match(/(\d+)$/)?.[1];
+        part.beforeText = form.elements[`answer_before_${index}`]?.value || "";
+        return part;
+      } catch { return null; }
     }).filter(Boolean);
     preview.value = compositionPreview(flow, parts, form.elements.template_text?.value || "");
   }
@@ -740,7 +747,11 @@
       };
     });
     const answerParts = (flow.answerParts || [{ question: flow.question, branch: flow.branch }]).map((_, i) => {
-      try { return JSON.parse(String(fd.get(`answer_part_${i}`) || "")); } catch { return null; }
+      try {
+        const part = JSON.parse(String(fd.get(`answer_part_${i}`) || ""));
+        part.beforeText = storedFieldTemplate(String(fd.get(`answer_before_${i}`) || "").trim());
+        return part;
+      } catch { return null; }
     }).filter(part => part?.question && part?.branch);
     const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), sourceNote: String(fd.get(`var_source_note_${i}`) || "").trim(), sourceLinks: parseSourceLinks(fd.get(`var_source_links_${i}`)), inputKind: String(fd.get(`var_type_${i}`) || "text"), options: String(fd.get(`var_options_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean), defaultValue: String(fd.get(`var_default_value_${i}`) || "").trim(), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), common: fd.has(`var_common_${i}`) }));
     variables.forEach(v => {
@@ -768,7 +779,7 @@
       if (step.option && !item.options.includes(step.option)) item.options.push(step.option);
     });
     flow.answerParts = captured.answerParts.map(part =>
-      part.question === oldQuestion && part.branch === oldBranch ? { question: captured.question, branch: captured.branch } : part
+      part.question === oldQuestion && part.branch === oldBranch ? { ...part, question: captured.question, branch: captured.branch } : part
     );
     data.flows.forEach((item, index) => { if (index !== state.index && item.question === captured.question && item.branch === captured.branch) item.answerParts = clone(flow.answerParts); });
     if (!oldShared || !moved) {
@@ -835,7 +846,7 @@
     const used = new Set(flow.answerParts.map(part => `${part.question}|${part.branch}`));
     const next = parts.find(part => !used.has(`${part.question}|${part.branch}`));
     if (!next) { alert("可用的答案分支都已加入。"); return; }
-    flow.answerParts.push(next);
+    flow.answerParts.push({ ...next, beforeText: "" });
     markDirty(); renderForm();
   }
   function removeAnswerPart(index) {

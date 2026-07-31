@@ -34,7 +34,7 @@
     const qidByName = new Map(data.questions.map(q => [q.name, q.id]));
     const branchMap = new Map();
     data.flows.forEach(flow => {
-      flow.steps ||= [];
+      flow.steps ||= []; flow.routes ||= [];
       const old = flow.branch;
       const friendly = isSharedBranch(old) ? "共用" : (flow.steps.at(-1)?.option || old || "共用");
       branchMap.set(`${qidByName.get(flow.question)}|${old}`, friendly);
@@ -232,6 +232,21 @@
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}<label class="studio-field"><span>欄位分類 ＊</span><input name="field_category" list="fieldCategorySuggestions" value="${esc(item.category || "未分類")}" required placeholder="例如：訂單資料"><datalist id="fieldCategorySuggestions">${categories}</datalist><small>可選既有分類，或直接輸入新的中文分類。</small></label>${field("輸入提示", "field_hint", item.hint || "")}${field("輸入類型", "field_type", item.type || "text", { type: "select", choices: typeOptions })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("多行輸入", "field_multiline", item.multiline, { type: "checkbox", checkLabel: "大型文字欄" })}${field("常用參數", "field_common", item.common, { type: "checkbox", checkLabel: "沿用上次輸入" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
   }
 
+  function routeVariableChoices(q, vars, value) {
+    const combined = [...exactVariables(q, "共用"), ...vars];
+    const unique = [...new Map(combined.map(v => [v.code, v])).values()];
+    return `<option value="">選擇欄位…</option>` + unique.map(v => `<option value="${esc(v.code)}" ${v.code === value ? "selected" : ""}>${esc(v.label)}</option>`).join("");
+  }
+
+  function routeTargetChoices(flow, value) {
+    const targets = data.flows.filter(item => item.question === flow.question && item !== flow);
+    return `<option value="">選擇目標分支…</option>` + targets.map(item => `<option value="${esc(item.branch)}" ${item.branch === value ? "selected" : ""}>${esc(item.branch)}</option>`).join("");
+  }
+
+  function routeCard(route, i, flow, q, vars) {
+    return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("等於這個值", `route_value_${i}`, route.value || "", { required: true, placeholder: "例如：A" })}${field("跳到哪個分支", `route_target_${i}`, route.targetBranch || "", { type: "select", choices: routeTargetChoices(flow, route.targetBranch || ""), required: true, wide: true })}</div></div>`;
+  }
+
   function branchForm(flow) {
     const q = qidForName(flow.question); const vars = exactVariables(q, flow.branch); const template = exactTemplate(q, flow.branch); const actions = exactActions(q, flow.branch);
     const steps = (flow.steps || []).map((step, i) => `<div class="step-card"><div class="step-card-head"><b>判斷 ${i + 1}</b><button type="button" data-remove-step="${i}">移除</button></div>${field("判斷問題", `step_prompt_${i}`, step.prompt, { required: true, wide: true })}${field("這條路徑的選項", `step_option_${i}`, step.option, { required: true, wide: true })}</div>`).join("");
@@ -242,10 +257,12 @@
       ? `<div class="field-add-tools"><select name="existing_variable_code" aria-label="選擇既有欄位"><option value="">選擇既有欄位…</option>${reusableVariableOptions(reusable)}</select><button type="button" data-use-existing-variable ${canReuse ? "" : "disabled"}>＋ 使用既有欄位</button><button type="button" data-add-variable>＋ 建立新欄位</button></div>`
       : `<div class="field-add-tools"><span>目前沒有既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
+    const routeRows = (flow.routes || []).map((route, i) => routeCard(route, i, flow, q, vars)).join("") || `<div class="no-steps">目前沒有依欄位值自動轉向。</div>`;
     const friendly = friendlyTemplate(template?.text || "", q);
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>沒有層數上限；依實際操作順序一直增加即可。</small></div><button type="button" data-add-step>＋ 增加一層判斷</button></div><div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>可沿用既有中文欄位，或建立全新欄位；自動計算設定也會一起沿用。</small></div></div>${reuseControls}<div class="branch-variable-list">${variableRows}</div></section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>欄位值轉向</b><small>輸入指定值後，自動跳到同一題目的另一個分支。</small></div><button type="button" data-add-route>＋ 新增轉向規則</button></div><div class="branch-route-list">${routeRows}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案範本</b><small>點中文欄位按鈕插入，不必接觸系統代碼。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單{訂單編號}…" })}</section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>操作提醒</b><small>查表、填表、工單、Jira 或其他動作。</small></div><button type="button" data-add-action>＋ 新增操作</button></div><div class="branch-action-list">${actionRows}</div></section>`;
   }
@@ -281,6 +298,8 @@
     const addFor = event.target.closest("[data-add-branch-for]"); if (addFor) { addBranch(addFor.dataset.addBranchFor); return; }
     if (event.target.closest("[data-add-step]")) { saveBranch(false); current().steps.push({ prompt: "", option: "" }); markDirty(); renderForm(); return; }
     const removeStep = event.target.closest("[data-remove-step]"); if (removeStep) { saveBranch(false); current().steps.splice(Number(removeStep.dataset.removeStep), 1); markDirty(); renderForm(); return; }
+    if (event.target.closest("[data-add-route]")) { addRoute(); return; }
+    const removeRoute = event.target.closest("[data-remove-route]"); if (removeRoute) { removeRouteAt(Number(removeRoute.dataset.removeRoute)); return; }
     if (event.target.closest("[data-use-existing-variable]")) { useExistingVariable(); return; }
     if (event.target.closest("[data-add-variable]")) { addVariable(); return; }
     const removeVar = event.target.closest("[data-remove-variable]"); if (removeVar) { removeVariable(Number(removeVar.dataset.removeVariable)); return; }
@@ -365,11 +384,12 @@
     const form = $("#studioForm"); if (!form.reportValidity()) return null; const fd = new FormData(form);
     const question = String(fd.get("question") || "").trim(); const branch = String(fd.get("branch") || "共用").trim() || "共用"; const q = qidForName(question);
     const steps = (flow.steps || []).map((_, i) => ({ prompt: String(fd.get(`step_prompt_${i}`) || "").trim(), option: String(fd.get(`step_option_${i}`) || "").trim() }));
+    const routes = (flow.routes || []).map((_, i) => ({ sourceCode: String(fd.get(`route_source_${i}`) || ""), value: String(fd.get(`route_value_${i}`) || "").trim(), targetBranch: String(fd.get(`route_target_${i}`) || "") }));
     const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), type: String(fd.get(`var_type_${i}`) || "text"), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), multiline: fd.has(`var_multiline_${i}`), common: fd.has(`var_common_${i}`) }));
     variables.forEach(v => { if (!v.autoSource) delete v.autoSource; });
     const previousActions = exactActions(oldQ, oldBranch); const actions = previousActions.map((old, i) => ({ q, branch, action: String(fd.get(`action_name_${i}`) || "").trim(), needed: fd.has(`action_needed_${i}`), note: String(fd.get(`action_note_${i}`) || "").trim() }));
     const templateText = String(fd.get("template_text") || "").trim();
-    return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, variables, actions, templateText };
+    return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, routes, variables, actions, templateText };
   }
 
   function saveBranch(show = true) {
@@ -377,7 +397,7 @@
     const oldQuestion = flow.question, oldQ = qidForName(oldQuestion), oldBranch = flow.branch; const captured = captureBranchForm(flow, oldQ, oldBranch); if (!captured) return false;
     const oldShared = data.flows.some((f, i) => i !== state.index && f.question === oldQuestion && f.branch === oldBranch);
     const moved = captured.q !== oldQ || captured.branch !== oldBranch;
-    flow.question = captured.question; flow.branch = captured.branch; flow.next = captured.next; flow.steps = captured.steps;
+    flow.question = captured.question; flow.branch = captured.branch; flow.next = captured.next; flow.steps = captured.steps; flow.routes = captured.routes;
     if (!oldShared || !moved) {
       data.variables = data.variables.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.templates = data.templates.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.actions = data.actions.filter(v => !(v.q === oldQ && v.branch === oldBranch));
     }
@@ -406,6 +426,15 @@
     data.fields.push(clone(item)); data.variables.push({ ...item, q, branch: flow.branch }); markDirty(); renderForm();
   }
   function removeVariable(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactVariables(q, flow.branch), target = list[index]; if (target) data.variables.splice(data.variables.indexOf(target), 1); markDirty(); renderForm(); }
+  function addRoute() {
+    if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
+    const available = [...exactVariables(q, "共用"), ...exactVariables(q, flow.branch)];
+    const target = data.flows.find(item => item.question === flow.question && item !== flow);
+    if (!available.length) { alert("請先在這個分支加入要判斷的欄位。"); return; }
+    if (!target) { alert("請先為這個題目建立另一個目標分支。"); return; }
+    flow.routes ||= []; flow.routes.push({ sourceCode: available[0].code, value: "", targetBranch: target.branch }); markDirty(); renderForm();
+  }
+  function removeRouteAt(index) { if (!saveBranch(false)) return; current().routes.splice(index, 1); markDirty(); renderForm(); }
   function addAction() { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question); data.actions.push({ q, branch: flow.branch, action: "新操作", needed: true, note: "" }); markDirty(); renderForm(); }
   function removeActionAt(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactActions(q, flow.branch), target = list[index]; if (target) data.actions.splice(data.actions.indexOf(target), 1); markDirty(); renderForm(); }
   function insertToken(label) { const textarea = $("#studioForm [name=template_text]"); if (!textarea) return; const marker = `{${label}}`; textarea.setRangeText(marker, textarea.selectionStart ?? textarea.value.length, textarea.selectionEnd ?? textarea.value.length, "end"); textarea.focus(); }

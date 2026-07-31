@@ -50,6 +50,10 @@
       $("#studioSearch").value = "";
       renderStudio();
     });
+    $("#studioForm").addEventListener("click", event => {
+      const remove = event.target.closest("[data-remove-step]");
+      if (remove) removeFlowStep(Number(remove.dataset.removeStep));
+    });
     $("#studioList").addEventListener("click", event => {
       const item = event.target.closest("[data-index]");
       if (!item) return;
@@ -193,11 +197,6 @@
     if (studio.section === "templates") form.innerHTML = templateForm(record);
     if (studio.section === "actions") form.innerHTML = actionForm(record);
     form.querySelector("#addStep")?.addEventListener("click", addFlowStep);
-    form.addEventListener("click", event => {
-      const remove = event.target.closest("[data-remove-step]");
-      if (!remove) return;
-      removeFlowStep(Number(remove.dataset.removeStep));
-    });
   }
 
   function questionForm(r) {

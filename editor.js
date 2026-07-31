@@ -39,6 +39,9 @@
       const friendly = isSharedBranch(old) ? "共用" : (flow.steps.at(-1)?.option || old || "共用");
       branchMap.set(`${qidByName.get(flow.question)}|${old}`, friendly);
       flow.branch = friendly;
+      flow.answerBranches = Array.isArray(flow.answerBranches) && flow.answerBranches.length
+        ? flow.answerBranches.map(name => name === old ? friendly : (isSharedBranch(name) ? "共用" : name))
+        : [friendly];
     });
     [data.variables, data.templates, data.actions].forEach(list => list.forEach(item => {
       item.branch = branchMap.get(`${item.q}|${item.branch}`) || (isSharedBranch(item.branch) ? "共用" : item.branch || "共用");
@@ -243,6 +246,16 @@
     return `<option value="">選擇目標分支…</option>` + targets.map(item => `<option value="${esc(item.branch)}" ${item.branch === value ? "selected" : ""}>${esc(item.branch)}</option>`).join("");
   }
 
+  function answerBranchChoices(flow, value) {
+    const names = [...new Set(data.flows.filter(item => item.question === flow.question).map(item => item.branch))];
+    if (!names.includes(flow.branch)) names.unshift(flow.branch);
+    return names.map(name => `<option value="${esc(name)}" ${name === value ? "selected" : ""}>${esc(name)}</option>`).join("");
+  }
+
+  function answerPartCard(branch, i, flow) {
+    return `<div class="subrecord-card answer-part-card"><div class="subrecord-head"><b>答案區塊 ${i + 1}</b><div><button type="button" data-move-answer-up="${i}" ${i === 0 ? "disabled" : ""}>上移</button><button type="button" data-move-answer-down="${i}" ${i === (flow.answerBranches || []).length - 1 ? "disabled" : ""}>下移</button><button type="button" data-remove-answer-part="${i}">移除</button></div></div>${field("使用哪個分支的獨立答案", `answer_branch_${i}`, branch, { type: "select", choices: answerBranchChoices(flow, branch), required: true, wide: true })}</div>`;
+  }
+
   function routeCard(route, i, flow, q, vars) {
     return `<div class="subrecord-card"><div class="subrecord-head"><b>轉向規則 ${i + 1}</b><button type="button" data-remove-route="${i}">移除</button></div><div class="editor-grid">${field("判斷哪個欄位", `route_source_${i}`, route.sourceCode || "", { type: "select", choices: routeVariableChoices(q, vars, route.sourceCode || ""), required: true })}${field("等於這個值", `route_value_${i}`, route.value || "", { required: true, placeholder: "例如：A" })}${field("跳到哪個分支", `route_target_${i}`, route.targetBranch || "", { type: "select", choices: routeTargetChoices(flow, route.targetBranch || ""), required: true, wide: true })}</div></div>`;
   }
@@ -258,12 +271,16 @@
       : `<div class="field-add-tools"><span>目前沒有既有欄位</span><button type="button" data-add-variable>＋ 建立新欄位</button></div>`;
     const actionRows = actions.map((a, i) => actionCard(a, i)).join("") || `<div class="no-steps">這個分支目前沒有額外操作提醒。</div>`;
     const routeRows = (flow.routes || []).map((route, i) => routeCard(route, i, flow, q, vars)).join("") || `<div class="no-steps">目前沒有依欄位值自動轉向。</div>`;
+    const answerBranches = Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch];
+    flow.answerBranches = answerBranches;
+    const answerRows = answerBranches.map((branch, i) => answerPartCard(branch, i, flow)).join("");
     const friendly = friendlyTemplate(template?.text || "", q);
     return `<section class="editor-section wide"><div class="editor-section-title"><div><b>分支基本資料</b><small>相同中文名稱可以重複使用。</small></div></div><div class="editor-grid">${field("所屬題目", "question", flow.question, { type: "select", choices: questionChoices(flow.question), required: true })}<label class="studio-field"><span>中文分支名稱 ＊</span><input name="branch" list="branchSuggestions" value="${esc(flow.branch)}" required><datalist id="branchSuggestions">${branchSuggestions()}</datalist><small>可選既有名稱，或直接輸入新的中文名稱。</small></label>${field("走完後的下一步", "next", flow.next, { wide: true, type: "textarea", rows: 3 })}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>判斷路徑</b><small>沒有層數上限；依實際操作順序一直增加即可。</small></div><button type="button" data-add-step>＋ 增加一層判斷</button></div><div class="unlimited-steps">${steps || `<div class="no-steps">無判斷時會直接進入這個分支。</div>`}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>需要填入的欄位</b><small>可沿用既有中文欄位，或建立全新欄位；自動計算設定也會一起沿用。</small></div></div>${reuseControls}<div class="branch-variable-list">${variableRows}</div></section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>欄位值轉向</b><small>輸入指定值後，自動跳到同一題目的另一個分支。</small></div><button type="button" data-add-route>＋ 新增轉向規則</button></div><div class="branch-route-list">${routeRows}</div></section>
-      <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案範本</b><small>點中文欄位按鈕插入，不必接觸系統代碼。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單{訂單編號}…" })}</section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>最終答案組合</b><small>依順序組合多個分支的獨立答案文字；同一分支可在不同流程重複使用。</small></div><button type="button" data-add-answer-part>＋ 加入答案分支</button></div><div class="branch-answer-list">${answerRows}</div></section>
+      <section class="editor-section wide"><div class="editor-section-title"><div><b>此分支的獨立答案文字</b><small>只編輯「${esc(flow.branch)}」本身的文字；組合設定不會複製或覆蓋它。</small></div></div>${variableTokens(vars)}${field("答案內容", "template_text", friendly, { wide: true, type: "textarea", rows: 12, placeholder: "您好，訂單{訂單編號}…" })}</section>
       <section class="editor-section wide"><div class="editor-section-title"><div><b>操作提醒</b><small>查表、填表、工單、Jira 或其他動作。</small></div><button type="button" data-add-action>＋ 新增操作</button></div><div class="branch-action-list">${actionRows}</div></section>`;
   }
 
@@ -298,6 +315,10 @@
     const addFor = event.target.closest("[data-add-branch-for]"); if (addFor) { addBranch(addFor.dataset.addBranchFor); return; }
     if (event.target.closest("[data-add-step]")) { saveBranch(false); current().steps.push({ prompt: "", option: "" }); markDirty(); renderForm(); return; }
     const removeStep = event.target.closest("[data-remove-step]"); if (removeStep) { saveBranch(false); current().steps.splice(Number(removeStep.dataset.removeStep), 1); markDirty(); renderForm(); return; }
+    if (event.target.closest("[data-add-answer-part]")) { addAnswerPart(); return; }
+    const removeAnswer = event.target.closest("[data-remove-answer-part]"); if (removeAnswer) { removeAnswerPart(Number(removeAnswer.dataset.removeAnswerPart)); return; }
+    const moveAnswerUp = event.target.closest("[data-move-answer-up]"); if (moveAnswerUp) { moveAnswerPart(Number(moveAnswerUp.dataset.moveAnswerUp), -1); return; }
+    const moveAnswerDown = event.target.closest("[data-move-answer-down]"); if (moveAnswerDown) { moveAnswerPart(Number(moveAnswerDown.dataset.moveAnswerDown), 1); return; }
     if (event.target.closest("[data-add-route]")) { addRoute(); return; }
     const removeRoute = event.target.closest("[data-remove-route]"); if (removeRoute) { removeRouteAt(Number(removeRoute.dataset.removeRoute)); return; }
     if (event.target.closest("[data-use-existing-variable]")) { useExistingVariable(); return; }
@@ -315,7 +336,7 @@
     state.mode = "fields"; state.index = data.fields.length - 1; markDirty(); renderStudio();
   }
   function addQuestion() { data.questions.push({ id: nextId("Q", data.questions.map(q => q.id)), name: "新題目", keywords: "", description: "", enabled: true }); state.mode = "questions"; state.index = data.questions.length - 1; markDirty(); renderStudio(); }
-  function addBranch(questionName) { data.flows.push({ question: questionName || data.questions[0]?.name || "", branch: "新分支", steps: [], next: "" }); state.mode = "branches"; state.index = data.flows.length - 1; markDirty(); renderStudio(); }
+  function addBranch(questionName) { data.flows.push({ question: questionName || data.questions[0]?.name || "", branch: "新分支", steps: [], routes: [], answerBranches: ["新分支"], next: "" }); state.mode = "branches"; state.index = data.flows.length - 1; markDirty(); renderStudio(); }
 
   function duplicateCurrent() {
     if (!current()) return;
@@ -385,11 +406,12 @@
     const question = String(fd.get("question") || "").trim(); const branch = String(fd.get("branch") || "共用").trim() || "共用"; const q = qidForName(question);
     const steps = (flow.steps || []).map((_, i) => ({ prompt: String(fd.get(`step_prompt_${i}`) || "").trim(), option: String(fd.get(`step_option_${i}`) || "").trim() }));
     const routes = (flow.routes || []).map((_, i) => ({ sourceCode: String(fd.get(`route_source_${i}`) || ""), value: String(fd.get(`route_value_${i}`) || "").trim(), targetBranch: String(fd.get(`route_target_${i}`) || "") }));
+    const answerBranches = (flow.answerBranches || [flow.branch]).map((_, i) => String(fd.get(`answer_branch_${i}`) || "")).filter(Boolean);
     const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), type: String(fd.get(`var_type_${i}`) || "text"), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), multiline: fd.has(`var_multiline_${i}`), common: fd.has(`var_common_${i}`) }));
     variables.forEach(v => { if (!v.autoSource) delete v.autoSource; });
     const previousActions = exactActions(oldQ, oldBranch); const actions = previousActions.map((old, i) => ({ q, branch, action: String(fd.get(`action_name_${i}`) || "").trim(), needed: fd.has(`action_needed_${i}`), note: String(fd.get(`action_note_${i}`) || "").trim() }));
     const templateText = String(fd.get("template_text") || "").trim();
-    return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, routes, variables, actions, templateText };
+    return { question, q, branch, next: String(fd.get("next") || "").trim(), steps, routes, answerBranches, variables, actions, templateText };
   }
 
   function saveBranch(show = true) {
@@ -398,6 +420,7 @@
     const oldShared = data.flows.some((f, i) => i !== state.index && f.question === oldQuestion && f.branch === oldBranch);
     const moved = captured.q !== oldQ || captured.branch !== oldBranch;
     flow.question = captured.question; flow.branch = captured.branch; flow.next = captured.next; flow.steps = captured.steps; flow.routes = captured.routes;
+    flow.answerBranches = (captured.answerBranches.length ? captured.answerBranches : [captured.branch]).map(name => name === oldBranch ? captured.branch : name);
     if (!oldShared || !moved) {
       data.variables = data.variables.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.templates = data.templates.filter(v => !(v.q === oldQ && v.branch === oldBranch)); data.actions = data.actions.filter(v => !(v.q === oldQ && v.branch === oldBranch));
     }
@@ -426,6 +449,23 @@
     data.fields.push(clone(item)); data.variables.push({ ...item, q, branch: flow.branch }); markDirty(); renderForm();
   }
   function removeVariable(index) { if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question), list = exactVariables(q, flow.branch), target = list[index]; if (target) data.variables.splice(data.variables.indexOf(target), 1); markDirty(); renderForm(); }
+  function addAnswerPart() {
+    if (!saveBranch(false)) return; const flow = current();
+    const names = [...new Set(data.flows.filter(item => item.question === flow.question).map(item => item.branch))];
+    flow.answerBranches ||= [flow.branch];
+    flow.answerBranches.push(names.find(name => !flow.answerBranches.includes(name)) || flow.branch);
+    markDirty(); renderForm();
+  }
+  function removeAnswerPart(index) {
+    if (!saveBranch(false)) return; const flow = current();
+    if ((flow.answerBranches || []).length <= 1) { alert("最終答案至少要保留一個答案分支。"); return; }
+    flow.answerBranches.splice(index, 1); markDirty(); renderForm();
+  }
+  function moveAnswerPart(index, direction) {
+    if (!saveBranch(false)) return; const list = current().answerBranches || []; const target = index + direction;
+    if (target < 0 || target >= list.length) return;
+    [list[index], list[target]] = [list[target], list[index]]; markDirty(); renderForm();
+  }
   function addRoute() {
     if (!saveBranch(false)) return; const flow = current(), q = qidForName(flow.question);
     const available = [...exactVariables(q, "共用"), ...exactVariables(q, flow.branch)];

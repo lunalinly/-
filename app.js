@@ -323,7 +323,15 @@
       text = text.split(`{{${variable.code}}}`).join(value);
     });
     if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;
-    return { text, missing: built.missing.length > 0, sources: [...sourceMap.values()] };
+    const sources = [...sourceMap.values()];
+    if (sources.length) {
+      const lines = sources.map(source => {
+        const location = [source.note, source.url].filter(Boolean).join(" ");
+        return `{${source.label}}：${location}`;
+      });
+      text += `\n\n參數值取得位置：\n${lines.join("\n")}`;
+    }
+    return { text, missing: built.missing.length > 0, sources };
   }
 
   function renderOutputPanel(panel, flow, variables) {
@@ -367,10 +375,10 @@
     const guide = document.getElementById("finalOutputSources");
     if (!guide) return;
     guide.replaceChildren();
-    const sources = built.sources || [];
-    guide.hidden = !sources.length;
+    const sources = [];
+    guide.hidden = true;
     if (sources.length) {
-      const heading = document.createElement("strong"); heading.textContent = "參數值取得位置（不會複製）";
+      const heading = document.createElement("strong"); heading.textContent = "參數值取得位置（會一併複製）";
       const list = document.createElement("ul");
       sources.forEach(source => {
         const item = document.createElement("li");

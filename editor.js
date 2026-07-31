@@ -28,6 +28,9 @@
     data.variables.forEach(item => { if (!catalog.has(item.code)) catalog.set(item.code, fieldCopy(item)); });
     data.fields = [...catalog.values()].map(item => ({ ...item, category: item.category || "未分類", fillRules: Array.isArray(item.fillRules) ? item.fillRules : [] }));
     data.fields.forEach(fieldItem => {
+      fieldItem.sourceLinks = Array.isArray(fieldItem.sourceLinks)
+        ? fieldItem.sourceLinks.filter(link => link?.url)
+        : (fieldItem.sourceUrl ? [{ title: "開啟來源", url: fieldItem.sourceUrl }] : []);
       if (String(fieldItem.label || "").trim() !== "新欄位") return;
       const namedUse = data.variables.find(variable =>
         variable.code === fieldItem.code &&
@@ -281,6 +284,23 @@
     if (!visible.length) list.innerHTML = `<div class="studio-list-empty">目前沒有資料<br>按上方新增開始建立</div>`;
   }
 
+  function sourceLinksText(item) {
+    const links = Array.isArray(item?.sourceLinks) && item.sourceLinks.length
+      ? item.sourceLinks
+      : (item?.sourceUrl ? [{ title: "開啟來源", url: item.sourceUrl }] : []);
+    return links.map(link => `${link.title || "開啟來源"} | ${link.url || ""}`).join("\n");
+  }
+
+  function parseSourceLinks(text) {
+    return String(text || "").split(/\r?\n/).map(line => {
+      const value = line.trim();
+      if (!value) return null;
+      const separator = value.indexOf("|");
+      if (separator < 0) return { title: "開啟來源", url: value };
+      return { title: value.slice(0, separator).trim() || "開啟來源", url: value.slice(separator + 1).trim() };
+    }).filter(link => link?.url);
+  }
+
   function field(label, name, value = "", options = {}) {
     const wide = options.wide ? " wide" : ""; const required = options.required ? "required" : "";
     let control;
@@ -388,7 +408,7 @@
     const fillRuleRows = item.fillRules.map((rule, index) => ({ rule, index })).reverse().map(({ rule, index }) => fieldFillRuleCard(rule, index, item)).join("") || `<div class="no-steps">目前沒有依欄位值自動填入其他變數。</div>`;
     const used = data.variables.filter(v => v.code === item.code);
     const usage = used.length ? `<div class="linked-branches">${used.map(v => `<div class="linked-branch"><strong>${esc(qnameForId(v.q))} · ${esc(v.branch)}</strong><span>正在使用此欄位</span></div>`).join("")}</div>` : `<div class="no-steps">目前尚未被任何分支使用。</div>`;
-    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}<label class="studio-field"><span>欄位分類 ＊</span><input name="field_category" list="fieldCategorySuggestions" value="${esc(item.category || "未分類")}" required placeholder="例如：訂單資料"><datalist id="fieldCategorySuggestions">${categories}</datalist><small>可選既有分類，或直接輸入新的中文分類。</small></label>${field("輸入提示", "field_hint", item.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", "field_source_note", item.sourceNote || "", { wide: true, type: "textarea", rows: 4, placeholder: "例如：訂單後台 → 訂單詳情 → 物流資訊" })}${field("來源連結（選填）", "field_source_url", item.sourceUrl || "", { wide: true, type: "url", placeholder: "https://…" })}${field("輸入類型", "field_type", inputKind, { type: "select", choices: typeOptions })}${field("下拉選項（每行一個；只有下拉選單會使用）", "field_options", (item.options || []).join("\n"), { type: "textarea", rows: 5, wide: true, placeholder: "是\n否\n需要再確認" })}${field("預設答案（選填）", "field_default_value", item.defaultValue || "", { wide: true, type: "textarea", rows: 3, placeholder: "前台首次顯示時自動填入，仍可修改" })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("自動帶入", "field_common", item.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>符合值後的動作</b><small>完全選填；每個規則可顯示確認欄位、自動填入多個欄位，並加入答案文字。</small></div><button type="button" data-add-field-rule>＋ 新增符合值規則</button></div><div class="branch-route-list">${fillRuleRows}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
+    return `<section class="editor-section wide"><div class="editor-section-title"><div><b>欄位基本設定</b><small>修改後會同步套用到所有使用此欄位的分支。</small></div></div><input type="hidden" name="field_code" value="${esc(item.code)}"><div class="editor-grid">${field("中文欄位名稱", "field_label", item.label, { required: true })}<label class="studio-field"><span>欄位分類 ＊</span><input name="field_category" list="fieldCategorySuggestions" value="${esc(item.category || "未分類")}" required placeholder="例如：訂單資料"><datalist id="fieldCategorySuggestions">${categories}</datalist><small>可選既有分類，或直接輸入新的中文分類。</small></label>${field("輸入提示", "field_hint", item.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", "field_source_note", item.sourceNote || "", { wide: true, type: "textarea", rows: 4, placeholder: "例如：訂單後台 → 訂單詳情 → 物流資訊" })}${field("來源連結（每行：標題 | 網址）", "field_source_links", sourceLinksText(item), { wide: true, type: "textarea", rows: 5, placeholder: "訂單後台 | https://…\n物流查詢 | https://…" })}${field("輸入類型", "field_type", inputKind, { type: "select", choices: typeOptions })}${field("下拉選項（每行一個；只有下拉選單會使用）", "field_options", (item.options || []).join("\n"), { type: "textarea", rows: 5, wide: true, placeholder: "是\n否\n需要再確認" })}${field("預設答案（選填）", "field_default_value", item.defaultValue || "", { wide: true, type: "textarea", rows: 3, placeholder: "前台首次顯示時自動填入，仍可修改" })}${field("自動依照哪個欄位", "field_source", item.autoSource || "", { type: "select", choices: sourceOptions })}${field("增減天數", "field_days", item.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", "field_required", item.required, { type: "checkbox", checkLabel: "必填" })}${field("自動帶入", "field_common", item.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>符合值後的動作</b><small>完全選填；每個規則可顯示確認欄位、自動填入多個欄位，並加入答案文字。</small></div><button type="button" data-add-field-rule>＋ 新增符合值規則</button></div><div class="branch-route-list">${fillRuleRows}</div></section><section class="editor-section wide"><div class="editor-section-title"><div><b>使用中的分支</b><small>從分支移除後，欄位仍會保留在欄位庫。</small></div></div>${usage}</section>`;
   }
 
   function routeVariableChoices(q, vars, value) {
@@ -546,7 +566,7 @@
   function variableCard(v, i, q, vars) {
     const inputKind = v.multiline ? "textarea" : (v.type === "date" ? "date" : (v.type === "select" ? "select" : "text"));
     const typeOptions = `<option value="text" ${inputKind === "text" ? "selected" : ""}>單行文字</option><option value="textarea" ${inputKind === "textarea" ? "selected" : ""}>多行文字</option><option value="select" ${inputKind === "select" ? "selected" : ""}>下拉選單</option><option value="date" ${inputKind === "date" ? "selected" : ""}>日期</option>`;
-    return `<div class="subrecord-card"><div class="subrecord-head"><b>欄位 ${i + 1}｜${esc(v.label)}</b><button type="button" data-remove-variable="${i}">移除</button></div><input type="hidden" name="var_code_${i}" value="${esc(v.code)}"><div class="editor-grid">${field("中文欄位名稱", `var_label_${i}`, v.label, { required: true })}${field("輸入提示", `var_hint_${i}`, v.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", `var_source_note_${i}`, v.sourceNote || "", { wide: true, type: "textarea", rows: 4, placeholder: "例如：訂單後台 → 訂單詳情" })}${field("來源連結（選填）", `var_source_url_${i}`, v.sourceUrl || "", { wide: true, type: "url", placeholder: "https://…" })}${field("輸入類型", `var_type_${i}`, inputKind, { type: "select", choices: typeOptions })}${field("下拉選項（每行一個）", `var_options_${i}`, (v.options || []).join("\n"), { type: "textarea", rows: 4, wide: true, placeholder: "是\n否\n需要再確認" })}${field("預設答案（選填）", `var_default_value_${i}`, v.defaultValue || "", { wide: true, type: "textarea", rows: 3, placeholder: "前台首次顯示時自動填入，仍可修改" })}${field("自動依照哪個欄位", `var_source_${i}`, v.autoSource || "", { type: "select", choices: sourceChoices(q, vars, v.autoSource || "") })}${field("增減天數", `var_days_${i}`, v.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", `var_required_${i}`, v.required, { type: "checkbox", checkLabel: "必填" })}${field("自動帶入", `var_common_${i}`, v.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></div>`;
+    return `<div class="subrecord-card"><div class="subrecord-head"><b>欄位 ${i + 1}｜${esc(v.label)}</b><button type="button" data-remove-variable="${i}">移除</button></div><input type="hidden" name="var_code_${i}" value="${esc(v.code)}"><div class="editor-grid">${field("中文欄位名稱", `var_label_${i}`, v.label, { required: true })}${field("輸入提示", `var_hint_${i}`, v.hint || "")}${field("值從哪裡找（顯示並附加於最終答案底部）", `var_source_note_${i}`, v.sourceNote || "", { wide: true, type: "textarea", rows: 4, placeholder: "例如：訂單後台 → 訂單詳情" })}${field("來源連結（每行：標題 | 網址）", `var_source_links_${i}`, sourceLinksText(v), { wide: true, type: "textarea", rows: 5, placeholder: "訂單後台 | https://…\n物流查詢 | https://…" })}${field("輸入類型", `var_type_${i}`, inputKind, { type: "select", choices: typeOptions })}${field("下拉選項（每行一個）", `var_options_${i}`, (v.options || []).join("\n"), { type: "textarea", rows: 4, wide: true, placeholder: "是\n否\n需要再確認" })}${field("預設答案（選填）", `var_default_value_${i}`, v.defaultValue || "", { wide: true, type: "textarea", rows: 3, placeholder: "前台首次顯示時自動填入，仍可修改" })}${field("自動依照哪個欄位", `var_source_${i}`, v.autoSource || "", { type: "select", choices: sourceChoices(q, vars, v.autoSource || "") })}${field("增減天數", `var_days_${i}`, v.autoDays ?? 0, { type: "number", hint: "15 為加 15 天；-1 為減 1 天" })}${field("必填", `var_required_${i}`, v.required, { type: "checkbox", checkLabel: "必填" })}${field("自動帶入", `var_common_${i}`, v.common, { type: "checkbox", checkLabel: "自動帶入上次使用的值" })}</div></div>`;
   }
   function actionCard(a, i) {
     return `<div class="subrecord-card"><div class="subrecord-head"><b>操作 ${i + 1}｜${esc(a.action)}</b><button type="button" data-remove-action="${i}">移除</button></div><div class="editor-grid">${field("操作名稱", `action_name_${i}`, a.action, { required: true })}${field("是否需要", `action_needed_${i}`, a.needed, { type: "checkbox", checkLabel: "需要執行" })}${field("補充說明", `action_note_${i}`, a.note || "", { wide: true, type: "textarea", rows: 3 })}${field("連結（選填）", `action_url_${i}`, a.url || "", { wide: true, type: "url", placeholder: "https://…" })}</div></div>`;
@@ -694,12 +714,13 @@
     if (data.fields.some((fieldItem, index) => index !== state.index && fieldItem.label === label)) { alert("這個中文欄位名稱已經存在。"); return false; }
     Object.assign(item, {
       label, category: String(fd.get("field_category") || "未分類").trim() || "未分類", hint: String(fd.get("field_hint") || "").trim(),
-      sourceNote: String(fd.get("field_source_note") || "").trim(), sourceUrl: String(fd.get("field_source_url") || "").trim(), type: inputKind === "date" ? "date" : (inputKind === "select" ? "select" : "text"),
+      sourceNote: String(fd.get("field_source_note") || "").trim(), sourceLinks: parseSourceLinks(fd.get("field_source_links")), type: inputKind === "date" ? "date" : (inputKind === "select" ? "select" : "text"),
       options: String(fd.get("field_options") || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
       defaultValue: String(fd.get("field_default_value") || "").trim(),
       autoSource: String(fd.get("field_source") || "") || undefined, autoDays: Number(fd.get("field_days") || 0),
       required: fd.has("field_required"), multiline: inputKind === "textarea", common: fd.has("field_common"), fillRules
     });
+    item.sourceUrl = item.sourceLinks[0]?.url || "";
     if (!item.autoSource) delete item.autoSource;
     data.variables.filter(v => v.code === item.code).forEach(v => {
       const q = v.q, branch = v.branch; Object.assign(v, clone(item), { q, branch });
@@ -723,11 +744,12 @@
     const answerParts = (flow.answerParts || [{ question: flow.question, branch: flow.branch }]).map((_, i) => {
       try { return JSON.parse(String(fd.get(`answer_part_${i}`) || "")); } catch { return null; }
     }).filter(part => part?.question && part?.branch);
-    const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), sourceNote: String(fd.get(`var_source_note_${i}`) || "").trim(), sourceUrl: String(fd.get(`var_source_url_${i}`) || "").trim(), inputKind: String(fd.get(`var_type_${i}`) || "text"), options: String(fd.get(`var_options_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean), defaultValue: String(fd.get(`var_default_value_${i}`) || "").trim(), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), common: fd.has(`var_common_${i}`) }));
+    const previousVars = exactVariables(oldQ, oldBranch); const variables = previousVars.map((old, i) => ({ q, branch, code: String(fd.get(`var_code_${i}`) || old.code), label: String(fd.get(`var_label_${i}`) || "").trim(), hint: String(fd.get(`var_hint_${i}`) || "").trim(), sourceNote: String(fd.get(`var_source_note_${i}`) || "").trim(), sourceLinks: parseSourceLinks(fd.get(`var_source_links_${i}`)), inputKind: String(fd.get(`var_type_${i}`) || "text"), options: String(fd.get(`var_options_${i}`) || "").split(/\r?\n/).map(value => value.trim()).filter(Boolean), defaultValue: String(fd.get(`var_default_value_${i}`) || "").trim(), autoSource: String(fd.get(`var_source_${i}`) || "") || undefined, autoDays: Number(fd.get(`var_days_${i}`) || 0), required: fd.has(`var_required_${i}`), common: fd.has(`var_common_${i}`) }));
     variables.forEach(v => {
       v.type = v.inputKind === "date" ? "date" : (v.inputKind === "select" ? "select" : "text");
       v.multiline = v.inputKind === "textarea";
       delete v.inputKind;
+      v.sourceUrl = v.sourceLinks[0]?.url || "";
       if (!v.autoSource) delete v.autoSource;
     });
     const previousActions = exactActions(oldQ, oldBranch); const actions = previousActions.map((old, i) => ({ q, branch, action: String(fd.get(`action_name_${i}`) || "").trim(), needed: fd.has(`action_needed_${i}`), note: String(fd.get(`action_note_${i}`) || "").trim(), url: String(fd.get(`action_url_${i}`) || "").trim() }));

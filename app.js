@@ -270,16 +270,26 @@
     }
 
     const actions = actionsFor(flow);
-    if (actions.length) {
-      const box = document.createElement("div"); box.className = "action-box";
-      const strong = document.createElement("strong"); strong.textContent = "需要做的動作";
+    const sources = buildOutput(flow, variables).sources || [];
+    if (actions.length || sources.length) {
+      const box = document.createElement("details"); box.className = "action-box"; box.open = true;
+      const summary = document.createElement("summary"); summary.textContent = "操作提示";
       const list = document.createElement("ul");
       actions.forEach(item => {
         const li = document.createElement("li");
         li.textContent = `${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`;
         list.append(li);
       });
-      box.append(strong, list); panel.append(box);
+      sources.forEach(source => {
+        const li = document.createElement("li");
+        const name = document.createElement("b"); name.textContent = `{${source.label}}`;
+        li.append(name, document.createTextNode(` 的值從這裡找：${source.note || "請開啟來源連結"}`));
+        if (source.url && /^https?:\/\//i.test(source.url)) {
+          const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟來源 ↗"; li.append(document.createTextNode(" "), link);
+        }
+        list.append(li);
+      });
+      box.append(summary, list); panel.append(box);
     }
   }
 

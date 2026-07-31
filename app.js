@@ -10,7 +10,7 @@
     progress: $("#progress"), decision: $("#decisionArea"), result: $("#resultArea"), toast: $("#toast")
   };
 
-  const state = { question: null, choices: [], values: {}, routedBranch: null, revealedFields: new Set() };
+  const state = { question: null, choices: [], values: {}, routedBranch: null, revealedFields: new Set(), appendedSharedBranches: new Set() };
   const commonKey = "sop-helper-common-values-v1";
   let commonValues = readCommonValues();
 
@@ -61,6 +61,7 @@
     state.values = {};
     state.routedBranch = null;
     state.revealedFields = new Set();
+    state.appendedSharedBranches = new Set();
     els.hero.hidden = true;
     els.questionSection.hidden = true;
     els.workspace.hidden = false;
@@ -77,6 +78,7 @@
     state.values = {};
     state.routedBranch = null;
     state.revealedFields = new Set();
+    state.appendedSharedBranches = new Set();
     els.workspace.hidden = true;
     els.hero.hidden = false;
     els.questionSection.hidden = false;
@@ -176,9 +178,17 @@
     if (targetQuestion === flow.question && route.targetBranch === flow.branch) return false;
     const target = data.flows.find(item => item.question === targetQuestion && item.branch === route.targetBranch);
     if (!target) return false;
+    if (target.question === "共用") {
+      const before = state.appendedSharedBranches.size;
+      state.appendedSharedBranches.add(target.branch);
+      if (state.appendedSharedBranches.size === before) return false;
+      renderWorkflow();
+      showToast(`已附加共用內容：${target.branch}`);
+      return true;
+    }
     state.routedBranch = { question: target.question, branch: target.branch };
     renderWorkflow();
-    showToast(`已轉到：${target.question === "共用" ? "共用 · " : ""}${target.branch}`);
+    showToast(`已轉到：${target.branch}`);
     return true;
   }
 
@@ -230,6 +240,7 @@
         state.values = {};
         state.routedBranch = null;
         state.revealedFields = new Set();
+    state.appendedSharedBranches = new Set();
         renderWorkflow();
         requestAnimationFrame(() => {
           const panels = els.decision.querySelectorAll(".panel");
@@ -249,8 +260,9 @@
 
   function answerPartsFor(flow) {
     const parts = Array.isArray(flow.answerParts)
-      ? flow.answerParts
+      ? [...flow.answerParts]
       : (Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch]).map(branch => ({ question: flow.question, branch }));
+    state.appendedSharedBranches.forEach(branch => parts.push({ question: "共用", branch }));
     return [...new Map(parts.map(part => [`${part.question}|${part.branch}`, part])).values()];
   }
 
@@ -540,6 +552,7 @@
     clear.addEventListener("click", () => {
       variables.forEach(v => { state.values[v.code] = ""; if (v.common) saveCommonValue(v.code, ""); });
       state.revealedFields = new Set();
+    state.appendedSharedBranches = new Set();
       renderWorkflow(); showToast("欄位已清除");
     });
     actions.append(copy, clear);

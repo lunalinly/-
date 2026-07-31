@@ -271,7 +271,14 @@
       });
       if (!applyVariableRoute(flow)) refreshOutput(flow, variables);
     });
-    const hint = document.createElement("span"); hint.className = "hint"; hint.textContent = variable.hint || "";
+    const hint = document.createElement("span"); hint.className = "hint";
+    if (variable.hint) hint.append(document.createTextNode(variable.hint));
+    if (variable.sourceNote) {
+      const source = document.createElement("span"); source.className = "value-source"; source.textContent = `值的來源：${variable.sourceNote}`; hint.append(source);
+    }
+    if (variable.sourceUrl && /^https?:\/\//i.test(variable.sourceUrl)) {
+      const link = document.createElement("a"); link.href = variable.sourceUrl; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟來源 ↗"; hint.append(link);
+    }
     wrap.append(label, input, hint);
     return wrap;
   }

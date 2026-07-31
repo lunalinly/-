@@ -887,7 +887,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-07-31T09:26:13.277Z",
+  "updatedAt": "2026-07-31T09:40:43.482Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -1491,7 +1491,23 @@ window.SOP_DATA = {
               "action": "reveal",
               "targetCode": "order_id",
               "value": "",
-              "answerText": "",
+              "answerText": "訂單編號，所以填入：{{order_id}}／{{V018}}",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V017"
+            }
+          ]
+        },
+        {
+          "values": [
+            "無"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "V018",
+              "value": "",
+              "answerText": "訂單編號，所以填入：{{V018}}",
               "answerPosition": "after_field",
               "answerAnchor": "",
               "answerFieldCode": "V017"
@@ -1508,7 +1524,7 @@ window.SOP_DATA = {
     },
     {
       "code": "V018",
-      "label": "買家名字（Buyer Username）",
+      "label": "買家名字_Buyer Username",
       "category": "常用",
       "hint": "是填入Buyer Username／User Name",
       "type": "text",
@@ -1516,12 +1532,25 @@ window.SOP_DATA = {
       "options": [],
       "defaultValue": "Luna Lin",
       "fillRules": [],
-      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n從 InHouse 聊聊介面找（最快）\n左側「買家列表」會顯示目前進線買家的名稱。\n點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n1. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n2. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
-      "sourceLinks": [],
+      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
       "autoDays": 0,
       "multiline": false,
       "common": false,
-      "sourceUrl": ""
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
     }
   ],
   "decisions": [

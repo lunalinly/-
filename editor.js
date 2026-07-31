@@ -104,9 +104,10 @@
       <div class="sync-backdrop" id="syncDialog" hidden>
         <section class="sync-card" role="dialog" aria-modal="true" aria-labelledby="syncTitle">
           <button class="sync-x" id="syncClose" type="button">×</button><p class="eyebrow">GITHUB SYNC</p><h2 id="syncTitle">同步到 GitHub</h2>
-          <p>使用只授權此 Repository、僅有 <b>Contents: Read and write</b> 的 Fine-grained token。Token 關閉分頁後即消失。</p>
+          <p>這個 Token 必須明確授權 <b>lunalinly/-</b>，並將 <b>Contents</b> 設成 <b>Read and write</b>。Repository 的名稱只有一個半形減號「-」。Token 關閉分頁後即消失。</p>
+          <ol class="sync-token-checklist"><li>Resource owner：<b>lunalinly</b></li><li>Repository access：選 <b>Only select repositories</b>，再勾選 <b>-</b></li><li>Repository permissions → Contents：<b>Read and write</b></li></ol>
           <label class="sync-field"><span>Fine-grained personal access token</span><input id="githubToken" type="password" placeholder="github_pat_…" autocomplete="off"></label>
-          <a class="token-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">建立 GitHub Token ↗</a>
+          <p class="token-help-links"><a class="token-link" href="https://github.com/settings/personal-access-tokens/new?name=SOP+Editor&amp;description=Sync+SOP+data+to+lunalinly%2F-&amp;target_name=lunalinly&amp;expires_in=90&amp;contents=write" target="_blank" rel="noopener">建立新 Token ↗</a>　<a class="token-link" href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">管理／修改現有 Token ↗</a></p>
           <div class="sync-message" id="syncMessage"></div>
           <div class="sync-actions"><button id="syncCancel" type="button">取消</button><button id="syncNow" class="studio-sync-btn" type="button">提交資料並發布</button></div>
         </section>
@@ -314,11 +315,24 @@
     sessionStorage.setItem(TOKEN_KEY, token); const button = $("#syncNow"); button.disabled = true; button.textContent = "同步中…"; message.textContent = "正在讀取 GitHub 最新版本…";
     try {
       const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
-      const get = await fetch("https://api.github.com/repos/lunalinly/-/contents/data.js?ref=main", { headers }); if (!get.ok) throw new Error(get.status === 401 || get.status === 403 ? "Token 權限不足，請確認 Contents: Read and write。" : `讀取 GitHub 失敗（${get.status}）`);
+      const get = await fetch("https://api.github.com/repos/lunalinly/-/contents/data.js?ref=main", { headers });
+      if (!get.ok) {
+        if (get.status === 401) throw new Error("Token 無效或已過期，請建立新的 Fine-grained token。");
+        if (get.status === 403) throw new Error("這個 Token 無法存取 lunalinly/-。請在 Repository access 勾選名稱為「-」的 Repository，並把 Contents 設為 Read and write。");
+        throw new Error(`讀取 GitHub 失敗（${get.status}）`);
+      }
       const remote = await get.json(); data.updatedAt = new Date().toISOString(); const file = `// 由 SOP 視覺化編輯室產生；操作畫面僅使用中文。\nwindow.SOP_DATA = ${JSON.stringify(data, null, 2)};\n`;
       message.textContent = "正在建立 GitHub 版本…";
       const put = await fetch("https://api.github.com/repos/lunalinly/-/contents/data.js", { method: "PUT", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ message: "Update SOP data from visual editor", content: encodeBase64(file), sha: remote.sha, branch: "main" }) });
-      if (!put.ok) { const details = await put.json().catch(() => ({})); throw new Error(details.message || `寫入 GitHub 失敗（${put.status}）`); }
+      if (!put.ok) {
+        const details = await put.json().catch(() => ({}));
+        if (put.status === 401) throw new Error("Token 無效或已過期，請建立新的 Fine-grained token。");
+        if (put.status === 403 && /Resource not accessible by personal access token/i.test(details.message || "")) {
+          throw new Error("這個 Token 沒有「lunalinly/-」的寫入權限。請修改 Token：Repository access 勾選名稱為「-」的 Repository，Contents 設為 Read and write。");
+        }
+        if (put.status === 403) throw new Error("GitHub 拒絕寫入。請確認 Repository「-」已授權，而且 Contents 是 Read and write。");
+        throw new Error(details.message || `寫入 GitHub 失敗（${put.status}）`);
+      }
       localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); state.dirty = false; setStatus("已同步到 GitHub"); message.textContent = "同步成功，GitHub Pages 正在重新發布。"; button.textContent = "同步完成";
     } catch (error) { message.textContent = error.message || "同步失敗。"; button.disabled = false; button.textContent = "重新嘗試"; }
   }

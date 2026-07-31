@@ -151,18 +151,25 @@
     return panel;
   }
 
+  function isSharedBranch(branch) {
+    const value = String(branch || "").trim();
+    return value === "共用" || value.toLowerCase() === "all";
+  }
+
   function variablesFor(flow) {
-    return data.variables.filter(v => v.q === state.question.id && (v.branch === flow.branch || v.branch === "共用" || v.branch === "ALL"));
+    const matching = data.variables.filter(v => v.q === state.question.id && (v.branch === flow.branch || isSharedBranch(v.branch)));
+    return [...new Map(matching.map(v => [v.code, v])).values()];
   }
 
   function templateFor(flow) {
-    return data.templates.find(t => t.q === state.question.id && t.branch === flow.branch)
-      || data.templates.find(t => t.q === state.question.id && (t.branch === "共用" || t.branch === "ALL"))
+    const candidates = data.templates.filter(t => t.q === state.question.id && String(t.text || "").trim());
+    return candidates.find(t => t.branch === flow.branch)
+      || candidates.find(t => isSharedBranch(t.branch))
       || null;
   }
 
   function actionsFor(flow) {
-    return data.actions.filter(a => a.q === state.question.id && (a.branch === flow.branch || a.branch === "共用" || a.branch === "ALL"));
+    return data.actions.filter(a => a.q === state.question.id && (a.branch === flow.branch || isSharedBranch(a.branch)));
   }
 
   function renderResult(flow, variables) {
@@ -212,9 +219,9 @@
     input.id = `field-${variable.code}`;
     input.placeholder = variable.hint || "";
     if (!variable.multiline) input.type = variable.type === "date" ? "date" : "text";
-    if (variable.auto) {
+    if (variable.auto || variable.autoSource) {
       input.readOnly = true;
-      input.value = calculateAuto(variable.auto);
+      input.value = calculateAuto(variable);
       state.values[variable.code] = input.value;
     } else {
       input.value = state.values[variable.code] ?? (variable.common ? (commonValues[variable.code] || "") : "");
@@ -223,8 +230,8 @@
     input.addEventListener("input", () => {
       state.values[variable.code] = input.value;
       if (variable.common) saveCommonValue(variable.code, input.value);
-      variables.filter(v => v.auto).forEach(autoVar => {
-        state.values[autoVar.code] = calculateAuto(autoVar.auto);
+      variables.filter(v => v.auto || v.autoSource).forEach(autoVar => {
+        state.values[autoVar.code] = calculateAuto(autoVar);
         const autoInput = document.getElementById(`field-${autoVar.code}`);
         if (autoInput) autoInput.value = state.values[autoVar.code];
       });

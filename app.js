@@ -353,7 +353,12 @@
       const list = document.createElement("ul");
       actions.forEach(item => {
         const li = document.createElement("li");
-        li.textContent = `${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`;
+        li.append(document.createTextNode(`${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`));
+        if (item.url && /^https?:\/\//i.test(item.url)) {
+          const link = document.createElement("a");
+          link.href = item.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = "開啟連結 ↗";
+          li.append(document.createTextNode(" "), link);
+        }
         list.append(li);
       });
       sources.forEach(source => {

@@ -22,6 +22,24 @@
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const $ = selector => document.querySelector(selector);
 
+  function normalizeLegacyData() {
+    const qidByName = new Map(data.questions.map(q => [q.name, q.id]));
+    const map = new Map();
+    data.flows.forEach(flow => {
+      const old = flow.branch;
+      const friendly = old === "ALL" || old === "共用" ? "共用" : ((flow.steps || []).at(-1)?.option || old);
+      map.set(`${qidByName.get(flow.question)}|${old}`, friendly);
+      flow.branch = friendly;
+    });
+    ["variables", "templates", "actions"].forEach(key => data[key].forEach(item => {
+      item.branch = map.get(`${item.q}|${item.branch}`) || (item.branch === "ALL" ? "共用" : item.branch);
+    }));
+    data.variables.forEach(v => {
+      if (v.auto === "pickup+1") { v.autoSource = "pickup_date"; v.autoDays = 1; delete v.auto; }
+      if (v.auto === "pickup+15") { v.autoSource = "pickup_date"; v.autoDays = 15; delete v.auto; }
+    });
+  }
+
   function setup() {
     const openButton = $("#editorButton");
     if (!openButton) return;
@@ -53,6 +71,16 @@
     $("#studioForm").addEventListener("click", event => {
       const remove = event.target.closest("[data-remove-step]");
       if (remove) removeFlowStep(Number(remove.dataset.removeStep));
+      const token = event.target.closest("[data-insert-token]");
+      if (token) {
+        const textarea = $("#studioForm [name=text]");
+        if (!textarea) return;
+        const marker = `【${token.dataset.insertToken}】`;
+        const start = textarea.selectionStart ?? textarea.value.length;
+        const end = textarea.selectionEnd ?? start;
+        textarea.setRangeText(marker, start, end, "end");
+        textarea.focus();
+      }
     });
     $("#studioList").addEventListener("click", event => {
       const item = event.target.closest("[data-index]");

@@ -481,9 +481,7 @@
   function inheritedVariablesFor(flow) {
     const parts = Array.isArray(flow.answerParts) ? flow.answerParts : [];
     const currentIndex = parts.findIndex(part => part.question === flow.question && part.branch === flow.branch);
-    const previousParts = currentIndex >= 0
-      ? parts.slice(0, currentIndex)
-      : parts.filter(part => !(part.question === flow.question && part.branch === flow.branch));
+    const previousParts = currentIndex >= 0 ? parts.slice(0, currentIndex) : [];
     const ownCodes = new Set(exactVariables(qidForName(flow.question), flow.branch).map(variable => variable.code));
     const inherited = new Map();
     previousParts.forEach(part => {

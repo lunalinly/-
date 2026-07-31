@@ -254,11 +254,18 @@
   function variablesFor(flow) {
     const parts = answerPartsFor(flow);
     const questionText = String(state.question.answerText || "");
-    const matching = data.variables.filter(variable => {
-      const belongsToPart = parts.some(part => variable.q === questionIdForName(part.question) && (variable.branch === part.branch || isSharedBranch(variable.branch)));
-      return belongsToPart || (variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`));
+    const catalog = new Map();
+    data.variables.filter(variable =>
+      variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`)
+    ).forEach(variable => catalog.set(variable.code, variable));
+    parts.forEach(part => {
+      const q = questionIdForName(part.question);
+      data.variables.filter(variable =>
+        variable.q === q && (variable.branch === part.branch || isSharedBranch(variable.branch))
+      ).forEach(variable => {
+        if (!catalog.has(variable.code)) catalog.set(variable.code, variable);
+      });
     });
-    const catalog = new Map(matching.map(variable => [variable.code, variable]));
     let added = true;
     while (added) {
       added = false;

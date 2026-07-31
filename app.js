@@ -162,10 +162,13 @@
   }
 
   function templateFor(flow) {
-    const candidates = data.templates.filter(t => t.q === state.question.id && String(t.text || "").trim());
-    return candidates.find(t => t.branch === flow.branch)
-      || candidates.find(t => isSharedBranch(t.branch))
-      || null;
+    const findTemplate = list => {
+      const candidates = (list || []).filter(t => t.q === state.question.id && String(t.text || "").trim());
+      return candidates.find(t => t.branch === flow.branch)
+        || candidates.find(t => isSharedBranch(t.branch))
+        || null;
+    };
+    return findTemplate(data.templates) || findTemplate(window.SOP_PUBLISHED_DATA?.templates) || null;
   }
 
   function actionsFor(flow) {

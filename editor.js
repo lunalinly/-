@@ -19,17 +19,21 @@
 
   function normalizeData() {
     data.variables ||= []; data.templates ||= []; data.actions ||= [];
+    const isSharedBranch = value => {
+      const branch = String(value || "").trim();
+      return branch === "共用" || branch.toLowerCase() === "all";
+    };
     const qidByName = new Map(data.questions.map(q => [q.name, q.id]));
     const branchMap = new Map();
     data.flows.forEach(flow => {
       flow.steps ||= [];
       const old = flow.branch;
-      const friendly = old === "ALL" || old === "共用" ? "共用" : (flow.steps.at(-1)?.option || old || "共用");
+      const friendly = isSharedBranch(old) ? "共用" : (flow.steps.at(-1)?.option || old || "共用");
       branchMap.set(`${qidByName.get(flow.question)}|${old}`, friendly);
       flow.branch = friendly;
     });
     [data.variables, data.templates, data.actions].forEach(list => list.forEach(item => {
-      item.branch = branchMap.get(`${item.q}|${item.branch}`) || (item.branch === "ALL" ? "共用" : item.branch || "共用");
+      item.branch = branchMap.get(`${item.q}|${item.branch}`) || (isSharedBranch(item.branch) ? "共用" : item.branch || "共用");
     }));
     data.variables.forEach(v => {
       if (v.auto === "pickup+1") { v.autoSource = "pickup_date"; v.autoDays = 1; delete v.auto; }

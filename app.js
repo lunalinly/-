@@ -182,7 +182,8 @@
 
   function variablesFor(flow) {
     const branches = new Set(answerBranchesFor(flow));
-    const matching = data.variables.filter(v => v.q === state.question.id && (branches.has(v.branch) || isSharedBranch(v.branch)));
+    const questionText = String(state.question.answerText || "");
+    const matching = data.variables.filter(v => v.q === state.question.id && (branches.has(v.branch) || isSharedBranch(v.branch) || questionText.includes(`{{${v.code}}}`)));
     return [...new Map(matching.map(v => [v.code, v])).values()];
   }
 
@@ -305,8 +306,11 @@
 
   function buildOutput(flow, variables) {
     const built = templatesFor(flow);
-    if (!built.templates.length) return { text: "這個答案組合尚未設定任何分支文字。", missing: true };
-    let text = built.templates.map(item => item.template.text).join("\n\n");
+    const parts = [];
+    if (String(state.question.answerText || "").trim()) parts.push(state.question.answerText);
+    parts.push(...built.templates.map(item => item.template.text));
+    if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true };
+    let text = parts.join("\n\n");
     variables.forEach(variable => {
       const raw = state.values[variable.code] || "";
       const value = displayValue(variable, raw) || `{請填：${variable.label}}`;

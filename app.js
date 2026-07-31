@@ -282,7 +282,17 @@
         }));
       });
     }
-    return [...catalog.values()];
+    const answerOrderText = [
+      questionText,
+      ...parts.map(part => templateForPart(part)?.text || ""),
+      ...(data.fields || []).flatMap(field => (field.fillRules || []).flatMap(rule =>
+        (rule.assignments || []).map(assignment => assignment.answerText || "")
+      ))
+    ].join("\n");
+    return [...catalog.values()].map((variable, originalIndex) => {
+      const position = answerOrderText.indexOf(`{{${variable.code}}}`);
+      return { variable, originalIndex, position: position < 0 ? Number.POSITIVE_INFINITY : position };
+    }).sort((a, b) => a.position - b.position || a.originalIndex - b.originalIndex).map(item => item.variable);
   }
 
   function templateForPart(part) {

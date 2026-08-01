@@ -143,6 +143,23 @@
     return entries;
   }
 
+  function placeRevealedField(assignment) {
+    if (assignment.answerPosition !== "after_field" || !assignment.answerFieldCode) return;
+    const targetInput = document.getElementById(`field-${assignment.targetCode}`);
+    const anchorInput = document.getElementById(`field-${assignment.answerFieldCode}`);
+    const targetField = targetInput?.closest(".field");
+    const anchorField = anchorInput?.closest(".field");
+    if (!targetField || !anchorField || targetField === anchorField) return;
+
+    const anchorCode = String(assignment.answerFieldCode);
+    targetField.dataset.revealedAfter = anchorCode;
+    let insertionPoint = anchorField;
+    while (insertionPoint.nextElementSibling?.dataset.revealedAfter === anchorCode) {
+      insertionPoint = insertionPoint.nextElementSibling;
+    }
+    insertionPoint.insertAdjacentElement("afterend", targetField);
+  }
+
   function applyFieldFillRules(variable) {
     const definition = data.fields?.find(item => item.code === variable.code) || variable;
     const matched = (definition.fillRules || []).filter(rule => ruleMatches(definition, rule));
@@ -153,6 +170,7 @@
         state.revealedFields.add(assignment.targetCode);
         const targetInput = document.getElementById(`field-${assignment.targetCode}`);
         if (targetInput?.closest(".field")) targetInput.closest(".field").hidden = false;
+        placeRevealedField(assignment);
         affected += 1;
         return;
       }

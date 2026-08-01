@@ -220,14 +220,11 @@
     variables.filter(variable => String(state.values[variable.code] ?? "").trim()).forEach(variable => {
       affected += applyFieldFillRules(variable);
     });
-    const directCodes = directVariableCodesFor(flow);
-    const conditionalCodes = revealTargetCodes();
     variables.forEach(variable => {
       const input = document.getElementById(`field-${variable.code}`);
       const wrap = input?.closest(".field");
       if (!wrap) return;
-      const isStarter = directCodes.has(variable.code) && isRevealRuleStarter(variable.code);
-      wrap.hidden = conditionalCodes.has(variable.code) && !isStarter && !state.revealedFields.has(variable.code);
+      wrap.hidden = !shouldShowConditionalField(variable, flow);
     });
     return affected;
   }
@@ -380,6 +377,13 @@
     return codes;
   }
 
+  function shouldShowConditionalField(variable, flow) {
+    if (!revealTargetCodes().has(variable.code)) return true;
+    if (String(state.values[variable.code] ?? "").trim()) return true;
+    if (state.revealedFields.has(variable.code)) return true;
+    return directVariableCodesFor(flow).has(variable.code) && isRevealRuleStarter(variable.code);
+  }
+
   function variablesFor(flow) {
     const baseParts = Array.isArray(flow.answerParts)
       ? [...flow.answerParts]
@@ -529,7 +533,7 @@
   function makeField(variable, flow, variables) {
     const wrap = document.createElement("div");
     wrap.className = "field" + (variable.multiline ? " full" : "");
-    wrap.hidden = revealTargetCodes().has(variable.code) && !(directVariableCodesFor(flow).has(variable.code) && isRevealRuleStarter(variable.code)) && !state.revealedFields.has(variable.code);
+    wrap.hidden = !shouldShowConditionalField(variable, flow);
     const label = document.createElement("label");
     label.htmlFor = `field-${variable.code}`;
     label.append(document.createTextNode(variable.label));
@@ -629,13 +633,15 @@
     const sourceMap = new Map();
     variables.forEach(variable => {
       const links = sourceLinksFor(variable);
-      if (text.includes(`{{${variable.code}}}`) && (variable.sourceNote || links.length) && !sourceMap.has(variable.code)) {
+      const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(state.values[variable.code] ?? "").trim();
+      if (!inactiveConditional && text.includes(`{{${variable.code}}}`) && (variable.sourceNote || links.length) && !sourceMap.has(variable.code)) {
         sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", links });
       }
     });
     variables.forEach(variable => {
       const raw = state.values[variable.code] || "";
-      const value = displayValue(variable, raw) || `{請填：${variable.label}}`;
+      const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(raw).trim();
+      const value = displayValue(variable, raw) || (inactiveConditional ? "不用輸入" : `{請填：${variable.label}}`);
       text = text.split(`{{${variable.code}}}`).join(value);
     });
     if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;

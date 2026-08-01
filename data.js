@@ -33,7 +33,7 @@ window.SOP_DATA = {
       "keywords": "規格,款式,圖片,商品資訊,尺寸,材質,功能",
       "description": "依商品頁是否有資訊決定回覆或查廠商",
       "enabled": true,
-      "answerText": "請先打開商品頁，確認商品圖片、商品規格與商品描述。"
+      "answerText": "請先打開商品頁，確認商品圖片、商品規格與商品描述，看看有沒有客人詢問：\n「{{customer_need}}」\n相關的問題"
     }
   ],
   "flows": [
@@ -429,62 +429,6 @@ window.SOP_DATA = {
   ],
   "variables": [
     {
-      "q": "Q001",
-      "branch": "共用",
-      "code": "pickup_date",
-      "label": "取貨日期",
-      "hint": "日期，例如 2026/7/30",
-      "type": "date",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": false,
-      "category": "常用",
-      "fillRules": [],
-      "sourceLinks": [
-        {
-          "title": "CS Portal",
-          "url": "https://dms.cs.shopee.tw/portal/info/search"
-        },
-        {
-          "title": "SCI 貨態系統",
-          "url": "https://sci.twtc.shopee.tw/shopee24-hub/search"
-        }
-      ],
-      "sourceNote": "<h3>方法一：<a href=\"https://sci.twtc.shopee.tw/shopee24-hub/search\" target=\"_blank\" rel=\"noopener\">SCI 貨態系統（優先）</a></h3><ol><li>開啟 SCI 貨態系統。</li><li>輸入 {物流單號} 或 {Order SN} 查詢。</li><li>找到狀態「已取件／Delivered／Picked Up」。</li><li>該狀態旁的日期時間就是 {取貨日期}。</li></ol><h3>方法二：<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><ol><li>輸入 {Order SN}。</li><li>展開正確的 Order。</li><li>查看「物流資訊」或「訂單與物流歷程」。</li><li>找到「買家已取件／訂單已送達」。</li><li>取該狀態的日期作為 {取貨日期}。</li></ol><p>如果查不到「已取件」紀錄，代表貨態可能尚未更新，先不要自行推算日期。</p><p>如果你問的是退貨物流到府取件日期：<br>Order Admin → Return → Return &amp; Refund Requests → 申退詳情 → Status &amp; Timeline</p><p>黑貓／蝦宅退貨也可在買家端「退貨退款詳情」查看取件時間與地址。<br></p>",
-      "options": [],
-      "defaultValue": "",
-      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search"
-    },
-    {
-      "q": "Q001",
-      "branch": "共用",
-      "code": "return_start",
-      "label": "第一天（鑑賞期）",
-      "hint": "由取貨日期自動計算",
-      "type": "text",
-      "autoSource": "pickup_date",
-      "autoDays": 1,
-      "required": false,
-      "multiline": false,
-      "common": false,
-      "category": "鑑賞期"
-    },
-    {
-      "q": "Q001",
-      "branch": "共用",
-      "code": "return_deadline",
-      "label": "最後一天（鑑賞期）",
-      "hint": "由取貨日期自動計算",
-      "type": "text",
-      "autoSource": "pickup_date",
-      "autoDays": 15,
-      "required": false,
-      "multiline": false,
-      "common": false,
-      "category": "鑑賞期"
-    },
-    {
       "q": "Q002",
       "branch": "共用",
       "code": "V001",
@@ -562,51 +506,6 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "multiline": false,
-      "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "customer_need",
-      "label": "客人要找",
-      "hint": "例如：尺寸、材質、商品圖片",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": true,
-      "common": true,
-      "category": "常用",
-      "fillRules": [],
-      "options": []
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "product_page_area",
-      "label": "產品頁的哪裡",
-      "hint": "例如：商品描述、規格表、圖片",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": false
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "code": "found_keyword",
-      "label": "找到的關鍵字／內容",
-      "hint": "把商品頁看到的資訊貼上",
-      "sourceNote": "",
-      "sourceUrl": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": true,
       "common": false
     },
     {
@@ -752,7 +651,7 @@ window.SOP_DATA = {
       "code": "customer_need",
       "label": "客人要找",
       "hint": "例如：尺寸、材質、商品圖片",
-      "sourceNote": "",
+      "sourceNote": "<div><br></div>",
       "sourceUrl": "",
       "type": "text",
       "autoDays": 0,
@@ -761,7 +660,9 @@ window.SOP_DATA = {
       "common": true,
       "category": "常用",
       "fillRules": [],
-      "options": []
+      "options": [],
+      "sourceLinks": [],
+      "defaultValue": ""
     },
     {
       "q": "Q004",
@@ -2771,14 +2672,134 @@ window.SOP_DATA = {
       "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
       "category": "常用",
       "fillRules": []
-    }
-  ],
-  "templates": [
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "customer_need",
+      "label": "客人要找",
+      "hint": "例如：尺寸、材質、商品圖片",
+      "sourceNote": "<div><br></div>",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": true,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "product_page_area",
+      "label": "產品頁的哪裡",
+      "hint": "例如：商品描述、規格表、圖片",
+      "sourceNote": "<div><br></div>",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商品詢問",
+      "fillRules": []
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "code": "found_keyword",
+      "label": "找到的關鍵字／內容",
+      "hint": "把商品頁看到的資訊貼上",
+      "sourceNote": "<div><br></div>",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "商品詢問",
+      "fillRules": []
+    },
     {
       "q": "Q001",
       "branch": "共用",
-      "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
+      "code": "pickup_date",
+      "label": "取貨日期",
+      "hint": "日期，例如 2026/7/30",
+      "sourceNote": "<h3>方法一：<a href=\"https://sci.twtc.shopee.tw/shopee24-hub/search\" target=\"_blank\" rel=\"noopener\">SCI 貨態系統（優先）</a></h3><ol><li>開啟 SCI 貨態系統。</li><li>輸入 {物流單號} 或 {Order SN} 查詢。</li><li>找到狀態「已取件／Delivered／Picked Up」。</li><li>該狀態旁的日期時間就是 {取貨日期}。</li></ol><h3>方法二：<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><ol><li>輸入 {Order SN}。</li><li>展開正確的 Order。</li><li>查看「物流資訊」或「訂單與物流歷程」。</li><li>找到「買家已取件／訂單已送達」。</li><li>取該狀態的日期作為 {取貨日期}。</li></ol><p>如果查不到「已取件」紀錄，代表貨態可能尚未更新，先不要自行推算日期。</p><p>如果你問的是退貨物流到府取件日期：<br>Order Admin → Return → Return &amp; Refund Requests → 申退詳情 → Status &amp; Timeline</p><p>黑貓／蝦宅退貨也可在買家端「退貨退款詳情」查看取件時間與地址。<br></p>",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "SCI 貨態系統",
+          "url": "https://sci.twtc.shopee.tw/shopee24-hub/search"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "date",
+      "multiline": false,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "常用",
+      "fillRules": []
     },
+    {
+      "q": "Q001",
+      "branch": "共用",
+      "code": "return_start",
+      "label": "第一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "sourceNote": "<div><br></div>",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoSource": "pickup_date",
+      "autoDays": 1,
+      "required": false,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "鑑賞期",
+      "fillRules": []
+    },
+    {
+      "q": "Q001",
+      "branch": "共用",
+      "code": "return_deadline",
+      "label": "最後一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "sourceNote": "<div><br></div>",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoSource": "pickup_date",
+      "autoDays": 15,
+      "required": false,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "鑑賞期",
+      "fillRules": []
+    }
+  ],
+  "templates": [
     {
       "q": "Q002",
       "branch": "共用",
@@ -2803,11 +2824,6 @@ window.SOP_DATA = {
       "q": "Q003",
       "branch": "補發電子發票通知信",
       "text": "可透過以下兩種方式申請補發：\n\n方式一｜自助服務中心申請\n前往「發票開立通知補發申請表單」（連結：https://reurl.cc/DYdVlR）提出申請。\n若填寫資料正確，通知信將於 3～5 個工作天（不含假日）補發至客人填寫的電子信箱。客人可透過「查詢進度」（連結：https://reurl.cc/gN0qeX）查看申請狀態。\n\n方式二｜關貿網路電子發票平台申請\n請先查詢「會員編號」及「歸戶驗證碼」：\n▪ App 版操作：  \n進入【我的】➜ 點選右上角【⚙️】進入帳號設定 ➜ 點選【我的電子發票】即可查看。\n▪ 網頁版操作：  \n進入【賣家中心】➜ 點選左側【賣場設定】➜【帳號與隱私設定】➜ 於【我的電子發票】旁點選【查看】即可。\n取得資料後，請依下列步驟申請：\n▪ 前往「關貿網路電子發票平台」（連結：https://reurl.cc/0k2NaM） \n▪ 填寫會員及發票相關資訊  \n▪ 選擇欲查詢的發票日期  \n▪ 點選【補發開立通知】  \n▪ 點選【變更】並輸入欲收取通知信的電子信箱  \n▪ 點選【寄送】，即可完成申請  \n通知信將於 1～2 個工作天（不含假日）補發至客人填寫的電子信箱。\n\n申請補發時填寫的電子信箱，可與帳號原先設定的收信信箱不同。"
-    },
-    {
-      "q": "Q004",
-      "branch": "商品頁有找到",
-      "text": "客人要找 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
     },
     {
       "q": "Q004",
@@ -2853,16 +2869,19 @@ window.SOP_DATA = {
       "q": "GLOBAL",
       "branch": "廠直表",
       "text": "進入廠直表的{{V024}}分頁後填入以下內容：\nSheet ID 填入：{{V025}}\nType 填入：{{V026}}\nID 填入：{{V027}}\nQuestion 填入：{{V031}}\nPriority 填入：{{V032}}\n填表人 填入：{{V019}}\n前台訂單 填入：{{order_id}}\nMP SKU 填入：{{V030}}\n簡述問題 填入：{{V033}}\n工單號 填入：{{work_order}}\n問題分類 填入：{{V034}}\n廠商回覆 填入：{{V035}}\nCS內部備註/買家帳號 填入：因為Type是{{V037}}\nA組聊聊結案 填入：{{V038}}\n需再次溝通 填入：{{V039}}"
-    }
-  ],
-  "actions": [
+    },
+    {
+      "q": "Q004",
+      "branch": "商品頁有找到",
+      "text": "客人詢問 {{customer_need}}，在 {{product_page_area}} 裡有看到：{{found_keyword}}。\n請把這些資訊整理後回覆客人。"
+    },
     {
       "q": "Q001",
       "branch": "共用",
-      "action": "不用建單",
-      "needed": true,
-      "note": "只需回覆客人"
-    },
+      "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
+    }
+  ],
+  "actions": [
     {
       "q": "Q003",
       "branch": "補打統編",
@@ -2906,9 +2925,19 @@ window.SOP_DATA = {
         }
       ],
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
+    },
+    {
+      "q": "Q001",
+      "branch": "共用",
+      "action": "不用建單",
+      "needed": true,
+      "note": "只需回覆客人",
+      "sourceNote": "<div><br></div>",
+      "sourceLinks": [],
+      "url": ""
     }
   ],
-  "updatedAt": "2026-08-01T06:53:26.482Z",
+  "updatedAt": "2026-08-01T07:08:21.623Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -2934,10 +2963,11 @@ window.SOP_DATA = {
       "autoDays": 0,
       "multiline": true,
       "fillRules": [],
-      "sourceNote": "",
+      "sourceNote": "<div><br></div>",
       "sourceUrl": "",
       "options": [],
-      "sourceLinks": []
+      "sourceLinks": [],
+      "defaultValue": ""
     },
     {
       "code": "product_page_area",
@@ -2950,7 +2980,11 @@ window.SOP_DATA = {
       "multiline": false,
       "common": false,
       "fillRules": [],
-      "sourceLinks": []
+      "sourceLinks": [],
+      "sourceNote": "<div><br></div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": ""
     },
     {
       "code": "found_keyword",
@@ -2963,7 +2997,11 @@ window.SOP_DATA = {
       "autoDays": 0,
       "common": false,
       "fillRules": [],
-      "sourceLinks": []
+      "sourceLinks": [],
+      "sourceNote": "<div><br></div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": ""
     },
     {
       "code": "order_id",
@@ -3088,7 +3126,11 @@ window.SOP_DATA = {
       "common": false,
       "category": "鑑賞期",
       "fillRules": [],
-      "sourceLinks": []
+      "sourceLinks": [],
+      "sourceNote": "<div><br></div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": ""
     },
     {
       "code": "return_deadline",
@@ -3102,7 +3144,11 @@ window.SOP_DATA = {
       "common": false,
       "category": "鑑賞期",
       "fillRules": [],
-      "sourceLinks": []
+      "sourceLinks": [],
+      "sourceNote": "<div><br></div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": ""
     },
     {
       "code": "V001",

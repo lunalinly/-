@@ -495,36 +495,53 @@
     });
   }
 
-  function applyHintIndent(element, whitespace) {
-    const spaces = String(whitespace || "").replace(/\t/g, "  ").length;
-    if (spaces) element.style.marginLeft = Math.min(spaces, 12) * 8 + "px";
+  function appendSafeRichHint(parent, node) {
+    if (node.nodeType === Node.TEXT_NODE) { parent.append(document.createTextNode(node.nodeValue || "")); return; }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const allowed = new Set(["P", "DIV", "BR", "STRONG", "B", "EM", "I", "U", "S", "H2", "H3", "BLOCKQUOTE", "OL", "UL", "LI", "A"]);
+    if (!allowed.has(node.tagName)) { [...node.childNodes].forEach(child => appendSafeRichHint(parent, child)); return; }
+    const element = document.createElement(node.tagName.toLowerCase());
+    if (node.tagName === "A") {
+      const href = String(node.getAttribute("href") || "");
+      if (/^https?:\/\//i.test(href)) { element.href = href; element.target = "_blank"; element.rel = "noopener"; }
+    }
+    const align = String(node.style?.textAlign || "").toLowerCase();
+    if (["left", "center", "right", "justify"].includes(align)) element.style.textAlign = align;
+    [...node.childNodes].forEach(child => appendSafeRichHint(element, child));
+    parent.append(element);
   }
 
   function renderHintText(container, value) {
+    const source = String(value || "");
+    if (/<(?:p|div|br|strong|b|em|i|u|s|h2|h3|blockquote|ol|ul|li|a)\b/i.test(source)) {
+      const template = document.createElement("template"); template.innerHTML = source;
+      [...template.content.childNodes].forEach(node => appendSafeRichHint(container, node));
+      return;
+    }
     let activeList = null;
     let activeType = "";
     let activeIndent = -1;
-    String(value || "").split(/\r?\n/).forEach(line => {
+    source.split(/\r?\n/).forEach(line => {
       const heading = line.match(/^(\s*)#{1,3}\s+(.+)$/);
       const numbered = line.match(/^(\s*)\d+[.)、]\s+(.+)$/);
       const bullet = line.match(/^(\s*)[-*•]\s+(.+)$/);
       if (heading) {
         activeList = null; activeType = ""; activeIndent = -1;
-        const title = document.createElement("h4"); applyHintIndent(title, heading[1]); appendHintInline(title, heading[2]); container.append(title); return;
+        const title = document.createElement("h4"); appendHintInline(title, heading[2]); container.append(title); return;
       }
       const listType = numbered ? "ol" : (bullet ? "ul" : "");
       if (listType) {
-        const match = numbered || bullet;
-        const indent = match[1].replace(/\t/g, "  ").length;
+        const match = numbered || bullet; const indent = match[1].replace(/\t/g, "  ").length;
         if (!activeList || activeType !== listType || activeIndent !== indent) {
-          activeList = document.createElement(listType); activeType = listType; activeIndent = indent; applyHintIndent(activeList, match[1]); container.append(activeList);
+          activeList = document.createElement(listType); activeType = listType; activeIndent = indent;
+          if (indent) activeList.style.marginLeft = Math.min(indent, 12) * 8 + "px";
+          container.append(activeList);
         }
         const item = document.createElement("li"); appendHintInline(item, match[2]); activeList.append(item); return;
       }
       activeList = null; activeType = ""; activeIndent = -1;
       if (!line.trim()) { const spacer = document.createElement("div"); spacer.className = "hint-spacer"; container.append(spacer); return; }
-      const plain = line.match(/^(\s*)(.*)$/);
-      const row = document.createElement("div"); row.className = "hint-line"; applyHintIndent(row, plain[1]); appendHintInline(row, plain[2]); container.append(row);
+      const row = document.createElement("div"); row.className = "hint-line"; appendHintInline(row, line.trimStart()); container.append(row);
     });
   }
 
@@ -670,12 +687,20 @@
   }
 
   function plainHintText(value) {
-    return String(value || "").split(/\r?\n/).map(line =>
-      line
-        .replace(/^(\s*)#{1,3}\s+/, "$1")
-        .replace(/\*\*([^*]+)\*\*/g, "$1")
-        .replace(/^(\s*)[-*•]\s+/, "$1▪ ")
-    ).join("\n");
+    const source = String(value || "");
+    if (/<(?:p|div|br|strong|b|em|i|u|s|h2|h3|blockquote|ol|ul|li|a)\b/i.test(source)) {
+      const box = document.createElement("div"); box.innerHTML = source;
+      box.querySelectorAll("script,style,img,video,iframe,object").forEach(node => node.remove());
+      box.querySelectorAll("br").forEach(node => node.replaceWith("\n"));
+      box.querySelectorAll("li").forEach(node => {
+        const list = node.parentElement;
+        const prefix = list?.tagName === "OL" ? ([...list.children].indexOf(node) + 1) + ". " : "▪ ";
+        node.prepend(prefix); node.append("\n");
+      });
+      box.querySelectorAll("p,div,h1,h2,h3,h4,blockquote").forEach(node => node.append("\n"));
+      return box.textContent.replace(/\n{3,}/g, "\n\n").trim();
+    }
+    return source.split(/\r?\n/).map(line => line.replace(/^(\s*)#{1,3}\s+/, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/^(\s*)[-*•]\s+/, "$1▪ ")).join("\n");
   }
 
   function buildOutput(flow, variables) {

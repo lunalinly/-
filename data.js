@@ -228,7 +228,13 @@ window.SOP_DATA = {
       "branch": "KAM表",
       "steps": [],
       "routes": [],
-      "answerParts": [],
+      "answerParts": [
+        {
+          "question": "共用",
+          "branch": "KAM表",
+          "beforeText": ""
+        }
+      ],
       "next": "等待KAM回覆並告訴客人要等1~2個工作天"
     },
     {
@@ -236,7 +242,13 @@ window.SOP_DATA = {
       "branch": "KAM表．SBS",
       "steps": [],
       "routes": [],
-      "answerParts": [],
+      "answerParts": [
+        {
+          "question": "共用",
+          "branch": "KAM表．SBS",
+          "beforeText": ""
+        }
+      ],
       "next": "等待KAM回覆並告訴客人要等1~2個工作天"
     },
     {
@@ -2210,7 +2222,7 @@ window.SOP_DATA = {
       "q": "GLOBAL",
       "branch": "廠直表",
       "code": "V025",
-      "label": "Sheet-ID＿廠直表",
+      "label": "Sheet-ID_廠直表",
       "hint": "不用輸入",
       "sourceNote": "",
       "sourceLinks": [],
@@ -2498,7 +2510,7 @@ window.SOP_DATA = {
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V028",
               "value": "",
               "answerText": "：{{V028}}",
               "answerPosition": "after_field",
@@ -2514,7 +2526,7 @@ window.SOP_DATA = {
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V029",
               "value": "",
               "answerText": "：{{V029}}",
               "answerPosition": "after_field",
@@ -2530,7 +2542,7 @@ window.SOP_DATA = {
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V030",
               "value": "",
               "answerText": "：{{V030}}",
               "answerPosition": "after_field",
@@ -2837,7 +2849,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T04:39:06.161Z",
+  "updatedAt": "2026-08-01T04:49:33.250Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3668,7 +3680,7 @@ window.SOP_DATA = {
     },
     {
       "code": "V025",
-      "label": "Sheet-ID＿廠直表",
+      "label": "Sheet-ID_廠直表",
       "category": "廠直表",
       "hint": "不用輸入",
       "type": "text",
@@ -3806,7 +3818,7 @@ window.SOP_DATA = {
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V028",
               "value": "",
               "answerText": "：{{V028}}",
               "answerPosition": "after_field",
@@ -3822,7 +3834,7 @@ window.SOP_DATA = {
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V029",
               "value": "",
               "answerText": "：{{V029}}",
               "answerPosition": "after_field",
@@ -3838,7 +3850,7 @@ window.SOP_DATA = {
           "assignments": [
             {
               "action": "reveal",
-              "targetCode": "invoice_period_deadline",
+              "targetCode": "V030",
               "value": "",
               "answerText": "：{{V030}}",
               "answerPosition": "after_field",

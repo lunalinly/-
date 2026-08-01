@@ -256,7 +256,13 @@ window.SOP_DATA = {
       "branch": "廠直表",
       "steps": [],
       "routes": [],
-      "answerParts": [],
+      "answerParts": [
+        {
+          "question": "共用",
+          "branch": "廠直表",
+          "beforeText": ""
+        }
+      ],
       "next": ""
     },
     {
@@ -433,7 +439,22 @@ window.SOP_DATA = {
       "required": true,
       "multiline": false,
       "common": false,
-      "category": "常用"
+      "category": "常用",
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "SCI 貨態系統",
+          "url": "https://sci.twtc.shopee.tw/shopee24-hub/search"
+        }
+      ],
+      "sourceNote": "<h3>方法一：<a href=\"https://sci.twtc.shopee.tw/shopee24-hub/search\" target=\"_blank\" rel=\"noopener\">SCI 貨態系統（優先）</a></h3><ol><li>開啟 SCI 貨態系統。</li><li>輸入 {物流單號} 或 {Order SN} 查詢。</li><li>找到狀態「已取件／Delivered／Picked Up」。</li><li>該狀態旁的日期時間就是 {取貨日期}。</li></ol><h3>方法二：<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><ol><li>輸入 {Order SN}。</li><li>展開正確的 Order。</li><li>查看「物流資訊」或「訂單與物流歷程」。</li><li>找到「買家已取件／訂單已送達」。</li><li>取該狀態的日期作為 {取貨日期}。</li></ol><p>如果查不到「已取件」紀錄，代表貨態可能尚未更新，先不要自行推算日期。</p><p>如果你問的是退貨物流到府取件日期：<br>Order Admin → Return → Return &amp; Refund Requests → 申退詳情 → Status &amp; Timeline</p><p>黑貓／蝦宅退貨也可在買家端「退貨退款詳情」查看取件時間與地址。<br></p>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search"
     },
     {
       "q": "Q001",
@@ -1333,7 +1354,7 @@ window.SOP_DATA = {
       "code": "order_id",
       "label": "訂單編號_Order SN",
       "hint": "貼上訂單編號",
-      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -1365,7 +1386,7 @@ window.SOP_DATA = {
       "code": "V018",
       "label": "買家名字_Buyer Username",
       "hint": "是填入Buyer Username／User Name",
-      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -1435,7 +1456,7 @@ window.SOP_DATA = {
       "code": "work_order",
       "label": "工單號",
       "hint": "建立後填入",
-      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
       "sourceLinks": [
         {
           "title": "Jura工單",
@@ -1925,7 +1946,7 @@ window.SOP_DATA = {
       "code": "order_id",
       "label": "訂單編號_Order SN",
       "hint": "貼上訂單編號",
-      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -1957,7 +1978,7 @@ window.SOP_DATA = {
       "code": "V018",
       "label": "買家名字_Buyer Username",
       "hint": "是填入Buyer Username／User Name",
-      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -2027,7 +2048,7 @@ window.SOP_DATA = {
       "code": "work_order",
       "label": "工單號",
       "hint": "建立後填入",
-      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
       "sourceLinks": [
         {
           "title": "Jura工單",
@@ -2346,7 +2367,7 @@ window.SOP_DATA = {
       "code": "V018",
       "label": "買家名字_Buyer Username",
       "hint": "是填入Buyer Username／User Name",
-      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -2477,9 +2498,9 @@ window.SOP_DATA = {
               "targetCode": "V026",
               "value": "",
               "answerText": "，不用輸入",
-              "answerPosition": "end",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V037"
             }
           ]
         }
@@ -2663,7 +2684,7 @@ window.SOP_DATA = {
       "code": "order_id",
       "label": "訂單編號_Order SN",
       "hint": "貼上訂單編號",
-      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -2695,7 +2716,7 @@ window.SOP_DATA = {
       "code": "work_order",
       "label": "工單號",
       "hint": "建立後填入",
-      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
       "sourceLinks": [
         {
           "title": "Jura工單",
@@ -2793,7 +2814,7 @@ window.SOP_DATA = {
     {
       "q": "GLOBAL",
       "branch": "廠直表",
-      "text": "進入廠直表的{{V024}}分頁後填入以下內容：\nSheet ID 填入：{{V025}}\nType 填入：{{V026}}\nID 填入：{{V027}}\nQuestion 填入：{{V031}}\nPriority 填入：{{V032}}\n填表人 填入：{{V019}}\n前台訂單 填入：{{order_id}}\nMP SKU 填入：{{V030}}\n簡述問題 填入：{{V033}}\n工單號 填入：{{work_order}}\n問題分類 填入：{{V034}}\n廠商回覆 填入：{{V035}}\nCS內部備註/買家帳號 填入：{{V037}}\nA組聊聊結案 填入：{{V038}}\n需再次溝通 填入：{{V039}}"
+      "text": "進入廠直表的{{V024}}分頁後填入以下內容：\nSheet ID 填入：{{V025}}\nType 填入：{{V026}}\nID 填入：{{V027}}\nQuestion 填入：{{V031}}\nPriority 填入：{{V032}}\n填表人 填入：{{V019}}\n前台訂單 填入：{{order_id}}\nMP SKU 填入：{{V030}}\n簡述問題 填入：{{V033}}\n工單號 填入：{{work_order}}\n問題分類 填入：{{V034}}\n廠商回覆 填入：{{V035}}\nCS內部備註/買家帳號 填入：因為Type是{{V037}}\nA組聊聊結案 填入：{{V038}}\n需再次溝通 填入：{{V039}}"
     }
   ],
   "actions": [
@@ -2849,7 +2870,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T04:49:33.250Z",
+  "updatedAt": "2026-08-01T06:20:16.326Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -2931,7 +2952,7 @@ window.SOP_DATA = {
           "url": "https://order-admin.shopee.tw/"
         }
       ],
-      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
       "options": [],
       "defaultValue": "",
       "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
@@ -2986,7 +3007,7 @@ window.SOP_DATA = {
           "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
         }
       ],
-      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
       "options": [],
       "defaultValue": "售前不用填",
       "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
@@ -3002,7 +3023,20 @@ window.SOP_DATA = {
       "common": false,
       "category": "常用",
       "fillRules": [],
-      "sourceLinks": []
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "SCI 貨態系統",
+          "url": "https://sci.twtc.shopee.tw/shopee24-hub/search"
+        }
+      ],
+      "sourceNote": "<h3>方法一：<a href=\"https://sci.twtc.shopee.tw/shopee24-hub/search\" target=\"_blank\" rel=\"noopener\">SCI 貨態系統（優先）</a></h3><ol><li>開啟 SCI 貨態系統。</li><li>輸入 {物流單號} 或 {Order SN} 查詢。</li><li>找到狀態「已取件／Delivered／Picked Up」。</li><li>該狀態旁的日期時間就是 {取貨日期}。</li></ol><h3>方法二：<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><ol><li>輸入 {Order SN}。</li><li>展開正確的 Order。</li><li>查看「物流資訊」或「訂單與物流歷程」。</li><li>找到「買家已取件／訂單已送達」。</li><li>取該狀態的日期作為 {取貨日期}。</li></ol><p>如果查不到「已取件」紀錄，代表貨態可能尚未更新，先不要自行推算日期。</p><p>如果你問的是退貨物流到府取件日期：<br>Order Admin → Return → Return &amp; Refund Requests → 申退詳情 → Status &amp; Timeline</p><p>黑貓／蝦宅退貨也可在買家端「退貨退款詳情」查看取件時間與地址。<br></p>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search"
     },
     {
       "code": "return_start",
@@ -3540,7 +3574,7 @@ window.SOP_DATA = {
       "options": [],
       "defaultValue": "Luna Lin",
       "fillRules": [],
-      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
       "sourceLinks": [
         {
           "title": "InHouse聊聊",
@@ -4090,9 +4124,9 @@ window.SOP_DATA = {
               "targetCode": "V026",
               "value": "",
               "answerText": "，不用輸入",
-              "answerPosition": "end",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V037"
             }
           ]
         }

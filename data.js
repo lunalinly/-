@@ -514,22 +514,49 @@ window.SOP_DATA = {
     },
     {
       "question": "詢問優惠券／賣場優惠券",
-      "branch": "取消訂單後優惠券是否返還",
+      "branch": "取消訂單後優惠券可以返還",
       "steps": [
         {
           "prompt": "客人是哪一種優惠券問題？",
           "option": "取消訂單後優惠券是否返還"
+        },
+        {
+          "prompt": "後台查詢結果顯示優惠券是否可返還／再次使用？",
+          "option": "可以返還／可以再次使用"
         }
       ],
       "routes": [],
       "answerParts": [
         {
           "question": "詢問優惠券／賣場優惠券",
-          "branch": "取消訂單後優惠券是否返還",
+          "branch": "取消訂單後優惠券可以返還",
           "beforeText": ""
         }
       ],
-      "next": "依優惠券規則、活動期限及剩餘數量說明"
+      "next": "依後台狀態告知優惠券已返還且仍可再次使用"
+    },
+    {
+      "question": "詢問優惠券／賣場優惠券",
+      "branch": "取消訂單後優惠券不能返還",
+      "steps": [
+        {
+          "prompt": "客人是哪一種優惠券問題？",
+          "option": "取消訂單後優惠券是否返還"
+        },
+        {
+          "prompt": "後台查詢結果顯示優惠券是否可返還／再次使用？",
+          "option": "不能返還／不能再次使用"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問優惠券／賣場優惠券",
+          "branch": "取消訂單後優惠券不能返還",
+          "beforeText": ""
+        }
+      ],
+      "next": "依後台狀態說明優惠券目前不能返還或再次使用"
     },
     {
       "question": "詢問運費",
@@ -3255,6 +3282,294 @@ window.SOP_DATA = {
       "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券"
+    },
+    {
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "required": true,
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "q": "Q006",
+      "branch": "取消訂單後優惠券可以返還"
+    },
+    {
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "category": "常用",
+      "hint": "是填入Buyer Username／User Name",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "fillRules": [],
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "q": "Q006",
+      "branch": "取消訂單後優惠券可以返還"
+    },
+    {
+      "code": "original_voucher_code",
+      "label": "原優惠代碼_Voucher Code",
+      "hint": "填入取消訂單前使用的原 Voucher Code",
+      "sourceNote": "查找位置：\n▪ CS Portal → 搜尋 {Order SN} → 一般資訊 → 優惠券資訊。\n▪ 如果是免運券，可到 Order Admin → Orders → Order Information → Free Shipping Fee Voucher Promo ID 確認該訂單使用的免運券資料。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "取消訂單後優惠券可以返還"
+    },
+    {
+      "code": "voucher_return_status",
+      "label": "優惠券返還／使用狀態",
+      "hint": "填入後台顯示的狀態、有效期限及是否可再次使用",
+      "sourceNote": "查詢步驟：\n1. 開啟 CS Portal。\n2. 使用 {Buyer Username} 搜尋買家。\n3. 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n4. 使用原 Voucher Code 搜尋或比對清單。\n5. 查看優惠券是否出現在可用清單、目前狀態及有效期限。\n\n判斷方式：\n▪ 顯示在可用清單且狀態為 Valid／可使用：代表已返還且仍可使用。\n▪ 未出現在可用清單，或狀態為失效／過期／不可使用：代表目前不能再次使用。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "取消訂單後優惠券可以返還"
+    },
+    {
+      "code": "available_voucher_codes",
+      "label": "優惠代碼有哪些",
+      "hint": "把 CS Portal 顯示可使用的優惠代碼全部貼上；多筆請一行一個",
+      "sourceNote": "使用 CS Portal 查詢：\n1. 搜尋買家 Username。\n2. 進入「詳細資訊（買家）」。\n3. 點選「優惠代碼錢包」。\n4. 將目前可使用的優惠代碼填入此欄位。\n\n其他查詢方式：\n▪ 也可以直接用優惠代碼在 CS Portal 搜尋。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "取消訂單後優惠券可以返還"
+    },
+    {
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "required": true,
+      "common": true,
+      "category": "常用",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還"
+    },
+    {
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "category": "常用",
+      "hint": "是填入Buyer Username／User Name",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "fillRules": [],
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還"
+    },
+    {
+      "code": "original_voucher_code",
+      "label": "原優惠代碼_Voucher Code",
+      "hint": "填入取消訂單前使用的原 Voucher Code",
+      "sourceNote": "查找位置：\n▪ CS Portal → 搜尋 {Order SN} → 一般資訊 → 優惠券資訊。\n▪ 如果是免運券，可到 Order Admin → Orders → Order Information → Free Shipping Fee Voucher Promo ID 確認該訂單使用的免運券資料。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還"
+    },
+    {
+      "code": "voucher_return_status",
+      "label": "優惠券返還／使用狀態",
+      "hint": "填入後台顯示的狀態、有效期限及是否可再次使用",
+      "sourceNote": "查詢步驟：\n1. 開啟 CS Portal。\n2. 使用 {Buyer Username} 搜尋買家。\n3. 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n4. 使用原 Voucher Code 搜尋或比對清單。\n5. 查看優惠券是否出現在可用清單、目前狀態及有效期限。\n\n判斷方式：\n▪ 顯示在可用清單且狀態為 Valid／可使用：代表已返還且仍可使用。\n▪ 未出現在可用清單，或狀態為失效／過期／不可使用：代表目前不能再次使用。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還"
+    },
+    {
+      "code": "available_voucher_codes",
+      "label": "優惠代碼有哪些",
+      "hint": "把 CS Portal 顯示可使用的優惠代碼全部貼上；多筆請一行一個",
+      "sourceNote": "使用 CS Portal 查詢：\n1. 搜尋買家 Username。\n2. 進入「詳細資訊（買家）」。\n3. 點選「優惠代碼錢包」。\n4. 將目前可使用的優惠代碼填入此欄位。\n\n其他查詢方式：\n▪ 也可以直接用優惠代碼在 CS Portal 搜尋。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還"
     }
   ],
   "templates": [
@@ -3350,8 +3665,13 @@ window.SOP_DATA = {
     },
     {
       "q": "Q006",
-      "branch": "取消訂單後優惠券是否返還",
-      "text": "判斷原則：\n▪ 是否返還要依該張優惠券的使用規則為主。\n▪ 即使系統返還，若活動已結束、優惠券已逾期或名額已由其他用戶使用，仍可能無法再次使用。\n▪ 不要向買家承諾優惠券一定可以重複使用。"
+      "branch": "取消訂單後優惠券可以返還",
+      "text": "準備資料：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 原 Voucher Code：{{original_voucher_code}}\n\n方法一．CS Portal「一般資訊」\n1. 開啟 CS Portal。\n2. 使用 {{order_id}} 或 {{V018}} 搜尋。\n3. 展開正確的 Order。\n4. 查看「一般資訊」的訂單狀態、取消時間序與優惠券資訊。\n5. 找出此訂單使用的原 Voucher Code。\n\n方法二．CS Portal「優惠代碼錢包」\n1. 使用 Buyer Username：{{V018}} 搜尋。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 使用原 Voucher Code：{{original_voucher_code}} 搜尋或比對清單。\n6. 查看是否出現在可用清單、目前狀態與有效期限。\n\n方法三．Order Admin（免運券輔助確認）\n1. 進入 Orders → Order Information。\n2. 使用 Order SN：{{order_id}} 找到正確訂單。\n3. 查看 Free Shipping Fee Voucher Promo ID。\n4. 此位置可確認訂單使用的免運券資料；是否已返還且可使用，仍以 CS Portal「優惠代碼錢包」為準。\n\n後台查詢結果：\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券已出現在可用清單，且狀態／有效期限仍可使用。\n▪ 可以告知買家優惠券已返還並可再次使用；實際使用仍須符合該券規則。"
+    },
+    {
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還",
+      "text": "準備資料：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 原 Voucher Code：{{original_voucher_code}}\n\n方法一．CS Portal「一般資訊」\n1. 開啟 CS Portal。\n2. 使用 {{order_id}} 或 {{V018}} 搜尋。\n3. 展開正確的 Order。\n4. 查看「一般資訊」的訂單狀態、取消時間序與優惠券資訊。\n5. 找出此訂單使用的原 Voucher Code。\n\n方法二．CS Portal「優惠代碼錢包」\n1. 使用 Buyer Username：{{V018}} 搜尋。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 使用原 Voucher Code：{{original_voucher_code}} 搜尋或比對清單。\n6. 查看是否出現在可用清單、目前狀態與有效期限。\n\n方法三．Order Admin（免運券輔助確認）\n1. 進入 Orders → Order Information。\n2. 使用 Order SN：{{order_id}} 找到正確訂單。\n3. 查看 Free Shipping Fee Voucher Promo ID。\n4. 此位置可確認訂單使用的免運券資料；是否已返還且可使用，仍以 CS Portal「優惠代碼錢包」為準。\n\n後台查詢結果：\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前其他可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券未出現在可用清單，或狀態／有效期限顯示不可使用。\n▪ 目前不能告知買家原優惠券可以再次使用。\n▪ 可能原因包含優惠券規則不返還、活動已結束、優惠券已過期或名額已用完。\n▪ 不要承諾原優惠券一定會返還。"
     },
     {
       "q": "Q008",
@@ -3476,9 +3796,47 @@ window.SOP_DATA = {
         }
       ],
       "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+    },
+    {
+      "q": "Q006",
+      "branch": "取消訂單後優惠券可以返還",
+      "action": "查詢優惠券返還狀態",
+      "needed": true,
+      "note": "使用 CS Portal 為主；免運券可用 Order Admin 輔助確認",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "url": "https://dms.cs.shopee.tw/portal/info/search"
+    },
+    {
+      "q": "Q006",
+      "branch": "取消訂單後優惠券不能返還",
+      "action": "查詢優惠券返還狀態",
+      "needed": true,
+      "note": "使用 CS Portal 為主；免運券可用 Order Admin 輔助確認",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "url": "https://dms.cs.shopee.tw/portal/info/search"
     }
   ],
-  "updatedAt": "2026-08-01T07:42:24.344Z",
+  "updatedAt": "2026-08-01T07:49:38.834Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -4990,6 +5348,58 @@ window.SOP_DATA = {
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "category": "優惠券",
       "fillRules": []
+    },
+    {
+      "code": "original_voucher_code",
+      "label": "原優惠代碼_Voucher Code",
+      "hint": "填入取消訂單前使用的原 Voucher Code",
+      "sourceNote": "查找位置：\n▪ CS Portal → 搜尋 {Order SN} → 一般資訊 → 優惠券資訊。\n▪ 如果是免運券，可到 Order Admin → Orders → Order Information → Free Shipping Fee Voucher Promo ID 確認該訂單使用的免運券資料。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": []
+    },
+    {
+      "code": "voucher_return_status",
+      "label": "優惠券返還／使用狀態",
+      "hint": "填入後台顯示的狀態、有效期限及是否可再次使用",
+      "sourceNote": "查詢步驟：\n1. 開啟 CS Portal。\n2. 使用 {Buyer Username} 搜尋買家。\n3. 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n4. 使用原 Voucher Code 搜尋或比對清單。\n5. 查看優惠券是否出現在可用清單、目前狀態及有效期限。\n\n判斷方式：\n▪ 顯示在可用清單且狀態為 Valid／可使用：代表已返還且仍可使用。\n▪ 未出現在可用清單，或狀態為失效／過期／不可使用：代表目前不能再次使用。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": []
     }
   ],
   "decisions": [
@@ -5058,6 +5468,13 @@ window.SOP_DATA = {
       "options": [
         "購物車有自動加入贈品",
         "購物車沒有自動加入贈品"
+      ]
+    },
+    {
+      "prompt": "後台查詢結果顯示優惠券是否可返還／再次使用？",
+      "options": [
+        "可以返還／可以再次使用",
+        "不能返還／不能再次使用"
       ]
     }
   ]

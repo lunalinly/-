@@ -9,7 +9,7 @@ window.SOP_DATA = {
       "keywords": "鑑賞期,七天,15天,十五天,退貨期限",
       "description": "依取貨日期產生鑑賞期說明",
       "enabled": true,
-      "answerText": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
+      "answerText": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{{pickup_date}}}，那鑑賞期就是從 {{{return_start}}} 開始算 15 天。\n要記得在 {{{return_deadline}}} 前提出退貨申請。"
     },
     {
       "id": "Q002",
@@ -727,25 +727,6 @@ window.SOP_DATA = {
     }
   ],
   "variables": [
-    {
-      "q": "Q002",
-      "branch": "共用",
-      "code": "V001",
-      "label": "小編代號",
-      "hint": "",
-      "type": "text",
-      "autoDays": 0,
-      "required": true,
-      "multiline": false,
-      "common": true,
-      "category": "常用",
-      "fillRules": [],
-      "sourceNote": "",
-      "sourceUrl": "",
-      "options": [],
-      "sourceLinks": [],
-      "defaultValue": "[LN]"
-    },
     {
       "q": "Q003",
       "branch": "查詢發票",
@@ -3709,11 +3690,6 @@ window.SOP_DATA = {
   ],
   "templates": [
     {
-      "q": "Q002",
-      "branch": "共用",
-      "text": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。\n{{V001}}"
-    },
-    {
       "q": "Q003",
       "branch": "查詢發票",
       "text": "回答客人\n查詢「會員編號」及「歸戶驗證碼」，查詢方式如下：\n▪ App 版操作：\n進入【我的】➜ 點選右上角【⚙️】進入帳號設定 ➜ 點選【我的電子發票】即可查看。\n▪ 網頁版操作：\n進入【賣家中心】➜ 點選左側【賣場設定】➜【帳號與隱私設定】➜ 於【我的電子發票】旁點選【查看】即可。\n\n操作方式如下：\n▪ 前往關貿網路電子發票平台：https://reurl.cc/0k2NaM\n▪ 填寫「發票號碼」、「會員編號」、「歸戶驗證碼」\n▪ 選擇欲查詢的發票月份\n{{V001}}"
@@ -3842,6 +3818,11 @@ window.SOP_DATA = {
       "q": "Q006",
       "branch": "不能返還／不能再次使用",
       "text": "查詢資料與結果：\n▪ 原 Voucher Code：{{original_voucher_code}}\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前其他可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券未出現在可用清單，或狀態／有效期限顯示不可使用。\n▪ 目前不能告知買家原優惠券可以再次使用。\n▪ 可能原因包含優惠券規則不返還、活動已結束、優惠券已過期或名額已用完。\n▪ 不要承諾原優惠券一定會返還。"
+    },
+    {
+      "q": "Q002",
+      "branch": "共用",
+      "text": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。"
     }
   ],
   "actions": [
@@ -3976,7 +3957,7 @@ window.SOP_DATA = {
       "url": "https://dms.cs.shopee.tw/portal/info/search"
     }
   ],
-  "updatedAt": "2026-08-01T08:10:58.342Z",
+  "updatedAt": "2026-08-01T08:29:12.271Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

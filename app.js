@@ -268,6 +268,29 @@
 
   function questionIdForName(name) { return name === "共用" ? "GLOBAL" : (data.questions.find(question => question.name === name)?.id || ""); }
 
+  function composedAnswerTemplate(flow) {
+    const built = templatesFor(flow);
+    const conditional = conditionalAnswerTexts();
+    const chunks = [];
+    chunks.push(...conditional.filter(item => item.position === "start").map(item => item.text));
+    if (String(state.question.answerText || "").trim()) chunks.push(state.question.answerText);
+    chunks.push(...conditional.filter(item => item.position === "after_question").map(item => item.text));
+    built.entries.forEach(item => {
+      if (String(item.part.beforeText || "").trim()) chunks.push(item.part.beforeText);
+      if (item.template) chunks.push(item.template.text);
+      const anchor = JSON.stringify({ question: item.part.question, branch: item.part.branch });
+      chunks.push(...conditional.filter(entry => entry.position === "after_branch" && entry.anchor === anchor).map(entry => entry.text));
+    });
+    chunks.push(...conditional.filter(item => item.position === "end").map(item => item.text));
+    let text = chunks.join("\n\n");
+    conditional.filter(item => item.position === "after_field" && item.fieldCode).forEach(item => {
+      const token = `{{${item.fieldCode}}}`;
+      const index = text.indexOf(token);
+      if (index >= 0) text = text.slice(0, index + token.length) + item.text + text.slice(index + token.length);
+    });
+    return text;
+  }
+
   function variablesFor(flow) {
     const baseParts = Array.isArray(flow.answerParts)
       ? [...flow.answerParts]
@@ -304,13 +327,7 @@
         }));
       });
     }
-    const answerOrderText = [
-      questionText,
-      ...parts.flatMap(part => [part.beforeText || "", templateForPart(part)?.text || ""]),
-      ...(data.fields || []).flatMap(field => (field.fillRules || []).flatMap(rule =>
-        (rule.assignments || []).map(assignment => assignment.answerText || "")
-      ))
-    ].join("\n");
+    const answerOrderText = composedAnswerTemplate(flow);
     return [...catalog.values()].map((variable, originalIndex) => {
       const position = answerOrderText.indexOf(`{{${variable.code}}}`);
       return { variable, originalIndex, position: position < 0 ? Number.POSITIVE_INFINITY : position };

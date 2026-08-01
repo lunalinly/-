@@ -497,19 +497,30 @@
 
   function syncResultPanelHeight(outputPanel, hintsPanel) {
     if (!outputPanel || !hintsPanel) return;
-    if (window.innerWidth <= 860) { outputPanel.style.height = ""; return; }
+    if (window.innerWidth <= 860) {
+      outputPanel.style.height = "";
+      hintsPanel.style.height = "";
+      return;
+    }
+    outputPanel.style.height = "";
+    hintsPanel.style.height = "";
+    const outputHeight = Math.ceil(outputPanel.getBoundingClientRect().height);
     const hintsHeight = Math.ceil(hintsPanel.getBoundingClientRect().height);
-    if (hintsHeight > 0) outputPanel.style.height = hintsHeight + "px";
+    const hasHints = !hintsPanel.querySelector(".hints-empty");
+    const targetHeight = hasHints ? Math.max(outputHeight, hintsHeight) : outputHeight;
+    if (targetHeight > 0) {
+      outputPanel.style.height = targetHeight + "px";
+      hintsPanel.style.height = targetHeight + "px";
+    }
+  }
+
+  function scheduleResultPanelHeightSync() {
+    requestAnimationFrame(() => syncResultPanelHeight(document.querySelector(".output-panel"), document.querySelector(".hints-panel")));
   }
 
   function observeResultPanelHeight(outputPanel, hintsPanel) {
     resultHeightObserver?.disconnect();
-    const sync = () => syncResultPanelHeight(outputPanel, hintsPanel);
-    sync();
-    if ("ResizeObserver" in window) {
-      resultHeightObserver = new ResizeObserver(sync);
-      resultHeightObserver.observe(hintsPanel);
-    }
+    scheduleResultPanelHeightSync();
   }
 
   function renderResult(flow, variables) {
@@ -613,6 +624,7 @@
     if (!actions.length && !sources.length) {
       const empty = document.createElement("p"); empty.className = "hints-empty"; empty.textContent = "目前沒有額外操作提示。";
       panel.append(empty);
+      scheduleResultPanelHeightSync();
       return;
     }
 
@@ -654,6 +666,7 @@
     });
     box.append(list);
     panel.append(box);
+    scheduleResultPanelHeightSync();
   }
 
   function setFieldInputValue(input, value) {

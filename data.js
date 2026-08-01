@@ -228,13 +228,7 @@ window.SOP_DATA = {
       "branch": "KAM表",
       "steps": [],
       "routes": [],
-      "answerParts": [
-        {
-          "question": "共用",
-          "branch": "KAM表",
-          "beforeText": ""
-        }
-      ],
+      "answerParts": [],
       "next": "等待KAM回覆並告訴客人要等1~2個工作天"
     },
     {
@@ -242,13 +236,7 @@ window.SOP_DATA = {
       "branch": "KAM表．SBS",
       "steps": [],
       "routes": [],
-      "answerParts": [
-        {
-          "question": "共用",
-          "branch": "KAM表．SBS",
-          "beforeText": ""
-        }
-      ],
+      "answerParts": [],
       "next": "等待KAM回覆並告訴客人要等1~2個工作天"
     },
     {
@@ -256,13 +244,7 @@ window.SOP_DATA = {
       "branch": "廠直表",
       "steps": [],
       "routes": [],
-      "answerParts": [
-        {
-          "question": "共用",
-          "branch": "廠直表．SMS",
-          "beforeText": ""
-        }
-      ],
+      "answerParts": [],
       "next": ""
     },
     {
@@ -787,229 +769,16 @@ window.SOP_DATA = {
       "defaultValue": ""
     },
     {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "product_id",
-      "label": "商品代碼_Product ID",
-      "hint": "貼上Product ID",
-      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "商品詢問",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V008",
-      "label": "商品品項",
-      "hint": "貼上產品頁的完整標題",
-      "sourceNote": "",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "商品詢問",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V010",
-      "label": "商品規格",
-      "hint": "如果客人有詢問再填",
-      "sourceNote": "",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "客人沒問不用填",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "商品詢問",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V009",
-      "label": "買家問題_KAM",
-      "hint": "整理客人問題後輸入",
-      "sourceNote": "",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V012",
-      "label": "問題分類_KAM",
-      "hint": "選擇對應的分類",
-      "sourceNote": "售前的話要選擇「售前-XXX」",
-      "sourceLinks": [],
-      "options": [
-        "退換貨",
-        "退換貨-二次詢問",
-        "商品使用",
-        "商品規格",
-        "配件/贈品",
-        "保固相關",
-        "品質諮詢",
-        "其他",
-        "售前-商品使用",
-        "售前-商品規格",
-        "售前-配件/贈品",
-        "售前-保固相關",
-        "售前-品質諮詢"
-      ],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "select",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V013",
-      "label": "R/R 分類_KAM表",
-      "hint": "有訂單編號才需要選符合的選項，沒有的話不需要",
-      "sourceNote": "有訂單編號才需要選符合的選項，沒有的話不需要",
-      "sourceLinks": [],
-      "options": [
-        "換貨",
-        "補寄",
-        "冷鍊",
-        "沒有訂單編號所以不用選",
-        "沒有符合的選項所以不用選"
-      ],
-      "defaultValue": "沒有訂單編號所以不用選",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V014",
-      "label": "已申退_KAM表",
-      "hint": "訂單已經申請退款嗎？",
-      "sourceNote": "售後訂單已經申請退款才要勾\n\n如何查詢有沒有退款：\n1. CS Portal\n輸入 OSN、Username 或 Return SN 查詢訂單；在一般資訊區查看 Return 資訊、訂單狀態及時間序。\n\n2. Order Admin Portal\n進入 Return → Return & Refund Requests，利用欄位搜尋訂單；進入詳情後可查看 申請狀態、申請資訊及更新時序。\n\n3. InHouse CS System／聊聊控制台\n從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。\nProcessing：已申請，處理中\nAccepted：退貨退款已完成／接受\nCancelled：曾申請，但已取消\n沒有退貨退款編號或相關欄位：通常表示尚未申請",
-      "sourceLinks": [
-        {
-          "title": "CS Portal",
-          "url": "https://dms.cs.shopee.tw/portal/info/search"
-        },
-        {
-          "title": "Order Admin Portal",
-          "url": "https://order-admin.shopee.tw/"
-        },
-        {
-          "title": "InHouse聊聊",
-          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
-        }
-      ],
-      "options": [
-        "要打勾",
-        "不打勾"
-      ],
-      "defaultValue": "不打勾",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "select",
-      "multiline": false,
-      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V015",
-      "label": "擴大安心退_KAM表",
-      "hint": "商品總金額是否低於 NT$1,380",
-      "sourceNote": "符合「擴大安心退」需要同時符合以下 4 個條件：\n在 15 天鑑賞期內\n屬於 商品瑕疵，不是買家個人因素\n欲退商品總金額 低於 NT$1,380\n具備 商品及包裝照片",
-      "sourceLinks": [],
-      "options": [
-        "要打勾",
-        "不打勾"
-      ],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "select",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V016",
-      "label": "PDP 建議_KAM表",
-      "hint": "看看這個問題覺得要不要上產品頁",
-      "sourceNote": "看看這個問題覺得要不要上產品頁",
-      "sourceLinks": [],
-      "options": [
-        "要打勾",
-        "不打勾"
-      ],
-      "defaultValue": "不打勾",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "select",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V017",
-      "label": "有沒有訂單編號_KAM表",
-      "hint": "",
+      "q": "Q004",
+      "branch": "KAM表．SBS",
+      "code": "V006",
+      "label": "是否是廠直",
+      "hint": "選「是」或「不是」",
       "sourceNote": "",
       "sourceLinks": [],
       "options": [
-        "有",
-        "無"
+        "是",
+        "不是"
       ],
       "defaultValue": "",
       "autoDays": 0,
@@ -1018,231 +787,264 @@ window.SOP_DATA = {
       "type": "select",
       "multiline": false,
       "sourceUrl": "",
-      "category": "KAM表",
+      "category": "商家相關",
       "fillRules": [
         {
           "values": [
-            "有"
+            "是"
           ],
           "assignments": [
             {
-              "action": "reveal",
-              "targetCode": "order_id",
-              "value": "",
-              "answerText": "訂單編號，所以填入：{{order_id}}／{{V018}}",
-              "answerPosition": "after_field",
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-廠直",
+              "answerText": "",
+              "answerPosition": "end",
               "answerAnchor": "",
-              "answerFieldCode": "V017"
+              "answerFieldCode": ""
             }
           ]
         },
         {
           "values": [
-            "無"
+            "不是",
+            "否"
           ],
           "assignments": [
             {
-              "action": "reveal",
-              "targetCode": "V018",
-              "value": "",
-              "answerText": "訂單編號，所以填入：{{V018}}",
-              "answerPosition": "after_field",
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
               "answerAnchor": "",
-              "answerFieldCode": "V017"
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V011",
+              "value": "商品問題",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         }
       ]
     },
     {
-      "q": "GLOBAL",
+      "q": "Q004",
       "branch": "KAM表",
-      "code": "order_id",
-      "label": "訂單編號_Order SN",
-      "hint": "貼上訂單編號",
-      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
-      "sourceLinks": [
-        {
-          "title": "InHouse聊聊",
-          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
-        },
-        {
-          "title": "CS Portal",
-          "url": "https://dms.cs.shopee.tw/portal/info/search"
-        },
-        {
-          "title": "Order Admin Portal",
-          "url": "https://order-admin.shopee.tw/"
-        }
-      ],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": true,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
-      "category": "常用",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V018",
-      "label": "買家名字_Buyer Username",
-      "hint": "是填入Buyer Username／User Name",
-      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
-      "sourceLinks": [
-        {
-          "title": "InHouse聊聊",
-          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
-        },
-        {
-          "title": "CS Portal",
-          "url": "https://dms.cs.shopee.tw/portal/info/search"
-        },
-        {
-          "title": "User Portal",
-          "url": "https://admin.user.shopee.io/"
-        }
-      ],
-      "options": [],
-      "defaultValue": "Luna Lin",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
-      "category": "常用",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V019",
-      "label": "個案擁有者／填表人",
-      "hint": "選自己",
+      "code": "V006",
+      "label": "是否是廠直",
+      "hint": "選「是」或「不是」",
       "sourceNote": "",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "Luna Lin[LN]",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "常用",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V020",
-      "label": "詢問時間_KAM表",
-      "hint": "",
-      "sourceNote": "",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "會自動填寫不用動",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "work_order",
-      "label": "工單號",
-      "hint": "建立後填入",
-      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
-      "sourceLinks": [
-        {
-          "title": "Jura工單",
-          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
-        }
-      ],
-      "options": [],
-      "defaultValue": "售前不用填",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": false,
-      "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
-      "category": "常用",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V021",
-      "label": "備註_KAM表",
-      "hint": "有甚麼特別想備註的再填，如客人的情緒不太友善之類的",
-      "sourceNote": "有甚麼特別想備註的再填，如客人的情緒不太友善之類的",
-      "sourceLinks": [],
-      "options": [],
-      "defaultValue": "（空白）",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V022",
-      "label": "結_KAM表",
-      "hint": "結單了沒",
-      "sourceNote": "結單了在勾",
       "sourceLinks": [],
       "options": [
-        "要打勾",
-        "不打勾"
+        "是",
+        "不是"
       ],
-      "defaultValue": "不打勾",
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商家相關",
+      "fillRules": [
+        {
+          "values": [
+            "是"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-廠直",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "不是",
+            "否"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V011",
+              "value": "商品問題",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "Q004",
+      "branch": "歷史發問查詢沒有找到",
+      "code": "V006",
+      "label": "是否是廠直",
+      "hint": "選「是」或「不是」",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [
+        "是",
+        "不是"
+      ],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商家相關",
+      "fillRules": [
+        {
+          "values": [
+            "是"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-廠直",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "不是",
+            "否"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V011",
+              "value": "商品問題",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "Q004",
+      "branch": "廠直表",
+      "code": "V006",
+      "label": "是否是廠直",
+      "hint": "選「是」或「不是」",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [
+        "是",
+        "不是"
+      ],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商家相關",
+      "fillRules": [
+        {
+          "values": [
+            "是"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-廠直",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "不是",
+            "否"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V005",
+              "value": "歷史提問-24H",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V011",
+              "value": "商品問題",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "Q004",
+      "branch": "廠直表",
+      "code": "V024",
+      "label": "分頁_廠直表",
+      "hint": "廠直表的下方選分頁",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "轉單詢問",
       "autoDays": 0,
       "required": true,
       "common": false,
       "type": "text",
-      "multiline": true,
-      "sourceUrl": "",
-      "category": "KAM表",
-      "fillRules": []
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "code": "V011",
-      "label": "分頁_KAM表",
-      "hint": "會自動填入",
-      "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
-      "sourceLinks": [
-        {
-          "title": "KAM表",
-          "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307"
-        }
-      ],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": false,
-      "common": false,
-      "type": "text",
       "multiline": false,
-      "sourceUrl": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307",
-      "category": "KAM表",
+      "sourceUrl": "",
+      "category": "廠直表",
       "fillRules": []
     },
     {
@@ -1838,81 +1640,103 @@ window.SOP_DATA = {
       "fillRules": []
     },
     {
-      "q": "Q004",
-      "branch": "KAM表．SBS",
-      "code": "V006",
-      "label": "是否是廠直",
-      "hint": "選「是」或「不是」",
-      "sourceNote": "",
-      "sourceLinks": [],
-      "options": [
-        "是",
-        "不是"
-      ],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "select",
-      "multiline": false,
-      "sourceUrl": "",
-      "category": "商家相關",
-      "fillRules": [
-        {
-          "values": [
-            "是"
-          ],
-          "assignments": [
-            {
-              "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-廠直",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
-            }
-          ]
-        },
-        {
-          "values": [
-            "不是",
-            "否"
-          ],
-          "assignments": [
-            {
-              "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-24H",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
-            },
-            {
-              "action": "fill",
-              "targetCode": "V011",
-              "value": "商品問題",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "q": "Q004",
+      "q": "GLOBAL",
       "branch": "KAM表",
-      "code": "V006",
-      "label": "是否是廠直",
-      "hint": "選「是」或「不是」",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商品詢問",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
       "sourceNote": "",
       "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商品詢問",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商品詢問",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V009",
+      "label": "買家問題_KAM",
+      "hint": "整理客人問題後輸入",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V012",
+      "label": "問題分類_KAM",
+      "hint": "選擇對應的分類",
+      "sourceNote": "售前的話要選擇「售前-XXX」",
+      "sourceLinks": [],
       "options": [
-        "是",
-        "不是"
+        "退換貨",
+        "退換貨-二次詢問",
+        "商品使用",
+        "商品規格",
+        "配件/贈品",
+        "保固相關",
+        "品質諮詢",
+        "其他",
+        "售前-商品使用",
+        "售前-商品規格",
+        "售前-配件/贈品",
+        "售前-保固相關",
+        "售前-品質諮詢"
       ],
       "defaultValue": "",
       "autoDays": 0,
@@ -1921,63 +1745,80 @@ window.SOP_DATA = {
       "type": "select",
       "multiline": false,
       "sourceUrl": "",
-      "category": "商家相關",
-      "fillRules": [
-        {
-          "values": [
-            "是"
-          ],
-          "assignments": [
-            {
-              "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-廠直",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
-            }
-          ]
-        },
-        {
-          "values": [
-            "不是",
-            "否"
-          ],
-          "assignments": [
-            {
-              "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-24H",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
-            },
-            {
-              "action": "fill",
-              "targetCode": "V011",
-              "value": "商品問題",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
-            }
-          ]
-        }
-      ]
+      "category": "KAM表",
+      "fillRules": []
     },
     {
-      "q": "Q004",
-      "branch": "歷史發問查詢沒有找到",
-      "code": "V006",
-      "label": "是否是廠直",
-      "hint": "選「是」或「不是」",
-      "sourceNote": "",
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V013",
+      "label": "R/R 分類_KAM表",
+      "hint": "有訂單編號才需要選符合的選項，沒有的話不需要",
+      "sourceNote": "有訂單編號才需要選符合的選項，沒有的話不需要",
       "sourceLinks": [],
       "options": [
-        "是",
-        "不是"
+        "換貨",
+        "補寄",
+        "冷鍊",
+        "沒有訂單編號所以不用選",
+        "沒有符合的選項所以不用選"
+      ],
+      "defaultValue": "沒有訂單編號所以不用選",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V014",
+      "label": "已申退_KAM表",
+      "hint": "訂單已經申請退款嗎？",
+      "sourceNote": "售後訂單已經申請退款才要勾\n\n如何查詢有沒有退款：\n1. CS Portal\n輸入 OSN、Username 或 Return SN 查詢訂單；在一般資訊區查看 Return 資訊、訂單狀態及時間序。\n\n2. Order Admin Portal\n進入 Return → Return & Refund Requests，利用欄位搜尋訂單；進入詳情後可查看 申請狀態、申請資訊及更新時序。\n\n3. InHouse CS System／聊聊控制台\n從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。\nProcessing：已申請，處理中\nAccepted：退貨退款已完成／接受\nCancelled：曾申請，但已取消\n沒有退貨退款編號或相關欄位：通常表示尚未申請",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        }
+      ],
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V015",
+      "label": "擴大安心退_KAM表",
+      "hint": "商品總金額是否低於 NT$1,380",
+      "sourceNote": "符合「擴大安心退」需要同時符合以下 4 個條件：\n在 15 天鑑賞期內\n屬於 商品瑕疵，不是買家個人因素\n欲退商品總金額 低於 NT$1,380\n具備 商品及包裝照片",
+      "sourceLinks": [],
+      "options": [
+        "要打勾",
+        "不打勾"
       ],
       "defaultValue": "",
       "autoDays": 0,
@@ -1986,63 +1827,289 @@ window.SOP_DATA = {
       "type": "select",
       "multiline": false,
       "sourceUrl": "",
-      "category": "商家相關",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V016",
+      "label": "PDP 建議_KAM表",
+      "hint": "看看這個問題覺得要不要上產品頁",
+      "sourceNote": "看看這個問題覺得要不要上產品頁",
+      "sourceLinks": [],
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V017",
+      "label": "有沒有訂單編號_KAM表",
+      "hint": "",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [
+        "有",
+        "無"
+      ],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "KAM表",
       "fillRules": [
         {
           "values": [
-            "是"
+            "有"
           ],
           "assignments": [
             {
-              "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-廠直",
-              "answerText": "",
-              "answerPosition": "end",
+              "action": "reveal",
+              "targetCode": "order_id",
+              "value": "",
+              "answerText": "訂單編號，所以填入：{{order_id}}／{{V018}}",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V017"
             }
           ]
         },
         {
           "values": [
-            "不是",
-            "否"
+            "無"
           ],
           "assignments": [
             {
-              "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-24H",
-              "answerText": "",
-              "answerPosition": "end",
+              "action": "reveal",
+              "targetCode": "V018",
+              "value": "",
+              "answerText": "訂單編號，所以填入：{{V018}}",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
-            },
-            {
-              "action": "fill",
-              "targetCode": "V011",
-              "value": "商品問題",
-              "answerText": "",
-              "answerPosition": "end",
-              "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V017"
             }
           ]
         }
       ]
     },
     {
-      "q": "Q004",
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": true,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "hint": "是填入Buyer Username／User Name",
+      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V019",
+      "label": "個案擁有者／填表人",
+      "hint": "選自己",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "Luna Lin[LN]",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V020",
+      "label": "詢問時間_KAM表",
+      "hint": "",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "會自動填寫不用動",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "work_order",
+      "label": "工單號",
+      "hint": "建立後填入",
+      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
+      "sourceLinks": [
+        {
+          "title": "Jura工單",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
+      "options": [],
+      "defaultValue": "售前不用填",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V021",
+      "label": "備註_KAM表",
+      "hint": "有甚麼特別想備註的再填，如客人的情緒不太友善之類的",
+      "sourceNote": "有甚麼特別想備註的再填，如客人的情緒不太友善之類的",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "（空白）",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V022",
+      "label": "結_KAM表",
+      "hint": "結單了沒",
+      "sourceNote": "結單了在勾",
+      "sourceLinks": [],
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "code": "V011",
+      "label": "分頁_KAM表",
+      "hint": "會自動填入",
+      "sourceNote": "要從KAMS/PMS× CS × Listing 裡選擇對應的分頁",
+      "sourceLinks": [
+        {
+          "title": "KAM表",
+          "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": false,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?gid=931279307#gid=931279307",
+      "category": "KAM表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
       "branch": "廠直表",
-      "code": "V006",
-      "label": "是否是廠直",
-      "hint": "選「是」或「不是」",
-      "sourceNote": "",
+      "code": "V026",
+      "label": "Type_廠直表",
+      "hint": "order=訂單問題 ；return=退貨問題；sku=商品問題",
+      "sourceNote": "order=訂單問題\nreturn=退貨問題\nsku=商品問題",
       "sourceLinks": [],
       "options": [
-        "是",
-        "不是"
+        "order",
+        "return",
+        "sku"
       ],
       "defaultValue": "",
       "autoDays": 0,
@@ -2051,17 +2118,26 @@ window.SOP_DATA = {
       "type": "select",
       "multiline": false,
       "sourceUrl": "",
-      "category": "商家相關",
+      "category": "廠直表",
       "fillRules": [
         {
           "values": [
-            "是"
+            "order"
           ],
           "assignments": [
             {
               "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-廠直",
+              "targetCode": "V027",
+              "value": "SCM Order ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V037",
+              "value": "order",
               "answerText": "",
               "answerPosition": "end",
               "answerAnchor": "",
@@ -2071,14 +2147,13 @@ window.SOP_DATA = {
         },
         {
           "values": [
-            "不是",
-            "否"
+            "return"
           ],
           "assignments": [
             {
               "action": "fill",
-              "targetCode": "V005",
-              "value": "歷史提問-24H",
+              "targetCode": "V027",
+              "value": "SCM Return Order ID",
               "answerText": "",
               "answerPosition": "end",
               "answerAnchor": "",
@@ -2086,8 +2161,42 @@ window.SOP_DATA = {
             },
             {
               "action": "fill",
-              "targetCode": "V011",
-              "value": "商品問題",
+              "targetCode": "V037",
+              "value": "return",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "sku"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V027",
+              "value": "MP SKU ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V032",
+              "value": "2",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V037",
+              "value": "sku",
               "answerText": "",
               "answerPosition": "end",
               "answerAnchor": "",
@@ -2098,7 +2207,26 @@ window.SOP_DATA = {
       ]
     },
     {
-      "q": "Q004",
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V025",
+      "label": "Sheet-ID＿廠直表",
+      "hint": "不用輸入",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "不用輸入",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
       "branch": "廠直表",
       "code": "V024",
       "label": "分頁_廠直表",
@@ -2114,6 +2242,463 @@ window.SOP_DATA = {
       "multiline": false,
       "sourceUrl": "",
       "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V034",
+      "label": "問題分類_廠直表",
+      "hint": "依照問題種類做選擇",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [
+        "退貨-廠商出錯貨",
+        "退貨-商品瑕疵",
+        "退貨-缺件",
+        "退貨-拒收",
+        "退貨-驗收流程",
+        "退貨-其他",
+        "換貨-商品瑕疵",
+        "補寄-缺件",
+        "補寄-商品瑕疵",
+        "物流-改資訊",
+        "物流-調閱簽收單",
+        "物流-分箱出貨單號",
+        "物流-合併訂單",
+        "物流-配送追蹤",
+        "物流-客訴配送服務",
+        "物流-催促配送",
+        "商品規格",
+        "商品使用配件/贈品",
+        "OOS",
+        "保固相關",
+        "訂單備註",
+        "其他",
+        "廠商-多寄"
+      ],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V039",
+      "label": "需再次溝通_廠直表",
+      "hint": "要第二次溝通再打勾",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V019",
+      "label": "個案擁有者／填表人",
+      "hint": "選自己",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "Luna Lin[LN]",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "hint": "是填入Buyer Username／User Name",
+      "sourceNote": "找「買家名稱（Buyer Username／User Name）」可用以下方式：\n1. 從 InHouse 聊聊介面找（最快）\n▪ 左側「買家列表」會顯示目前進線買家的名稱。\n▪ 點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。\n\n2. 從 CS Portal 找\n▪ 如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。\n▪ 展開 Order，再查看 Buyer & Seller Info，即可確認買家帳號。\n\n3. 從 User Portal 反查\n如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。（第 97～98 頁）\n\n注意：\nBuyer Username／User Name：買家的帳號名稱。\nUser ID／UID：買家的數字識別碼，兩者不同。\n建立售前案件時，Case Subject 使用的是 Username；售後案件則使用 OSN。",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V035",
+      "label": "廠商回覆（剛填表）_廠直表",
+      "hint": "不用輸入",
+      "sourceNote": "有回覆了整理一下內容再給客人回覆",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "不用輸入",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V033",
+      "label": "簡述問題_廠直表",
+      "hint": "簡述問題",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V038",
+      "label": "A組聊聊結案_廠直表",
+      "hint": "結案再打勾",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V037",
+      "label": "CS內部備註TYPE_廠直表",
+      "hint": "自動填入",
+      "sourceNote": "",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": [
+        {
+          "values": [
+            "sku"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "V018",
+              "value": "",
+              "answerText": "，所以要填{{V018}}",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V037"
+            }
+          ]
+        },
+        {
+          "values": [
+            "return",
+            "order"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "V026",
+              "value": "",
+              "answerText": "，不用輸入",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V027",
+      "label": "ID-Type_廠直表",
+      "hint": "會自動帶入",
+      "sourceNote": "Type=order ，填入SCM Order ID \nType=return ，填入SCM Return Order ID \nType=sku ，填入MP SKU ID",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": [
+        {
+          "values": [
+            "SCM Order ID"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "：{{V028}}",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V027"
+            }
+          ]
+        },
+        {
+          "values": [
+            "SCM Return Order ID"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "：{{V029}}",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V027"
+            }
+          ]
+        },
+        {
+          "values": [
+            "MP SKU ID"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "：{{V030}}",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V027"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V030",
+      "label": "MP SKU ID",
+      "hint": "商品頁 → 取得 {Product ID} → DSS → 供應商管理 → 商品 → 搜尋 {Product ID} → 選擇 {商品規格}（如果客人有指定）→ 複製 {MP SKU ID}",
+      "sourceNote": "方法一：只有 Product ID，從 DSS 查 MP SKU ID\n1. 開啟商品頁，從網址取得 {Product ID}。\n▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 進入：供應商管理 → 商品\n4. 使用 {Product ID} 搜尋商品。\n5. 搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。\n6. 複製系統顯示的 {MP SKU ID}。\n注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。\n\n方法二：從 Order Admin 同時取得 Product ID 與 Model ID\n適用於已經有 {Order SN} 的售後訂單。\n1. 開啟 Order Admin Portal。\n2. 進入：Orders → 訂單查詢\n3. 輸入 {Order SN_OSN}。\n4. 點選搜尋並進入訂單詳細資料。\n5. 到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。\n6. 在同一筆商品規格資料中取得：\n▪ Product ID：{Product ID}\n▪ Model ID：{Model ID}\n7. 將兩個 ID 用底線組合：\n{Product ID}_{Model ID}\n組合完成的結果就是：\n{MP SKU ID}\n範例：\nProduct ID：{Product ID}\nModel ID：{Model ID}\nMP SKU ID：{Product ID}_{Model ID}\n\n使用時怎麼選\n▪ 只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。\n▪ 已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。\n\n商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "商品詢問",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V032",
+      "label": "Priority_廠直表",
+      "hint": "依照緊急程度選擇",
+      "sourceNote": "０：社群媒體法律健康風險(關鍵字等)\n１：有時間性問題(如改地址)\n２：一般基礎問題",
+      "sourceLinks": [],
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "select",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V031",
+      "label": "Question_廠直表",
+      "hint": "不用填",
+      "sourceNote": "Question 會自動帶出，主要用於：\n▪ DSS 的「商談」內容，讓 KAM／廠商查看問題並回覆。\n▪ 「歷史發問查詢」，供後續專員搜尋過往相同問題與答案。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "不用動",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "廠直表",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V028",
+      "label": "SCM Order ID",
+      "hint": "DSS → 訂單查詢 → 輸入 {Order SN_OSN} → 搜尋 → 詳細資料 → SCM Order ID",
+      "sourceNote": "1. 先取得訂單編號（Order SN）\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 點選 「訂單查詢」。\n4. 輸入訂單編號（Order SN）\n5. 點選 「搜尋」。\n6. 找到對應訂單後，點選 「詳細資料」。\n7. 在訂單詳細資料中找到並複製 【SCM Order ID】",
+      "sourceLinks": [
+        {
+          "title": "Shopee Drop Shipping（DSS）",
+          "url": "https://scm.internal.shopee.tw/homepage/backlogs"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://scm.internal.shopee.tw/homepage/backlogs",
+      "category": "訂單相關",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "V029",
+      "label": "SCM Return Order ID",
+      "hint": "CS Portal → 搜尋 {Order SN_OSN／Buyer Username} → Return 資訊 → {Return SN} → DSS → Admin_Return → {SCM Return Order ID}",
+      "sourceNote": "方法一：CS Portal 反查\n1. 開啟 CS Portal。\n2. 搜尋欄輸入：{Order SN_OSN}，或{Buyer Username}\n▪ 若使用 Username 查詢，選擇正確的 {Order SN_OSN}\n3. 按 Enter\n4, 展開 Order\n▪ 在一般資訊區找到 Return 資訊。\n5. 複製 {Return SN}。\n6. 開啟 Shopee Drop Shipping（DSS）。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 貼上 {Return SN}，點選搜尋。\n9. 進入退貨訂單詳細資料。\n10. 複製 {SCM Return Order ID}。\n\n方法二：Order Admin Portal 反查\n1. 開啟 Order Admin Portal。\n2. 進入：Return → Return & Refund Requests\n3. 在查詢欄位輸入 {Order SN_OSN}。\n4. 找到對應的退貨退款申請。\n5. 進入申請詳情。\n6. 複製 {Return SN／Return ID}。\n7. 開啟 DSS。\n8. 進入 Admin_Return／退貨訂單查詢。\n9. 輸入 {Return SN}。\n10. 點選搜尋並開啟詳細資料。\n11.複製 {SCM Return Order ID}。\n\n方法三：InHouse CS System／聊聊控制台反查\n1. 開啟買家的聊聊。\n2. 切換到 訂單詳情。\n3. 選擇正確的 {Order SN_OSN}。\n4. 展開 Order Info。\n5. 找到「退貨退款編號」，複製 {Return SN}。\n▪ 同時確認退貨退款狀態：\n▫ Processing：已申請，處理中\n▫ Accepted：申請已接受／退款完成\n▫ Cancelled：申請已取消\n6. 開啟 DSS。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 輸入 {Return SN}。\n9. 開啟詳細資料並複製 {SCM Return Order ID}。\n\n方法四：從既有案件紀錄查詢\n如果案件之前有人處理過，可以先查：\n1. 使用 {Order SN} 搜尋 KAM／廠商直送表。\n2. 使用 {Order SN} 或 {Buyer Username} 搜尋 Shopee Jira。\n查看既有紀錄是否已填寫：\n{Return SN}\n{SCM Return Order ID}\n如果只有 Return SN，再貼到 DSS 的 Admin_Return 查詢 SCM Return Order ID。\n使用既有 ID 前，務必確認是同一筆訂單、同一次退貨退款申請。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "訂單相關",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "從聊聊介面找（最快）\n如果買家從「訂單詳情」進入聊聊，買家名稱附近會直接顯示 訂單編號。\n\n1. 從聊聊控制台找\n▪ 開啟「訂單詳情」：\n▪ 依訂單狀態或建立時間篩選\n▫ 若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除\n訂單列表中顯示的 Order SN 就是訂單編號\n\n2. 從 CS Portal 找\n在搜尋欄輸入買家的 Username，按 Enter 後展開底下的 Order，即可找到該買家的訂單及 OSN。\n▪ 注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": true,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用",
+      "fillRules": []
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "code": "work_order",
+      "label": "工單號",
+      "hint": "建立後填入",
+      "sourceNote": "在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。\n售前不用填\n\n查詢方式：\n▪ 進入 Project → Shopee TW SBS（SPTWSBS）。\n▪ 點選 Queues → Switch Queues → Assigned to me。\n▪ 清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。\n如果找不到工單：\n▪ 到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。\n▪ 沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。",
+      "sourceLinks": [
+        {
+          "title": "Jura工單",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
+      "options": [],
+      "defaultValue": "售前不用填",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
+      "category": "常用",
       "fillRules": []
     }
   ],
@@ -2164,16 +2749,6 @@ window.SOP_DATA = {
       "text": "查詢到曾經有人問過：{{V007}}\n有回覆：{{V004}}\n整理完回覆給客人"
     },
     {
-      "q": "GLOBAL",
-      "branch": "KAM表",
-      "text": "進入KAM表的{{V011}}分頁後\nproduct id 填入：{{product_id}}\n商品品項 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題 填入：{{V009}}\n問題分類 填入：{{V012}}\nR/R 分類 填入：{{V013}}\n已申退 填入：{{V014}}\n擴大安心退 填入：{{V015}}\nOrder SN / User 填入：因為{{V017}}\n個案擁有者 填入：{{V019}}\n詢問時間 填入：{{V020}}\n工單號 填入：{{work_order}}\n備註 填入：{{V021}}\n結 填入：{{V022}}"
-    },
-    {
-      "q": "GLOBAL",
-      "branch": "KAM表．SBS",
-      "text": "進入KAM表的{{V011}}分頁後\n館別 填入：{{V003}}\nproduct id 填入：{{product_id}}\n商品名稱 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題（簡述） 填入：{{V009}}\n問題分類 填入：{{V023}}\nCFS 填入：\nOrder SN / User 填入：因為{{V017}}\n個案擁有者 填入：{{V019}}\n工單號 填入：{{work_order}}\n詢問時間 填入：{{V020}}\n備註 填入：{{V021}}\n結 填入：{{V022}}"
-    },
-    {
       "q": "Q004",
       "branch": "KAM表．SBS",
       "text": "輸入完告訴客人要等1~2個工作天（不含假日）廠商會給回覆，有消息會於上班時間回覆給他"
@@ -2192,6 +2767,21 @@ window.SOP_DATA = {
       "q": "Q004",
       "branch": "廠直表",
       "text": "輸入完告訴客人要等1~2個工作天（不含假日）廠商會給回覆，有消息會於上班時間回覆給他"
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表．SBS",
+      "text": "進入KAM表的{{V011}}分頁後填入以下內容：\n館別 填入：{{V003}}\nproduct id 填入：{{product_id}}\n商品名稱 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題（簡述） 填入：{{V009}}\n問題分類 填入：{{V023}}\nCFS 填入：\nOrder SN / User 填入：因為{{V017}}\n個案擁有者 填入：{{V019}}\n工單號 填入：{{work_order}}\n詢問時間 填入：{{V020}}\n備註 填入：{{V021}}\n結 填入：{{V022}}"
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "KAM表",
+      "text": "進入KAM表的{{V011}}分頁後填入以下內容：\nproduct id 填入：{{product_id}}\n商品品項 填入：{{V008}}\n商品規格 填入：{{V010}}\n買家問題 填入：{{V009}}\n問題分類 填入：{{V012}}\nR/R 分類 填入：{{V013}}\n已申退 填入：{{V014}}\n擴大安心退 填入：{{V015}}\nOrder SN / User 填入：因為{{V017}}\n個案擁有者 填入：{{V019}}\n詢問時間 填入：{{V020}}\n工單號 填入：{{work_order}}\n備註 填入：{{V021}}\n結 填入：{{V022}}"
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "廠直表",
+      "text": "進入廠直表的{{V024}}分頁後填入以下內容：\nSheet ID 填入：{{V025}}\nType 填入：{{V026}}\nID 填入：{{V027}}\nQuestion 填入：{{V031}}\nPriority 填入：{{V032}}\n填表人 填入：{{V019}}\n前台訂單 填入：{{order_id}}\nMP SKU 填入：{{V030}}\n簡述問題 填入：{{V033}}\n工單號 填入：{{work_order}}\n問題分類 填入：{{V034}}\n廠商回覆 填入：{{V035}}\nCS內部備註/買家帳號 填入：{{V037}}\nA組聊聊結案 填入：{{V038}}\n需再次溝通 填入：{{V039}}"
     }
   ],
   "actions": [
@@ -2218,7 +2808,7 @@ window.SOP_DATA = {
     },
     {
       "q": "GLOBAL",
-      "branch": "KAM表",
+      "branch": "KAM表．SBS",
       "action": "KAM表",
       "needed": true,
       "note": "",
@@ -2233,7 +2823,7 @@ window.SOP_DATA = {
     },
     {
       "q": "GLOBAL",
-      "branch": "KAM表．SBS",
+      "branch": "KAM表",
       "action": "KAM表",
       "needed": true,
       "note": "",
@@ -2247,7 +2837,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T04:19:19.106Z",
+  "updatedAt": "2026-08-01T04:39:06.161Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3267,8 +3857,8 @@ window.SOP_DATA = {
     },
     {
       "code": "V028",
-      "label": "SCM Order ID_廠直表",
-      "category": "廠直表",
+      "label": "SCM Order ID",
+      "category": "訂單相關",
       "hint": "DSS → 訂單查詢 → 輸入 {Order SN_OSN} → 搜尋 → 詳細資料 → SCM Order ID",
       "type": "text",
       "required": true,
@@ -3289,8 +3879,8 @@ window.SOP_DATA = {
     },
     {
       "code": "V029",
-      "label": "SCM Return Order ID_廠直表",
-      "category": "廠直表",
+      "label": "SCM Return Order ID",
+      "category": "訂單相關",
       "hint": "CS Portal → 搜尋 {Order SN_OSN／Buyer Username} → Return 資訊 → {Return SN} → DSS → Admin_Return → {SCM Return Order ID}",
       "type": "text",
       "required": true,
@@ -3306,8 +3896,8 @@ window.SOP_DATA = {
     },
     {
       "code": "V030",
-      "label": "MP SKU ID_廠直表",
-      "category": "廠直表",
+      "label": "MP SKU ID",
+      "category": "商品詢問",
       "hint": "商品頁 → 取得 {Product ID} → DSS → 供應商管理 → 商品 → 搜尋 {Product ID} → 選擇 {商品規格}（如果客人有指定）→ 複製 {MP SKU ID}",
       "type": "text",
       "required": true,

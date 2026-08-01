@@ -2247,7 +2247,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T03:45:36.646Z",
+  "updatedAt": "2026-08-01T03:49:05.532Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3183,9 +3183,9 @@ window.SOP_DATA = {
               "targetCode": "invoice_period_deadline",
               "value": "",
               "answerText": "：{{V028}}",
-              "answerPosition": "end",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V027"
             }
           ]
         },
@@ -3199,9 +3199,9 @@ window.SOP_DATA = {
               "targetCode": "invoice_period_deadline",
               "value": "",
               "answerText": "：{{V029}}",
-              "answerPosition": "end",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V027"
             }
           ]
         },
@@ -3215,9 +3215,9 @@ window.SOP_DATA = {
               "targetCode": "invoice_period_deadline",
               "value": "",
               "answerText": "：{{V030}}",
-              "answerPosition": "end",
+              "answerPosition": "after_field",
               "answerAnchor": "",
-              "answerFieldCode": ""
+              "answerFieldCode": "V027"
             }
           ]
         }

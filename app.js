@@ -302,10 +302,9 @@
       button.addEventListener("click", () => {
         state.choices = state.choices.slice(0, level);
         state.choices[level] = option;
-        state.values = {};
         state.routedBranch = null;
         state.revealedFields = new Set();
-    state.appendedSharedBranches = new Set();
+        state.appendedSharedBranches = new Set();
         renderWorkflow();
         requestAnimationFrame(() => {
           const panels = els.decision.querySelectorAll(".panel");

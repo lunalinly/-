@@ -141,7 +141,11 @@
       if (!item) return;
       state.index = Number(item.dataset.index); renderStudio();
     });
+    $("#studioForm").addEventListener("mousedown", event => { if (event.target.closest("[data-rich-command]")) event.preventDefault(); });
+    $("#studioForm").addEventListener("mouseup", event => { const content = event.target.closest("[data-rich-content]"); if (content) rememberRichSelection(content); });
+    $("#studioForm").addEventListener("keyup", event => { const content = event.target.closest("[data-rich-content]"); if (content) rememberRichSelection(content); });
     $("#studioForm").addEventListener("click", handleFormClick);
+    $("#studioForm").addEventListener("change", event => { const block = event.target.closest("[data-rich-block]"); if (block) runRichBlock(block); });
     $("#studioForm").addEventListener("input", handleFormInput);
   }
 
@@ -303,15 +307,74 @@
     }).filter(link => link?.url);
   }
 
+  function sanitizeRichNoteHtml(value) {
+    const template = document.createElement("template");
+    template.innerHTML = String(value || "");
+    const allowed = new Set(["P", "DIV", "BR", "STRONG", "B", "EM", "I", "U", "S", "H2", "H3", "BLOCKQUOTE", "OL", "UL", "LI", "A"]);
+    [...template.content.querySelectorAll("*")].forEach(node => {
+      if (!allowed.has(node.tagName)) { node.replaceWith(...node.childNodes); return; }
+      const href = node.tagName === "A" ? String(node.getAttribute("href") || "") : "";
+      const align = String(node.style?.textAlign || "").toLowerCase();
+      [...node.attributes].forEach(attribute => node.removeAttribute(attribute.name));
+      if (node.tagName === "A" && /^https?:\/\//i.test(href)) {
+        node.setAttribute("href", href); node.setAttribute("target", "_blank"); node.setAttribute("rel", "noopener");
+      } else if (node.tagName === "A") node.replaceWith(...node.childNodes);
+      if (["left", "center", "right", "justify"].includes(align)) node.style.textAlign = align;
+    });
+    return template.innerHTML;
+  }
+
+  function initialRichNoteHtml(value) {
+    const source = String(value || "");
+    if (/<(?:p|div|br|strong|b|em|i|u|s|h2|h3|blockquote|ol|ul|li|a)\b/i.test(source)) return sanitizeRichNoteHtml(source);
+    return source.split(/\r?\n/).map(line => `<div>${line ? esc(line) : "<br>"}</div>`).join("");
+  }
+
+  function richNoteEditor(name, value, placeholder) {
+    const html = initialRichNoteHtml(value);
+    return `<div class="rich-note-editor" data-rich-editor>
+      <div class="rich-note-toolbar" aria-label="文字編輯工具">
+        <select data-rich-block title="段落格式"><option value="div">一般文字</option><option value="h2">大標題</option><option value="h3">小標題</option><option value="blockquote">引用段落</option></select>
+        <span class="rich-tool-group">
+          <button type="button" data-rich-command="bold" title="粗體"><b>B</b></button>
+          <button type="button" data-rich-command="italic" title="斜體"><i>I</i></button>
+          <button type="button" data-rich-command="underline" title="底線"><u>U</u></button>
+          <button type="button" data-rich-command="strikeThrough" title="刪除線"><s>S</s></button>
+        </span>
+        <span class="rich-tool-group">
+          <button type="button" data-rich-command="insertOrderedList" title="編號清單">1.</button>
+          <button type="button" data-rich-command="insertUnorderedList" title="項目清單">•</button>
+          <button type="button" data-rich-command="outdent" title="減少縮排">←</button>
+          <button type="button" data-rich-command="indent" title="增加縮排">→</button>
+        </span>
+        <span class="rich-tool-group">
+          <button type="button" data-rich-command="justifyLeft" title="靠左">≡</button>
+          <button type="button" data-rich-command="justifyCenter" title="置中">≣</button>
+          <button type="button" data-rich-command="justifyRight" title="靠右">≡</button>
+        </span>
+        <span class="rich-tool-group">
+          <button type="button" data-rich-command="createLink" title="加入超連結">🔗</button>
+          <button type="button" data-rich-command="unlink" title="移除超連結">取消連結</button>
+          <button type="button" data-rich-command="removeFormat" title="清除文字格式">清除格式</button>
+        </span>
+      </div>
+      <div class="rich-note-content" contenteditable="true" role="textbox" aria-multiline="true" data-rich-content data-rich-name="${esc(name)}" data-placeholder="${esc(placeholder || "輸入操作提示…")}">${html}</div>
+      <textarea name="${esc(name)}" data-rich-value hidden>${esc(html)}</textarea>
+    </div>`;
+  }
+
   function field(label, name, value = "", options = {}) {
     const wide = options.wide ? " wide" : ""; const required = options.required ? "required" : "";
     let control;
-    if (options.type === "textarea") { const toolbar = options.rich ? `<div class="note-format-toolbar"><button type="button" data-format-note="heading" data-format-target="${esc(name)}">標題</button><button type="button" data-format-note="numbered" data-format-target="${esc(name)}">1. 編號</button><button type="button" data-format-note="bullet" data-format-target="${esc(name)}">• 項目</button><button type="button" data-format-note="bold" data-format-target="${esc(name)}">粗體</button><button type="button" data-format-note="indent" data-format-target="${esc(name)}">縮排</button><button type="button" data-format-note="outdent" data-format-target="${esc(name)}">取消縮排</button></div>` : ""; control = `${toolbar}<textarea name="${name}" rows="${options.rows || 4}" ${required} placeholder="${esc(options.placeholder || "")}">${esc(value)}</textarea>`; }
+    if (options.type === "textarea" && options.rich) control = richNoteEditor(name, value, options.placeholder);
+    else if (options.type === "textarea") control = `<textarea name="${name}" rows="${options.rows || 4}" ${required} placeholder="${esc(options.placeholder || "")}">${esc(value)}</textarea>`;
     else if (options.type === "select") control = `<select name="${name}" ${required}>${options.choices || ""}</select>`;
     else if (options.type === "checkbox") control = `<label class="switch-row"><input name="${name}" type="checkbox" ${value ? "checked" : ""}><span class="switch"></span><b>${esc(options.checkLabel || "啟用")}</b></label>`;
     else control = `<input name="${name}" type="${options.type || "text"}" value="${esc(value)}" ${required} placeholder="${esc(options.placeholder || "")}">`;
-    return `<label class="studio-field${wide}"><span>${esc(label)}${options.required ? " ＊" : ""}</span>${control}${options.hint ? `<small>${esc(options.hint)}</small>` : ""}</label>`;
+    const tag = options.rich ? "div" : "label";
+    return `<${tag} class="studio-field${wide}"><span>${esc(label)}${options.required ? " ＊" : ""}</span>${control}${options.hint ? `<small>${esc(options.hint)}</small>` : ""}</${tag}>`;
   }
+
   function questionChoices(value) { return `<option value="共用" ${value === "共用" ? "selected" : ""}>共用（不綁題目）</option>` + data.questions.map(q => `<option value="${esc(q.name)}" ${q.name === value ? "selected" : ""}>${esc(q.name)}</option>`).join(""); }
   function branchSuggestions() { return [...new Set(["共用", ...data.flows.map(f => f.branch).filter(Boolean)])].map(x => `<option value="${esc(x)}"></option>`).join(""); }
   function groupedFieldOptions(items, value, emptyLabel = "選擇欄位…") {
@@ -652,6 +715,7 @@
   }
 
   function handleFormInput(event) {
+    const richContent = event.target.closest?.("[data-rich-content]"); if (richContent) { rememberRichSelection(richContent); syncRichNoteEditor(richContent); }
     if (state.mode === "branches") updateAnswerCompositionPreview();
     const match = event.target.name?.match(/^var_label_(\d+)$/);
     if (!match) return;
@@ -660,26 +724,55 @@
     if (option) option.textContent = (event.target.value.trim() || "未命名欄位") + "（目前分支已使用）";
   }
 
-  function formatLongNote(targetName, kind) {
-    const textarea = [...document.querySelectorAll("#studioForm textarea")].find(item => item.name === targetName);
-    if (!textarea) return;
-    const start = textarea.selectionStart ?? textarea.value.length;
-    const end = textarea.selectionEnd ?? textarea.value.length;
-    const selected = textarea.value.slice(start, end);
-    let replacement = selected;
-    if (kind === "heading") replacement = "## " + (selected || "標題");
-    if (kind === "bold") replacement = "**" + (selected || "重點文字") + "**";
-    if (kind === "bullet") replacement = (selected || "第一項\n第二項").split(/\r?\n/).map(line => "- " + line.replace(/^[-*•]\s*/, "")).join("\n");
-    if (kind === "numbered") replacement = (selected || "第一項\n第二項").split(/\r?\n/).map((line, index) => (index + 1) + ". " + line.replace(/^\d+[.)、]\s*/, "")).join("\n");
-    if (kind === "indent") replacement = (selected || "縮排內容").split(/\r?\n/).map(line => "  " + line).join("\n");
-    if (kind === "outdent") replacement = selected.split(/\r?\n/).map(line => line.replace(/^ {1,2}/, "")).join("\n");
-    textarea.setRangeText(replacement, start, end, "select");
-    textarea.focus();
-    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+  function rememberRichSelection(content) {
+    const selection = window.getSelection();
+    if (!content || !selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (content.contains(range.commonAncestorContainer)) content._savedRange = range.cloneRange();
+  }
+
+  function restoreRichSelection(content) {
+    const range = content?._savedRange;
+    if (!range) return;
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function syncRichNoteEditor(content) {
+    const wrapper = content?.closest("[data-rich-editor]");
+    const hidden = wrapper?.querySelector("[data-rich-value]");
+    if (hidden) hidden.value = sanitizeRichNoteHtml(content.innerHTML);
+  }
+
+  function runRichCommand(control) {
+    const wrapper = control.closest("[data-rich-editor]");
+    const content = wrapper?.querySelector("[data-rich-content]");
+    if (!content) return;
+    content.focus();
+    restoreRichSelection(content);
+    let command = control.dataset.richCommand;
+    if (command === "createLink") {
+      const url = prompt("請輸入完整網址（例如：https://example.com）", "https://");
+      if (!url) return;
+      if (!/^https?:\/\//i.test(url)) { alert("網址需要以 http:// 或 https:// 開頭。"); return; }
+      document.execCommand("createLink", false, url);
+    } else document.execCommand(command, false, null);
+    syncRichNoteEditor(content);
+  }
+
+  function runRichBlock(select) {
+    const wrapper = select.closest("[data-rich-editor]");
+    const content = wrapper?.querySelector("[data-rich-content]");
+    if (!content) return;
+    content.focus();
+    restoreRichSelection(content);
+    document.execCommand("formatBlock", false, select.value);
+    syncRichNoteEditor(content);
   }
 
   function handleFormClick(event) {
-    const formatNote = event.target.closest("[data-format-note]"); if (formatNote) { formatLongNote(formatNote.dataset.formatTarget, formatNote.dataset.formatNote); return; }
+    const richCommand = event.target.closest("[data-rich-command]"); if (richCommand) { runRichCommand(richCommand); return; }
     const edit = event.target.closest("[data-edit-branch]"); if (edit) { state.mode = "branches"; state.index = Number(edit.dataset.editBranch); renderStudio(); return; }
     const addFor = event.target.closest("[data-add-branch-for]"); if (addFor) { addBranch(addFor.dataset.addBranchFor); return; }
     if (event.target.closest("[data-use-existing-decision]")) { useExistingDecision(); return; }

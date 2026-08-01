@@ -34,6 +34,46 @@ window.SOP_DATA = {
       "description": "依商品頁是否有資訊決定回覆或查廠商",
       "enabled": true,
       "answerText": "請先打開商品頁，確認商品圖片、商品規格與商品描述，看看有沒有客人詢問：\n「{{customer_need}}」\n相關的問題"
+    },
+    {
+      "id": "Q005",
+      "name": "詢問限時特賣／限購數量",
+      "keywords": "限時特賣,限時優惠,特價,限購,購買數量,最多買幾個,一次買幾件",
+      "description": "確認限時特賣及結帳頁的實際限購數量",
+      "enabled": true,
+      "answerText": "請先打開商品頁，確認是否顯示「限時特賣」，再將商品加入購物車並進入結帳頁確認。\n限時特賣通常會限制購買數量，實際可購買數量請以結帳頁面顯示為主。\n結帳頁目前顯示：{{flash_sale_limit}}。"
+    },
+    {
+      "id": "Q006",
+      "name": "詢問優惠券／賣場優惠券",
+      "keywords": "優惠券,賣場優惠券,折扣券,優惠代碼,領券,券在哪裡,取消訂單優惠券",
+      "description": "依領取、查詢可用狀態或取消訂單後返還需求提供操作",
+      "enabled": true,
+      "answerText": ""
+    },
+    {
+      "id": "Q007",
+      "name": "詢問運費",
+      "keywords": "運費,運送費,配送費,免運,要多少運費",
+      "description": "從商品頁與結帳頁確認實際運費",
+      "enabled": true,
+      "answerText": "請先開啟商品頁查看「運費說明」，再將商品加入購物車／進入結帳頁確認實際運費。\n商品頁顯示的運費說明：{{shipping_fee_details}}\n實際運費請以結帳頁面顯示為主。"
+    },
+    {
+      "id": "Q008",
+      "name": "詢問加價購",
+      "keywords": "加價購,優惠加購,搭配商品,主商品,加購商品,add-on",
+      "description": "確認加價購標籤，或使用工具反查可搭配的主商品",
+      "enabled": true,
+      "answerText": ""
+    },
+    {
+      "id": "Q009",
+      "name": "詢問滿額贈",
+      "keywords": "滿額贈,贈品,贈完,剩餘數量,購物車沒有贈品,贈品怎麼拿",
+      "description": "依商品卡標籤與購物車是否自動加入贈品判斷",
+      "enabled": true,
+      "answerText": "請先查看商品卡是否顯示「滿額贈」標籤，再將商品加入購物車確認。"
     }
   ],
   "flows": [
@@ -425,6 +465,209 @@ window.SOP_DATA = {
         }
       ],
       "next": "回覆客人等待廠商回覆"
+    },
+    {
+      "question": "詢問限時特賣／限購數量",
+      "branch": "共用",
+      "steps": [],
+      "routes": [],
+      "answerParts": [],
+      "next": "填入結帳頁顯示的限購數量後回覆買家"
+    },
+    {
+      "question": "詢問優惠券／賣場優惠券",
+      "branch": "哪裡領取／查看優惠券",
+      "steps": [
+        {
+          "prompt": "客人是哪一種優惠券問題？",
+          "option": "哪裡領取／查看優惠券"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問優惠券／賣場優惠券",
+          "branch": "哪裡領取／查看優惠券",
+          "beforeText": ""
+        }
+      ],
+      "next": "引導買家查看商品頁、活動頁、賣場首頁或優惠券錢包"
+    },
+    {
+      "question": "詢問優惠券／賣場優惠券",
+      "branch": "查詢買家目前可用優惠券",
+      "steps": [
+        {
+          "prompt": "客人是哪一種優惠券問題？",
+          "option": "查詢買家目前可用優惠券"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問優惠券／賣場優惠券",
+          "branch": "查詢買家目前可用優惠券",
+          "beforeText": ""
+        }
+      ],
+      "next": "到 CS Portal 的優惠代碼錢包查詢"
+    },
+    {
+      "question": "詢問優惠券／賣場優惠券",
+      "branch": "取消訂單後優惠券是否返還",
+      "steps": [
+        {
+          "prompt": "客人是哪一種優惠券問題？",
+          "option": "取消訂單後優惠券是否返還"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問優惠券／賣場優惠券",
+          "branch": "取消訂單後優惠券是否返還",
+          "beforeText": ""
+        }
+      ],
+      "next": "依優惠券規則、活動期限及剩餘數量說明"
+    },
+    {
+      "question": "詢問運費",
+      "branch": "共用",
+      "steps": [],
+      "routes": [],
+      "answerParts": [],
+      "next": "填入商品頁的運費說明並以結帳頁確認"
+    },
+    {
+      "question": "詢問加價購",
+      "branch": "加價購標籤有顯示",
+      "steps": [
+        {
+          "prompt": "客人是哪一種加價購問題？",
+          "option": "確認商品是否有加價購"
+        },
+        {
+          "prompt": "商品頁有沒有顯示加價購標籤？",
+          "option": "有顯示加價購標籤"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問加價購",
+          "branch": "加價購標籤有顯示",
+          "beforeText": ""
+        }
+      ],
+      "next": "請買家將商品加入購物車，依結帳頁查看加購商品與優惠價格"
+    },
+    {
+      "question": "詢問加價購",
+      "branch": "加價購標籤沒有顯示",
+      "steps": [
+        {
+          "prompt": "客人是哪一種加價購問題？",
+          "option": "確認商品是否有加價購"
+        },
+        {
+          "prompt": "商品頁有沒有顯示加價購標籤？",
+          "option": "沒有顯示加價購標籤"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問加價購",
+          "branch": "加價購標籤沒有顯示",
+          "beforeText": ""
+        }
+      ],
+      "next": "告知目前商品頁未顯示加價購，依商品頁與結帳頁為主"
+    },
+    {
+      "question": "詢問加價購",
+      "branch": "反查加價購主商品",
+      "steps": [
+        {
+          "prompt": "客人是哪一種加價購問題？",
+          "option": "加價購商品要搭配哪件主商品"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問加價購",
+          "branch": "反查加價購主商品",
+          "beforeText": ""
+        }
+      ],
+      "next": "查出主商品後，用聊聊商品卡推薦給買家"
+    },
+    {
+      "question": "詢問滿額贈",
+      "branch": "商品卡沒有顯示滿額贈",
+      "steps": [
+        {
+          "prompt": "商品卡有沒有顯示滿額贈標籤？",
+          "option": "商品卡沒有顯示滿額贈"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問滿額贈",
+          "branch": "商品卡沒有顯示滿額贈",
+          "beforeText": ""
+        }
+      ],
+      "next": "告知目前無滿額贈標籤，以商品卡與購物車顯示為主"
+    },
+    {
+      "question": "詢問滿額贈",
+      "branch": "購物車有顯示滿額贈",
+      "steps": [
+        {
+          "prompt": "商品卡有沒有顯示滿額贈標籤？",
+          "option": "商品卡有顯示滿額贈"
+        },
+        {
+          "prompt": "購物車有沒有自動加入滿額贈商品？",
+          "option": "購物車有自動加入贈品"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問滿額贈",
+          "branch": "購物車有顯示滿額贈",
+          "beforeText": ""
+        }
+      ],
+      "next": "填入贈品名稱與剩餘數量後回覆"
+    },
+    {
+      "question": "詢問滿額贈",
+      "branch": "購物車沒有顯示滿額贈",
+      "steps": [
+        {
+          "prompt": "商品卡有沒有顯示滿額贈標籤？",
+          "option": "商品卡有顯示滿額贈"
+        },
+        {
+          "prompt": "購物車有沒有自動加入滿額贈商品？",
+          "option": "購物車沒有自動加入贈品"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問滿額贈",
+          "branch": "購物車沒有顯示滿額贈",
+          "beforeText": ""
+        }
+      ],
+      "next": "確認活動門檻；若仍未顯示，可能已贈完"
     }
   ],
   "variables": [
@@ -2797,6 +3040,165 @@ window.SOP_DATA = {
       "sourceUrl": "",
       "category": "鑑賞期",
       "fillRules": []
+    },
+    {
+      "code": "flash_sale_limit",
+      "label": "結帳頁顯示的限購數量",
+      "hint": "例如：每人限購 2 件",
+      "sourceNote": "先在商品頁確認是否有「限時特賣」，再將商品加入購物車並進入結帳頁；限時特賣通常會限制數量，實際可購買數量以結帳頁面顯示為主。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": [],
+      "q": "Q005",
+      "branch": "共用"
+    },
+    {
+      "code": "shipping_fee_details",
+      "label": "商品頁運費說明",
+      "hint": "貼上商品頁顯示的運費說明",
+      "sourceNote": "開啟商品頁查看「運費說明」，再到購物車／結帳頁確認實際運費；以結帳頁面顯示為主。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "物流相關",
+      "fillRules": [],
+      "q": "Q007",
+      "branch": "共用"
+    },
+    {
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "required": true,
+      "common": false,
+      "category": "商品詢問",
+      "type": "text",
+      "autoDays": 0,
+      "multiline": false,
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "sourceUrl": "",
+      "fillRules": [],
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "q": "Q008",
+      "branch": "反查加價購主商品"
+    },
+    {
+      "code": "addon_campaign_id",
+      "label": "活動檔期／add_on_deal_id",
+      "hint": "填入工具顯示的活動檔期或 add_on_deal_id",
+      "sourceNote": "SCS CS Tool 可從下拉選單查看活動檔期；[DB] Add-on / Gift / Bundle 則先在 Add-on_Sub 用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
+      "sourceLinks": [
+        {
+          "title": "SCS CS Tool（正職）",
+          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+        },
+        {
+          "title": "SCS CS Tool（派遣）",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": [],
+      "q": "Q008",
+      "branch": "反查加價購主商品"
+    },
+    {
+      "code": "addon_main_product",
+      "label": "可搭配的主商品",
+      "hint": "填入主商品的 Product ID 或商品名稱",
+      "sourceNote": "查到主商品後，將主商品的商品 ID 或商品名稱複製到聊聊系統搜尋，並透過商品卡傳送給買家。",
+      "sourceLinks": [
+        {
+          "title": "SCS CS Tool（正職）",
+          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+        },
+        {
+          "title": "SCS CS Tool（派遣）",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": [],
+      "q": "Q008",
+      "branch": "反查加價購主商品"
+    },
+    {
+      "code": "gift_item",
+      "label": "滿額贈商品",
+      "hint": "填入購物車自動加入的贈品名稱",
+      "sourceNote": "滿額贈不會顯示在商品頁的獨立區塊；達到活動條件時，系統會在購物車自動加入贈品。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": [],
+      "q": "Q009",
+      "branch": "購物車有顯示滿額贈"
+    },
+    {
+      "code": "gift_remaining_quantity",
+      "label": "滿額贈剩餘數量",
+      "hint": "填入購物車顯示的贈品剩餘數量",
+      "sourceNote": "購物車會顯示目前滿額贈剩餘數量；若已贈完，贈品不會顯示。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": [],
+      "q": "Q009",
+      "branch": "購物車有顯示滿額贈"
     }
   ],
   "templates": [
@@ -2879,6 +3281,51 @@ window.SOP_DATA = {
       "q": "Q001",
       "branch": "共用",
       "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
+    },
+    {
+      "q": "Q006",
+      "branch": "哪裡領取／查看優惠券",
+      "text": "商品頁可以查看目前商品適用的賣場優惠券。\n買家也可以從蝦皮活動頁、電子票券頁、蝦皮會員、我的蝦幣、賣場店鋪首頁或遊戲領取優惠券。\n已領取的優惠券可到「我的優惠券」查看；使用紀錄則到「歷史記錄」查看已用完、已過期或已使用過的優惠券。"
+    },
+    {
+      "q": "Q006",
+      "branch": "查詢買家目前可用優惠券",
+      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 下方會顯示買家目前可使用的優惠代碼。\n也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。"
+    },
+    {
+      "q": "Q006",
+      "branch": "取消訂單後優惠券是否返還",
+      "text": "取消訂單後優惠券是否返還，要依該張優惠券的使用規則為主。\n即使系統返還，若優惠券活動已結束、已逾期或名額已由其他用戶使用，返還的優惠券仍可能無法再次使用，因此不要承諾一定可以重複使用。"
+    },
+    {
+      "q": "Q008",
+      "branch": "加價購標籤有顯示",
+      "text": "商品頁有顯示「加價購」標籤，表示此商品可以搭配其他商品進行優惠加購。\n請將商品加入購物車，實際可加購商品與優惠價格以結帳頁面顯示為主。"
+    },
+    {
+      "q": "Q008",
+      "branch": "加價購標籤沒有顯示",
+      "text": "商品頁目前沒有顯示「加價購」標籤，因此目前無法確認有加價購活動。\n活動內容可能變動，請以商品頁及結帳頁實際顯示為主。"
+    },
+    {
+      "q": "Q008",
+      "branch": "反查加價購主商品",
+      "text": "先從加價購商品頁網址取得 Product ID：{{product_id}}。\n\n方法一．SCS CS Tool\n1. 開啟正職或派遣版 SCS CS Tool。\n2. 進入「加價購主商品」。\n3. 輸入 {{product_id}} 後搜尋。\n4. 從下拉選單查看對應的活動檔期。\n5. 在結果中選擇主商品，複製主商品的商品 ID 或商品名稱。\n\n方法二．[DB] Add-on / Gift / Bundle\n1. 到 Add-on_Sub 分頁，用 {{product_id}} 搜尋。\n2. 複製對應的 add_on_deal_id。\n3. 到 Add-on_Main 分頁搜尋該 add_on_deal_id。\n4. 查看該檔期適用的主商品清單。\n\n活動檔期／add_on_deal_id：{{addon_campaign_id}}\n可搭配的主商品：{{addon_main_product}}\n若要推薦買家，將主商品的商品 ID 或商品名稱貼到聊聊搜尋，再透過商品卡傳送。"
+    },
+    {
+      "q": "Q009",
+      "branch": "商品卡沒有顯示滿額贈",
+      "text": "商品卡目前沒有顯示「滿額贈」標籤，因此目前無法確認商品有綁定滿額贈活動。\n活動內容可能變動，請以商品卡與購物車實際顯示為主。"
+    },
+    {
+      "q": "Q009",
+      "branch": "購物車有顯示滿額贈",
+      "text": "商品卡有顯示「滿額贈」標籤，而且系統已在購物車自動加入贈品，不需要另外選取。\n滿額贈商品：{{gift_item}}\n購物車顯示的剩餘數量：{{gift_remaining_quantity}}\n請以結帳頁面實際顯示為主。"
+    },
+    {
+      "q": "Q009",
+      "branch": "購物車沒有顯示滿額贈",
+      "text": "商品卡雖然有顯示「滿額贈」標籤，但購物車沒有自動出現贈品。\n請先確認購物車是否達到活動條件；若符合條件仍未顯示，贈品可能已經贈完。滿額贈若已贈完，購物車就不會顯示。"
     }
   ],
   "actions": [
@@ -2935,9 +3382,47 @@ window.SOP_DATA = {
       "sourceNote": "<div><br></div>",
       "sourceLinks": [],
       "url": ""
+    },
+    {
+      "q": "Q006",
+      "branch": "查詢買家目前可用優惠券",
+      "action": "CS Portal",
+      "needed": true,
+      "note": "查詢買家目前可用的優惠代碼",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "url": "https://dms.cs.shopee.tw/portal/info/search"
+    },
+    {
+      "q": "Q008",
+      "branch": "反查加價購主商品",
+      "action": "反查加價購主商品",
+      "needed": true,
+      "note": "可使用 SCS CS Tool，或 [DB] Add-on / Gift / Bundle",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "SCS CS Tool（正職）",
+          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+        },
+        {
+          "title": "SCS CS Tool（派遣）",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        }
+      ],
+      "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
     }
   ],
-  "updatedAt": "2026-08-01T07:08:21.623Z",
+  "updatedAt": "2026-08-01T07:21:55.270Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -4299,6 +4784,134 @@ window.SOP_DATA = {
       "multiline": false,
       "common": false,
       "sourceUrl": ""
+    },
+    {
+      "code": "flash_sale_limit",
+      "label": "結帳頁顯示的限購數量",
+      "hint": "例如：每人限購 2 件",
+      "sourceNote": "先在商品頁確認是否有「限時特賣」，再將商品加入購物車並進入結帳頁；限時特賣通常會限制數量，實際可購買數量以結帳頁面顯示為主。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": []
+    },
+    {
+      "code": "shipping_fee_details",
+      "label": "商品頁運費說明",
+      "hint": "貼上商品頁顯示的運費說明",
+      "sourceNote": "開啟商品頁查看「運費說明」，再到購物車／結帳頁確認實際運費；以結帳頁面顯示為主。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "物流相關",
+      "fillRules": []
+    },
+    {
+      "code": "addon_campaign_id",
+      "label": "活動檔期／add_on_deal_id",
+      "hint": "填入工具顯示的活動檔期或 add_on_deal_id",
+      "sourceNote": "SCS CS Tool 可從下拉選單查看活動檔期；[DB] Add-on / Gift / Bundle 則先在 Add-on_Sub 用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
+      "sourceLinks": [
+        {
+          "title": "SCS CS Tool（正職）",
+          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+        },
+        {
+          "title": "SCS CS Tool（派遣）",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": []
+    },
+    {
+      "code": "addon_main_product",
+      "label": "可搭配的主商品",
+      "hint": "填入主商品的 Product ID 或商品名稱",
+      "sourceNote": "查到主商品後，將主商品的商品 ID 或商品名稱複製到聊聊系統搜尋，並透過商品卡傳送給買家。",
+      "sourceLinks": [
+        {
+          "title": "SCS CS Tool（正職）",
+          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+        },
+        {
+          "title": "SCS CS Tool（派遣）",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": []
+    },
+    {
+      "code": "gift_item",
+      "label": "滿額贈商品",
+      "hint": "填入購物車自動加入的贈品名稱",
+      "sourceNote": "滿額贈不會顯示在商品頁的獨立區塊；達到活動條件時，系統會在購物車自動加入贈品。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": []
+    },
+    {
+      "code": "gift_remaining_quantity",
+      "label": "滿額贈剩餘數量",
+      "hint": "填入購物車顯示的贈品剩餘數量",
+      "sourceNote": "購物車會顯示目前滿額贈剩餘數量；若已贈完，贈品不會顯示。",
+      "sourceLinks": [],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": false,
+      "sourceUrl": "",
+      "category": "促銷活動",
+      "fillRules": []
     }
   ],
   "decisions": [
@@ -4331,6 +4944,42 @@ window.SOP_DATA = {
         "KAM表",
         "KAM表．SBS",
         "廠直表"
+      ]
+    },
+    {
+      "prompt": "客人是哪一種優惠券問題？",
+      "options": [
+        "哪裡領取／查看優惠券",
+        "查詢買家目前可用優惠券",
+        "取消訂單後優惠券是否返還"
+      ]
+    },
+    {
+      "prompt": "客人是哪一種加價購問題？",
+      "options": [
+        "確認商品是否有加價購",
+        "加價購商品要搭配哪件主商品"
+      ]
+    },
+    {
+      "prompt": "商品頁有沒有顯示加價購標籤？",
+      "options": [
+        "有顯示加價購標籤",
+        "沒有顯示加價購標籤"
+      ]
+    },
+    {
+      "prompt": "商品卡有沒有顯示滿額贈標籤？",
+      "options": [
+        "商品卡有顯示滿額贈",
+        "商品卡沒有顯示滿額贈"
+      ]
+    },
+    {
+      "prompt": "購物車有沒有自動加入滿額贈商品？",
+      "options": [
+        "購物車有自動加入贈品",
+        "購物車沒有自動加入贈品"
       ]
     }
   ]

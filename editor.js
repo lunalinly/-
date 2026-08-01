@@ -698,25 +698,35 @@
     const sorted = [...new Map(vars.map(variable => [variable.code, variable])).values()].sort(compareFieldCatalog);
     return `<div class="template-tokens wide"><span>${sorted.length ? "點一下插入欄位：" : "尚無可插入欄位"}</span>${sorted.map(v => `<button type="button" data-insert-token="${esc(v.label)}" data-insert-target="${esc(target)}">＋ ${esc(v.label)}</button>`).join("")}</div>`;
   }
-  function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); }); return result; }
+  function friendlyTemplate(text, q) { let result = String(text || ""); data.variables.filter(v => v.q === q).forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); result = result.split(`{${v.code}}`).join(`{${v.label}}`); }); return result; }
   function storedTemplate(text, q, variables) {
     let result = String(text || "");
     variables.forEach(v => {
-      result = result.split(`{${v.label}}`).join(`{{${v.code}}}`);
-      result = result.split(`【${v.label}】`).join(`{{${v.code}}}`);
+      const canonical = `{{${v.code}}}`;
+      const marker = `\u0001${v.code}\u0002`;
+      result = result.split(canonical).join(marker);
+      result = result.split(`{${v.label}}`).join(canonical);
+      result = result.split(`【${v.label}】`).join(canonical);
+      result = result.split(`{${v.code}}`).join(canonical);
+      result = result.split(marker).join(canonical);
     });
     return result;
   }
   function friendlyFieldTemplate(text) {
     let result = String(text || "");
-    data.fields.forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); });
+    data.fields.forEach(v => { result = result.split(`{{${v.code}}}`).join(`{${v.label}}`); result = result.split(`{${v.code}}`).join(`{${v.label}}`); });
     return result;
   }
   function storedFieldTemplate(text) {
     let result = String(text || "");
     data.fields.forEach(v => {
-      result = result.split(`{${v.label}}`).join(`{{${v.code}}}`);
-      result = result.split(`【${v.label}】`).join(`{{${v.code}}}`);
+      const canonical = `{{${v.code}}}`;
+      const marker = `\u0001${v.code}\u0002`;
+      result = result.split(canonical).join(marker);
+      result = result.split(`{${v.label}}`).join(canonical);
+      result = result.split(`【${v.label}】`).join(canonical);
+      result = result.split(`{${v.code}}`).join(canonical);
+      result = result.split(marker).join(canonical);
     });
     return result;
   }

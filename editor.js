@@ -147,6 +147,8 @@
     $("#studioForm").addEventListener("click", handleFormClick);
     $("#studioForm").addEventListener("change", event => { const block = event.target.closest("[data-rich-block]"); if (block) runRichBlock(block); });
     $("#studioForm").addEventListener("input", handleFormInput);
+    $("#studioJumpTop").addEventListener("click", () => $("#studioForm").scrollTo({ top: 0, behavior: "smooth" }));
+    $("#studioJumpBottom").addEventListener("click", () => $("#studioForm").scrollTo({ top: $("#studioForm").scrollHeight, behavior: "smooth" }));
   }
 
   function markup() {
@@ -180,6 +182,10 @@
           <main class="studio-editor">
             <div class="studio-editor-head"><div><p class="eyebrow">VISUAL EDITOR</p><h2 id="studioEditorTitle"></h2></div><div class="studio-editor-actions"><button id="studioCollapseAll" type="button">全部縮小</button><button id="studioExpandAll" type="button">全部恢復</button><button id="studioDuplicate" type="button">建立副本</button><button id="studioDelete" class="danger" type="button">刪除</button></div></div>
             <form id="studioForm" class="studio-form studio-form-v2" autocomplete="off"></form>
+            <nav class="page-jump-controls studio-jump-controls" aria-label="編輯區快速導覽">
+              <button id="studioJumpTop" type="button" title="到編輯區最頂端">↑ 到最頂端</button>
+              <button id="studioJumpBottom" type="button" title="到編輯區最底端">↓ 到最底端</button>
+            </nav>
             <div class="studio-savebar"><span id="studioSaveHint">先保存瀏覽器草稿，再同步到 GitHub 永久保存。</span><button id="studioSave" type="button">儲存</button></div>
           </main>
         </div>

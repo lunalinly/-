@@ -13,6 +13,7 @@
   const state = { question: null, choices: [], values: {}, routedBranch: null, revealedFields: new Set(), appendedSharedBranches: new Set() };
   const commonKey = "sop-helper-common-values-v1";
   let commonValues = readCommonValues();
+  let resultHeightObserver = null;
 
   $("#dataVersion").textContent = data.version;
   $("#sourceLink").href = data.sourceUrl;
@@ -494,6 +495,23 @@
     ));
   }
 
+  function syncResultPanelHeight(outputPanel, hintsPanel) {
+    if (!outputPanel || !hintsPanel) return;
+    if (window.innerWidth <= 860) { outputPanel.style.height = ""; return; }
+    const hintsHeight = Math.ceil(hintsPanel.getBoundingClientRect().height);
+    if (hintsHeight > 0) outputPanel.style.height = hintsHeight + "px";
+  }
+
+  function observeResultPanelHeight(outputPanel, hintsPanel) {
+    resultHeightObserver?.disconnect();
+    const sync = () => syncResultPanelHeight(outputPanel, hintsPanel);
+    sync();
+    if ("ResizeObserver" in window) {
+      resultHeightObserver = new ResizeObserver(sync);
+      resultHeightObserver.observe(hintsPanel);
+    }
+  }
+
   function renderResult(flow, variables) {
     const layout = document.createElement("div"); layout.className = "result-layout";
     const inputPanel = document.createElement("section"); inputPanel.className = "panel input-panel";
@@ -504,6 +522,7 @@
     renderInputPanel(inputPanel, flow, variables);
     renderOutputPanel(outputPanel, flow, variables);
     renderHintsPanel(hintsPanel, flow, variables);
+    observeResultPanelHeight(outputPanel, hintsPanel);
   }
 
   function sourceLinksFor(item) {
@@ -859,6 +878,7 @@
     if (hintsPanel) renderHintsPanel(hintsPanel, flow, variables);
   }
 
+  window.addEventListener("resize", () => syncResultPanelHeight(document.querySelector(".output-panel"), document.querySelector(".hints-panel")));
   els.search.addEventListener("input", renderQuestions);
   $("#resetButton").addEventListener("click", reset);
   $("#backButton").addEventListener("click", reset);

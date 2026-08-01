@@ -484,7 +484,7 @@ footer a:hover { color: var(--accent-dark); }
 
 /* Match answer panel height to operation hints */
 .output-panel { display: flex; flex-direction: column; overflow: hidden; }
-.output-panel .output { flex: 1 1 auto; min-height: 0; }
+.output-panel .output { flex: 1 1 auto; min-height: 210px; }
 .output-panel .output-actions { flex: 0 0 auto; }
 @media (max-width: 860px) {
   .output-panel { height: auto !important; overflow: visible; }

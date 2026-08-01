@@ -1220,7 +1220,7 @@ window.SOP_DATA = {
       "code": "V014",
       "label": "已申退_KAM表",
       "hint": "訂單已經申請退款嗎？",
-      "sourceNote": "售後訂單已經申請退款才要勾\n\n如何查詢有沒有退款：\n1. CS Portal\n輸入 OSN、Username 或 Return SN 查詢訂單；在一般資訊區查看 Return 資訊、訂單狀態及時間序。\n\n2. Order Admin Portal\n進入 Return → Return & Refund Requests，利用欄位搜尋訂單；進入詳情後可查看 申請狀態、申請資訊及更新時序。\n\n3. InHouse CS System／聊聊控制台\n從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。\nProcessing：已申請，處理中\nAccepted：退貨退款已完成／接受\nCancelled：曾申請，但已取消\n沒有退貨退款編號或相關欄位：通常表示尚未申請",
+      "sourceNote": "<div>售後訂單已經申請退款才要勾</div><div><br></div><h2>如何查詢有沒有退款：</h2><h3>方法一．<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><div><ol><li>輸入 OSN、Username 或 Return SN 查詢訂單</li><li>在一般資訊區查看 Return 資訊、訂單狀態及時間序</li></ol></div><div><br></div><h3>方法二．<a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin Portal</a></h3><div><ol><li>進入 Return</li><li>Return &amp; Refund Requests</li><li>利用欄位搜尋訂單</li><li>進入詳情後可查看 申請狀態、申請資訊及更新時序。</li></ol></div><div><br></div><h3>方法三．<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse聊聊控制台</a></h3><div>從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。</div><div><ul><li>Processing：已申請，處理中</li><li>Accepted：退貨退款已完成／接受</li><li>Cancelled：曾申請，但已取消</li></ul></div><div>沒有退貨退款編號或相關欄位：通常表示尚未申請</div>",
       "sourceLinks": [
         {
           "title": "CS Portal",
@@ -1255,7 +1255,7 @@ window.SOP_DATA = {
       "code": "V015",
       "label": "擴大安心退_KAM表",
       "hint": "商品總金額是否低於 NT$1,380",
-      "sourceNote": "符合「擴大安心退」需要同時符合以下 4 個條件：\n在 15 天鑑賞期內\n屬於 商品瑕疵，不是買家個人因素\n欲退商品總金額 低於 NT$1,380\n具備 商品及包裝照片",
+      "sourceNote": "<div>符合「擴大安心退」需要同時符合以下 4 個條件：</div><div><ul><li>在 15 天鑑賞期內</li><li>屬於 商品瑕疵，不是買家個人因素</li><li>欲退商品總金額 低於 NT$1,380</li><li>具備 商品及包裝照片</li></ul></div>",
       "sourceLinks": [],
       "options": [
         "要打勾",
@@ -1812,7 +1812,7 @@ window.SOP_DATA = {
       "code": "V014",
       "label": "已申退_KAM表",
       "hint": "訂單已經申請退款嗎？",
-      "sourceNote": "售後訂單已經申請退款才要勾\n\n如何查詢有沒有退款：\n1. CS Portal\n輸入 OSN、Username 或 Return SN 查詢訂單；在一般資訊區查看 Return 資訊、訂單狀態及時間序。\n\n2. Order Admin Portal\n進入 Return → Return & Refund Requests，利用欄位搜尋訂單；進入詳情後可查看 申請狀態、申請資訊及更新時序。\n\n3. InHouse CS System／聊聊控制台\n從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。\nProcessing：已申請，處理中\nAccepted：退貨退款已完成／接受\nCancelled：曾申請，但已取消\n沒有退貨退款編號或相關欄位：通常表示尚未申請",
+      "sourceNote": "<div>售後訂單已經申請退款才要勾</div><div><br></div><h2>如何查詢有沒有退款：</h2><h3>方法一．<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><div><ol><li>輸入 OSN、Username 或 Return SN 查詢訂單</li><li>在一般資訊區查看 Return 資訊、訂單狀態及時間序</li></ol></div><div><br></div><h3>方法二．<a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin Portal</a></h3><div><ol><li>進入 Return</li><li>Return &amp; Refund Requests</li><li>利用欄位搜尋訂單</li><li>進入詳情後可查看 申請狀態、申請資訊及更新時序。</li></ol></div><div><br></div><h3>方法三．<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse聊聊控制台</a></h3><div>從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。</div><div><ul><li>Processing：已申請，處理中</li><li>Accepted：退貨退款已完成／接受</li><li>Cancelled：曾申請，但已取消</li></ul></div><div>沒有退貨退款編號或相關欄位：通常表示尚未申請</div>",
       "sourceLinks": [
         {
           "title": "CS Portal",
@@ -1847,7 +1847,7 @@ window.SOP_DATA = {
       "code": "V015",
       "label": "擴大安心退_KAM表",
       "hint": "商品總金額是否低於 NT$1,380",
-      "sourceNote": "符合「擴大安心退」需要同時符合以下 4 個條件：\n在 15 天鑑賞期內\n屬於 商品瑕疵，不是買家個人因素\n欲退商品總金額 低於 NT$1,380\n具備 商品及包裝照片",
+      "sourceNote": "<div>符合「擴大安心退」需要同時符合以下 4 個條件：</div><div><ul><li>在 15 天鑑賞期內</li><li>屬於 商品瑕疵，不是買家個人因素</li><li>欲退商品總金額 低於 NT$1,380</li><li>具備 商品及包裝照片</li></ul></div>",
       "sourceLinks": [],
       "options": [
         "要打勾",
@@ -2580,8 +2580,17 @@ window.SOP_DATA = {
       "code": "V030",
       "label": "MP SKU ID",
       "hint": "商品頁 → 取得 {Product ID} → DSS → 供應商管理 → 商品 → 搜尋 {Product ID} → 選擇 {商品規格}（如果客人有指定）→ 複製 {MP SKU ID}",
-      "sourceNote": "方法一：只有 Product ID，從 DSS 查 MP SKU ID\n1. 開啟商品頁，從網址取得 {Product ID}。\n▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 進入：供應商管理 → 商品\n4. 使用 {Product ID} 搜尋商品。\n5. 搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。\n6. 複製系統顯示的 {MP SKU ID}。\n注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。\n\n方法二：從 Order Admin 同時取得 Product ID 與 Model ID\n適用於已經有 {Order SN} 的售後訂單。\n1. 開啟 Order Admin Portal。\n2. 進入：Orders → 訂單查詢\n3. 輸入 {Order SN_OSN}。\n4. 點選搜尋並進入訂單詳細資料。\n5. 到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。\n6. 在同一筆商品規格資料中取得：\n▪ Product ID：{Product ID}\n▪ Model ID：{Model ID}\n7. 將兩個 ID 用底線組合：\n{Product ID}_{Model ID}\n組合完成的結果就是：\n{MP SKU ID}\n範例：\nProduct ID：{Product ID}\nModel ID：{Model ID}\nMP SKU ID：{Product ID}_{Model ID}\n\n使用時怎麼選\n▪ 只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。\n▪ 已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。\n\n商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。",
-      "sourceLinks": [],
+      "sourceNote": "<h3>方法一．只有 Product ID，從 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">DSS </a>查 MP SKU ID</h3><div><ol><li>開啟商品頁，從網址取得 {Product ID}<br>▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">Shopee Drop Shipping（DSS）</a></li><li>進入：供應商管理 → 商品</li><li>使用 {Product ID} 搜尋商品。</li><li>搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。</li><li>複製系統顯示的 {MP SKU ID}。</li></ol></div><div>注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。</div><h3>方法二．從 <a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin</a> 同時取得 Product ID 與 Model ID</h3><div>適用於已經有 {Order SN} 的售後訂單。</div><div><ol><li>開啟 Order Admin Portal。</li><li>進入：Orders → 訂單查詢</li><li>輸入 {Order SN_OSN}。</li><li>點選搜尋並進入訂單詳細資料。</li><li>到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。</li><li>在同一筆商品規格資料中取得：<br>▪ Product ID：{Product ID}<br>▪ Model ID：{Model ID}</li><li>&nbsp;將兩個 ID 用底線組合：{Product ID}_{Model ID}</li></ol></div><div>組合完成的結果就是：{MP SKU ID}</div><h3>使用時怎麼選</h3><div><ul><li>只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。</li><li>已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。</li></ul></div><div>商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。</div>",
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Shopee Drop Shipping（DSS）",
+          "url": "https://scm.internal.shopee.tw/homepage/backlogs"
+        }
+      ],
       "options": [],
       "defaultValue": "",
       "autoDays": 0,
@@ -2589,7 +2598,7 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": false,
-      "sourceUrl": "",
+      "sourceUrl": "https://order-admin.shopee.tw/",
       "category": "商品詢問",
       "fillRules": []
     },
@@ -2622,7 +2631,7 @@ window.SOP_DATA = {
       "code": "V031",
       "label": "Question_廠直表",
       "hint": "不用填",
-      "sourceNote": "Question 會自動帶出，主要用於：\n▪ DSS 的「商談」內容，讓 KAM／廠商查看問題並回覆。\n▪ 「歷史發問查詢」，供後續專員搜尋過往相同問題與答案。",
+      "sourceNote": "<div>Question 會自動帶出，主要用於：</div><div><ul><li>DSS 的「商談」內容，讓 KAM／廠商查看問題並回覆。</li><li>&nbsp;「歷史發問查詢」，供後續專員搜尋過往相同問題與答案。</li></ul></div>",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "不用動",
@@ -2899,7 +2908,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T06:38:29.115Z",
+  "updatedAt": "2026-08-01T06:53:26.482Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3480,7 +3489,7 @@ window.SOP_DATA = {
       ],
       "defaultValue": "不打勾",
       "fillRules": [],
-      "sourceNote": "售後訂單已經申請退款才要勾\n\n如何查詢有沒有退款：\n1. CS Portal\n輸入 OSN、Username 或 Return SN 查詢訂單；在一般資訊區查看 Return 資訊、訂單狀態及時間序。\n\n2. Order Admin Portal\n進入 Return → Return & Refund Requests，利用欄位搜尋訂單；進入詳情後可查看 申請狀態、申請資訊及更新時序。\n\n3. InHouse CS System／聊聊控制台\n從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。\nProcessing：已申請，處理中\nAccepted：退貨退款已完成／接受\nCancelled：曾申請，但已取消\n沒有退貨退款編號或相關欄位：通常表示尚未申請",
+      "sourceNote": "<div>售後訂單已經申請退款才要勾</div><div><br></div><h2>如何查詢有沒有退款：</h2><h3>方法一．<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><div><ol><li>輸入 OSN、Username 或 Return SN 查詢訂單</li><li>在一般資訊區查看 Return 資訊、訂單狀態及時間序</li></ol></div><div><br></div><h3>方法二．<a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin Portal</a></h3><div><ol><li>進入 Return</li><li>Return &amp; Refund Requests</li><li>利用欄位搜尋訂單</li><li>進入詳情後可查看 申請狀態、申請資訊及更新時序。</li></ol></div><div><br></div><h3>方法三．<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse聊聊控制台</a></h3><div>從買家訂單資訊展開 Order Info，查看有沒有退貨退款編號及狀態。</div><div><ul><li>Processing：已申請，處理中</li><li>Accepted：退貨退款已完成／接受</li><li>Cancelled：曾申請，但已取消</li></ul></div><div>沒有退貨退款編號或相關欄位：通常表示尚未申請</div>",
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "autoDays": 0,
       "multiline": false,
@@ -3513,7 +3522,7 @@ window.SOP_DATA = {
       ],
       "defaultValue": "",
       "fillRules": [],
-      "sourceNote": "符合「擴大安心退」需要同時符合以下 4 個條件：\n在 15 天鑑賞期內\n屬於 商品瑕疵，不是買家個人因素\n欲退商品總金額 低於 NT$1,380\n具備 商品及包裝照片",
+      "sourceNote": "<div>符合「擴大安心退」需要同時符合以下 4 個條件：</div><div><ul><li>在 15 天鑑賞期內</li><li>屬於 商品瑕疵，不是買家個人因素</li><li>欲退商品總金額 低於 NT$1,380</li><li>具備 商品及包裝照片</li></ul></div>",
       "sourceLinks": [],
       "autoDays": 0,
       "multiline": false,
@@ -4008,12 +4017,21 @@ window.SOP_DATA = {
       "options": [],
       "defaultValue": "",
       "fillRules": [],
-      "sourceNote": "方法一：只有 Product ID，從 DSS 查 MP SKU ID\n1. 開啟商品頁，從網址取得 {Product ID}。\n▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 進入：供應商管理 → 商品\n4. 使用 {Product ID} 搜尋商品。\n5. 搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。\n6. 複製系統顯示的 {MP SKU ID}。\n注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。\n\n方法二：從 Order Admin 同時取得 Product ID 與 Model ID\n適用於已經有 {Order SN} 的售後訂單。\n1. 開啟 Order Admin Portal。\n2. 進入：Orders → 訂單查詢\n3. 輸入 {Order SN_OSN}。\n4. 點選搜尋並進入訂單詳細資料。\n5. 到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。\n6. 在同一筆商品規格資料中取得：\n▪ Product ID：{Product ID}\n▪ Model ID：{Model ID}\n7. 將兩個 ID 用底線組合：\n{Product ID}_{Model ID}\n組合完成的結果就是：\n{MP SKU ID}\n範例：\nProduct ID：{Product ID}\nModel ID：{Model ID}\nMP SKU ID：{Product ID}_{Model ID}\n\n使用時怎麼選\n▪ 只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。\n▪ 已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。\n\n商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。",
-      "sourceLinks": [],
+      "sourceNote": "<h3>方法一．只有 Product ID，從 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">DSS </a>查 MP SKU ID</h3><div><ol><li>開啟商品頁，從網址取得 {Product ID}<br>▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">Shopee Drop Shipping（DSS）</a></li><li>進入：供應商管理 → 商品</li><li>使用 {Product ID} 搜尋商品。</li><li>搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。</li><li>複製系統顯示的 {MP SKU ID}。</li></ol></div><div>注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。</div><h3>方法二．從 <a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin</a> 同時取得 Product ID 與 Model ID</h3><div>適用於已經有 {Order SN} 的售後訂單。</div><div><ol><li>開啟 Order Admin Portal。</li><li>進入：Orders → 訂單查詢</li><li>輸入 {Order SN_OSN}。</li><li>點選搜尋並進入訂單詳細資料。</li><li>到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。</li><li>在同一筆商品規格資料中取得：<br>▪ Product ID：{Product ID}<br>▪ Model ID：{Model ID}</li><li>&nbsp;將兩個 ID 用底線組合：{Product ID}_{Model ID}</li></ol></div><div>組合完成的結果就是：{MP SKU ID}</div><h3>使用時怎麼選</h3><div><ul><li>只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。</li><li>已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。</li></ul></div><div>商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。</div>",
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Shopee Drop Shipping（DSS）",
+          "url": "https://scm.internal.shopee.tw/homepage/backlogs"
+        }
+      ],
       "autoDays": 0,
       "multiline": false,
       "common": false,
-      "sourceUrl": ""
+      "sourceUrl": "https://order-admin.shopee.tw/"
     },
     {
       "code": "V031",
@@ -4026,7 +4044,7 @@ window.SOP_DATA = {
       "defaultValue": "不用動",
       "fillRules": [],
       "sourceLinks": [],
-      "sourceNote": "Question 會自動帶出，主要用於：\n▪ DSS 的「商談」內容，讓 KAM／廠商查看問題並回覆。\n▪ 「歷史發問查詢」，供後續專員搜尋過往相同問題與答案。",
+      "sourceNote": "<div>Question 會自動帶出，主要用於：</div><div><ul><li>DSS 的「商談」內容，讓 KAM／廠商查看問題並回覆。</li><li>&nbsp;「歷史發問查詢」，供後續專員搜尋過往相同問題與答案。</li></ul></div>",
       "autoDays": 0,
       "multiline": false,
       "common": false,

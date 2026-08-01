@@ -324,6 +324,12 @@
     return template.innerHTML;
   }
 
+  function richNoteHasVisibleContent(value) {
+    const template = document.createElement("template");
+    template.innerHTML = String(value || "");
+    return String(template.content.textContent || "").replace(/\u00a0/g, " ").trim().length > 0;
+  }
+
   function initialRichNoteHtml(value) {
     const source = String(value || "");
     if (/<(?:p|div|br|strong|b|em|i|u|s|h2|h3|blockquote|ol|ul|li|a)\b/i.test(source)) return sanitizeRichNoteHtml(source);
@@ -332,6 +338,7 @@
 
   function richNoteEditor(name, value, placeholder) {
     const html = initialRichNoteHtml(value);
+    const storedValue = richNoteHasVisibleContent(html) ? html : "";
     return `<div class="rich-note-editor" data-rich-editor>
       <div class="rich-note-toolbar" aria-label="文字編輯工具">
         <select data-rich-block title="段落格式"><option value="div">一般文字</option><option value="h2">大標題</option><option value="h3">小標題</option><option value="blockquote">引用段落</option></select>
@@ -359,7 +366,7 @@
         </span>
       </div>
       <div class="rich-note-content" contenteditable="true" role="textbox" aria-multiline="true" data-rich-content data-rich-name="${esc(name)}" data-placeholder="${esc(placeholder || "輸入操作提示…")}">${html}</div>
-      <textarea name="${esc(name)}" data-rich-value hidden>${esc(html)}</textarea>
+      <textarea name="${esc(name)}" data-rich-value hidden>${esc(storedValue)}</textarea>
     </div>`;
   }
 
@@ -742,7 +749,7 @@
   function syncRichNoteEditor(content) {
     const wrapper = content?.closest("[data-rich-editor]");
     const hidden = wrapper?.querySelector("[data-rich-value]");
-    if (hidden) hidden.value = sanitizeRichNoteHtml(content.innerHTML);
+    if (hidden) { const sanitized = sanitizeRichNoteHtml(content.innerHTML); hidden.value = richNoteHasVisibleContent(sanitized) ? sanitized : ""; }
   }
 
   function runRichCommand(control) {

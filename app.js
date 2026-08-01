@@ -487,6 +487,47 @@
     }
   }
 
+  function appendHintInline(container, text) {
+    String(text || "").split(/(\*\*[^*]+\*\*)/g).filter(Boolean).forEach(part => {
+      if (/^\*\*[^*]+\*\*$/.test(part)) {
+        const strong = document.createElement("strong"); strong.textContent = part.slice(2, -2); container.append(strong);
+      } else container.append(document.createTextNode(part));
+    });
+  }
+
+  function applyHintIndent(element, whitespace) {
+    const spaces = String(whitespace || "").replace(/\t/g, "  ").length;
+    if (spaces) element.style.marginLeft = Math.min(spaces, 12) * 8 + "px";
+  }
+
+  function renderHintText(container, value) {
+    let activeList = null;
+    let activeType = "";
+    let activeIndent = -1;
+    String(value || "").split(/\r?\n/).forEach(line => {
+      const heading = line.match(/^(\s*)#{1,3}\s+(.+)$/);
+      const numbered = line.match(/^(\s*)\d+[.)、]\s+(.+)$/);
+      const bullet = line.match(/^(\s*)[-*•]\s+(.+)$/);
+      if (heading) {
+        activeList = null; activeType = ""; activeIndent = -1;
+        const title = document.createElement("h4"); applyHintIndent(title, heading[1]); appendHintInline(title, heading[2]); container.append(title); return;
+      }
+      const listType = numbered ? "ol" : (bullet ? "ul" : "");
+      if (listType) {
+        const match = numbered || bullet;
+        const indent = match[1].replace(/\t/g, "  ").length;
+        if (!activeList || activeType !== listType || activeIndent !== indent) {
+          activeList = document.createElement(listType); activeType = listType; activeIndent = indent; applyHintIndent(activeList, match[1]); container.append(activeList);
+        }
+        const item = document.createElement("li"); appendHintInline(item, match[2]); activeList.append(item); return;
+      }
+      activeList = null; activeType = ""; activeIndent = -1;
+      if (!line.trim()) { const spacer = document.createElement("div"); spacer.className = "hint-spacer"; container.append(spacer); return; }
+      const plain = line.match(/^(\s*)(.*)$/);
+      const row = document.createElement("div"); row.className = "hint-line"; applyHintIndent(row, plain[1]); appendHintInline(row, plain[2]); container.append(row);
+    });
+  }
+
   function renderHintsPanel(panel, flow, variables) {
     panel.replaceChildren();
     const label = document.createElement("div"); label.className = "panel-label"; label.textContent = "操作資訊";
@@ -507,7 +548,7 @@
     actions.forEach(item => {
       const li = document.createElement("li");
       li.append(document.createTextNode(`${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`));
-      if (item.sourceNote) li.append(document.createTextNode(`\n值從哪裡找：${item.sourceNote}`));
+      if (item.sourceNote) { const note = document.createElement("div"); note.className = "hint-rich-text"; renderHintText(note, item.sourceNote); li.append(note); }
       sourceLinksFor(item).forEach(sourceLink => {
         if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
         const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
@@ -520,9 +561,12 @@
       list.append(li);
     });
     sources.forEach(source => {
-      const li = document.createElement("li");
-      const name = document.createElement("b"); name.textContent = `{${source.label}}`;
-      li.append(name, document.createTextNode(` 的值從這裡找：${source.note || "請開啟來源連結"}`));
+      const li = document.createElement("li"); li.className = "hint-source-item";
+      const name = document.createElement("b"); name.textContent = source.label;
+      li.append(name);
+      const note = document.createElement("div"); note.className = "hint-rich-text";
+      renderHintText(note, source.note || "請開啟來源連結");
+      li.append(note);
       (source.links || []).forEach(sourceLink => {
         if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
         const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();

@@ -2641,7 +2641,7 @@ window.SOP_DATA = {
       "code": "V028",
       "label": "SCM Order ID",
       "hint": "DSS → 訂單查詢 → 輸入 {Order SN_OSN} → 搜尋 → 詳細資料 → SCM Order ID",
-      "sourceNote": "1. 先取得訂單編號（Order SN）\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 點選 「訂單查詢」。\n4. 輸入訂單編號（Order SN）\n5. 點選 「搜尋」。\n6. 找到對應訂單後，點選 「詳細資料」。\n7. 在訂單詳細資料中找到並複製 【SCM Order ID】",
+      "sourceNote": "<div>1. 先取得訂單編號（Order SN）</div><div>2. 開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">Shopee Drop Shipping（DSS）</a></div><div>3. 點選 「訂單查詢」</div><div>4. 輸入訂單編號（Order SN）</div><div>5. 點選 「搜尋」</div><div>6. 找到對應訂單後，點選 「詳細資料」</div><div>7. 在訂單詳細資料中找到並複製 【SCM Order ID】</div>",
       "sourceLinks": [
         {
           "title": "Shopee Drop Shipping（DSS）",
@@ -2665,8 +2665,37 @@ window.SOP_DATA = {
       "code": "V029",
       "label": "SCM Return Order ID",
       "hint": "CS Portal → 搜尋 {Order SN_OSN／Buyer Username} → Return 資訊 → {Return SN} → DSS → Admin_Return → {SCM Return Order ID}",
-      "sourceNote": "方法一：CS Portal 反查\n1. 開啟 CS Portal。\n2. 搜尋欄輸入：{Order SN_OSN}，或{Buyer Username}\n▪ 若使用 Username 查詢，選擇正確的 {Order SN_OSN}\n3. 按 Enter\n4, 展開 Order\n▪ 在一般資訊區找到 Return 資訊。\n5. 複製 {Return SN}。\n6. 開啟 Shopee Drop Shipping（DSS）。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 貼上 {Return SN}，點選搜尋。\n9. 進入退貨訂單詳細資料。\n10. 複製 {SCM Return Order ID}。\n\n方法二：Order Admin Portal 反查\n1. 開啟 Order Admin Portal。\n2. 進入：Return → Return & Refund Requests\n3. 在查詢欄位輸入 {Order SN_OSN}。\n4. 找到對應的退貨退款申請。\n5. 進入申請詳情。\n6. 複製 {Return SN／Return ID}。\n7. 開啟 DSS。\n8. 進入 Admin_Return／退貨訂單查詢。\n9. 輸入 {Return SN}。\n10. 點選搜尋並開啟詳細資料。\n11.複製 {SCM Return Order ID}。\n\n方法三：InHouse CS System／聊聊控制台反查\n1. 開啟買家的聊聊。\n2. 切換到 訂單詳情。\n3. 選擇正確的 {Order SN_OSN}。\n4. 展開 Order Info。\n5. 找到「退貨退款編號」，複製 {Return SN}。\n▪ 同時確認退貨退款狀態：\n▫ Processing：已申請，處理中\n▫ Accepted：申請已接受／退款完成\n▫ Cancelled：申請已取消\n6. 開啟 DSS。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 輸入 {Return SN}。\n9. 開啟詳細資料並複製 {SCM Return Order ID}。\n\n方法四：從既有案件紀錄查詢\n如果案件之前有人處理過，可以先查：\n1. 使用 {Order SN} 搜尋 KAM／廠商直送表。\n2. 使用 {Order SN} 或 {Buyer Username} 搜尋 Shopee Jira。\n查看既有紀錄是否已填寫：\n{Return SN}\n{SCM Return Order ID}\n如果只有 Return SN，再貼到 DSS 的 Admin_Return 查詢 SCM Return Order ID。\n使用既有 ID 前，務必確認是同一筆訂單、同一次退貨退款申請。",
-      "sourceLinks": [],
+      "sourceNote": "<h3><b>方法一．<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 反查</b></h3><div><ol><li>開啟 CS Portal。</li><li>&nbsp;搜尋欄輸入：{Order SN_OSN}，或{Buyer Username}<br>▪ 若使用 Username 查詢，選擇正確的 {Order SN_OSN}</li><li>按 Enter</li><li>展開 Order<br>▪ 在一般資訊區找到 Return 資訊</li><li>複製 {Return SN}</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">Shopee Drop Shipping（DSS）</a></li><li>進入 Admin_Return／退貨訂單查詢</li><li>貼上 {Return SN}，點選搜尋</li><li>進入退貨訂單詳細資料</li><li>複製 {SCM Return Order ID}</li></ol></div><div><br></div><h3><b>方法二．<a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin Portal</a> 反查</b></h3><div><ol><li>開啟 Order Admin Portal。</li><li>進入：Return → Return &amp; Refund Requests</li><li>在查詢欄位輸入 {Order SN_OSN}。</li><li>找到對應的退貨退款申請。</li><li>進入申請詳情。</li><li>複製 {Return SN／Return ID}。</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">DSS</a>。</li><li>進入 Admin_Return／退貨訂單查詢。</li><li>輸入 {Return SN}。</li><li>點選搜尋並開啟詳細資料。</li><li>複製 {SCM Return Order ID}。</li></ol></div><div><br></div><div><b>方法三．<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>控制台反查</b></div><div><ol><li>開啟買家的聊聊。</li><li>切換到 訂單詳情。</li><li>選擇正確的 {Order SN_OSN}。</li><li>展開 Order Info。</li><li>找到「退貨退款編號」，複製 {Return SN}。<br>▪ 同時確認退貨退款狀態：<br>▫ Processing：已申請，處理中<br>▫ Accepted：申請已接受／退款完成<br>▫ Cancelled：申請已取消</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">DSS</a>。</li><li>進入 Admin_Return／退貨訂單查詢。</li><li>輸入 {Return SN}。</li><li>&nbsp;開啟詳細資料並複製 {SCM Return Order ID}。</li></ol></div><div><br></div><h3>方法四<b>．</b>從既有案件紀錄查詢</h3><div>如果案件之前有人處理過，可以先查：</div><div><ul><li>使用 {Order SN} 搜尋 <a href=\"https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing\" target=\"_blank\" rel=\"noopener\">KAM表</a>／<a href=\"https://docs.google.com/spreadsheets/d/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8/edit?gid=0#gid=0\" target=\"_blank\" rel=\"noopener\">廠商直送表</a>。</li><li>使用 {Order SN} 或 {Buyer Username} 搜尋 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee Jira</a>。</li></ul></div><div>查看既有紀錄是否已填寫：</div><div>{Return SN} {SCM Return Order ID}</div><div>如果只有 Return SN，再貼到 DSS 的 Admin_Return 查詢 SCM Return Order ID。</div><div>使用既有 ID 前，務必確認是同一筆訂單、同一次退貨退款申請。</div>",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Shopee Drop Shipping（DSS）",
+          "url": "https://scm.internal.shopee.tw/homepage/backlogs"
+        },
+        {
+          "title": "KAM表",
+          "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
+        },
+        {
+          "title": "廠商直送表",
+          "url": "https://docs.google.com/spreadsheets/d/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8/edit?gid=0#gid=0"
+        },
+        {
+          "title": "Shopee Jira",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
       "options": [],
       "defaultValue": "",
       "autoDays": 0,
@@ -2674,7 +2703,7 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": false,
-      "sourceUrl": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
       "category": "訂單相關",
       "fillRules": []
     },
@@ -2870,7 +2899,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T06:20:16.326Z",
+  "updatedAt": "2026-08-01T06:38:29.115Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3911,7 +3940,7 @@ window.SOP_DATA = {
       "options": [],
       "defaultValue": "",
       "fillRules": [],
-      "sourceNote": "1. 先取得訂單編號（Order SN）\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 點選 「訂單查詢」。\n4. 輸入訂單編號（Order SN）\n5. 點選 「搜尋」。\n6. 找到對應訂單後，點選 「詳細資料」。\n7. 在訂單詳細資料中找到並複製 【SCM Order ID】",
+      "sourceNote": "<div>1. 先取得訂單編號（Order SN）</div><div>2. 開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">Shopee Drop Shipping（DSS）</a></div><div>3. 點選 「訂單查詢」</div><div>4. 輸入訂單編號（Order SN）</div><div>5. 點選 「搜尋」</div><div>6. 找到對應訂單後，點選 「詳細資料」</div><div>7. 在訂單詳細資料中找到並複製 【SCM Order ID】</div>",
       "sourceLinks": [
         {
           "title": "Shopee Drop Shipping（DSS）",
@@ -3933,12 +3962,41 @@ window.SOP_DATA = {
       "options": [],
       "defaultValue": "",
       "fillRules": [],
-      "sourceNote": "方法一：CS Portal 反查\n1. 開啟 CS Portal。\n2. 搜尋欄輸入：{Order SN_OSN}，或{Buyer Username}\n▪ 若使用 Username 查詢，選擇正確的 {Order SN_OSN}\n3. 按 Enter\n4, 展開 Order\n▪ 在一般資訊區找到 Return 資訊。\n5. 複製 {Return SN}。\n6. 開啟 Shopee Drop Shipping（DSS）。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 貼上 {Return SN}，點選搜尋。\n9. 進入退貨訂單詳細資料。\n10. 複製 {SCM Return Order ID}。\n\n方法二：Order Admin Portal 反查\n1. 開啟 Order Admin Portal。\n2. 進入：Return → Return & Refund Requests\n3. 在查詢欄位輸入 {Order SN_OSN}。\n4. 找到對應的退貨退款申請。\n5. 進入申請詳情。\n6. 複製 {Return SN／Return ID}。\n7. 開啟 DSS。\n8. 進入 Admin_Return／退貨訂單查詢。\n9. 輸入 {Return SN}。\n10. 點選搜尋並開啟詳細資料。\n11.複製 {SCM Return Order ID}。\n\n方法三：InHouse CS System／聊聊控制台反查\n1. 開啟買家的聊聊。\n2. 切換到 訂單詳情。\n3. 選擇正確的 {Order SN_OSN}。\n4. 展開 Order Info。\n5. 找到「退貨退款編號」，複製 {Return SN}。\n▪ 同時確認退貨退款狀態：\n▫ Processing：已申請，處理中\n▫ Accepted：申請已接受／退款完成\n▫ Cancelled：申請已取消\n6. 開啟 DSS。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 輸入 {Return SN}。\n9. 開啟詳細資料並複製 {SCM Return Order ID}。\n\n方法四：從既有案件紀錄查詢\n如果案件之前有人處理過，可以先查：\n1. 使用 {Order SN} 搜尋 KAM／廠商直送表。\n2. 使用 {Order SN} 或 {Buyer Username} 搜尋 Shopee Jira。\n查看既有紀錄是否已填寫：\n{Return SN}\n{SCM Return Order ID}\n如果只有 Return SN，再貼到 DSS 的 Admin_Return 查詢 SCM Return Order ID。\n使用既有 ID 前，務必確認是同一筆訂單、同一次退貨退款申請。",
-      "sourceLinks": [],
+      "sourceNote": "<h3><b>方法一．<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 反查</b></h3><div><ol><li>開啟 CS Portal。</li><li>&nbsp;搜尋欄輸入：{Order SN_OSN}，或{Buyer Username}<br>▪ 若使用 Username 查詢，選擇正確的 {Order SN_OSN}</li><li>按 Enter</li><li>展開 Order<br>▪ 在一般資訊區找到 Return 資訊</li><li>複製 {Return SN}</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">Shopee Drop Shipping（DSS）</a></li><li>進入 Admin_Return／退貨訂單查詢</li><li>貼上 {Return SN}，點選搜尋</li><li>進入退貨訂單詳細資料</li><li>複製 {SCM Return Order ID}</li></ol></div><div><br></div><h3><b>方法二．<a href=\"https://order-admin.shopee.tw/\" target=\"_blank\" rel=\"noopener\">Order Admin Portal</a> 反查</b></h3><div><ol><li>開啟 Order Admin Portal。</li><li>進入：Return → Return &amp; Refund Requests</li><li>在查詢欄位輸入 {Order SN_OSN}。</li><li>找到對應的退貨退款申請。</li><li>進入申請詳情。</li><li>複製 {Return SN／Return ID}。</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">DSS</a>。</li><li>進入 Admin_Return／退貨訂單查詢。</li><li>輸入 {Return SN}。</li><li>點選搜尋並開啟詳細資料。</li><li>複製 {SCM Return Order ID}。</li></ol></div><div><br></div><div><b>方法三．<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>控制台反查</b></div><div><ol><li>開啟買家的聊聊。</li><li>切換到 訂單詳情。</li><li>選擇正確的 {Order SN_OSN}。</li><li>展開 Order Info。</li><li>找到「退貨退款編號」，複製 {Return SN}。<br>▪ 同時確認退貨退款狀態：<br>▫ Processing：已申請，處理中<br>▫ Accepted：申請已接受／退款完成<br>▫ Cancelled：申請已取消</li><li>開啟 <a href=\"https://scm.internal.shopee.tw/homepage/backlogs\" target=\"_blank\" rel=\"noopener\">DSS</a>。</li><li>進入 Admin_Return／退貨訂單查詢。</li><li>輸入 {Return SN}。</li><li>&nbsp;開啟詳細資料並複製 {SCM Return Order ID}。</li></ol></div><div><br></div><h3>方法四<b>．</b>從既有案件紀錄查詢</h3><div>如果案件之前有人處理過，可以先查：</div><div><ul><li>使用 {Order SN} 搜尋 <a href=\"https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing\" target=\"_blank\" rel=\"noopener\">KAM表</a>／<a href=\"https://docs.google.com/spreadsheets/d/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8/edit?gid=0#gid=0\" target=\"_blank\" rel=\"noopener\">廠商直送表</a>。</li><li>使用 {Order SN} 或 {Buyer Username} 搜尋 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee Jira</a>。</li></ul></div><div>查看既有紀錄是否已填寫：</div><div>{Return SN} {SCM Return Order ID}</div><div>如果只有 Return SN，再貼到 DSS 的 Admin_Return 查詢 SCM Return Order ID。</div><div>使用既有 ID 前，務必確認是同一筆訂單、同一次退貨退款申請。</div>",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Shopee Drop Shipping（DSS）",
+          "url": "https://scm.internal.shopee.tw/homepage/backlogs"
+        },
+        {
+          "title": "KAM表",
+          "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
+        },
+        {
+          "title": "廠商直送表",
+          "url": "https://docs.google.com/spreadsheets/d/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8/edit?gid=0#gid=0"
+        },
+        {
+          "title": "Shopee Jira",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
       "autoDays": 0,
       "multiline": false,
       "common": false,
-      "sourceUrl": ""
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
     },
     {
       "code": "V030",

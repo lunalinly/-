@@ -41,7 +41,7 @@ window.SOP_DATA = {
       "keywords": "限時特賣,限時優惠,特價,限購,購買數量,最多買幾個,一次買幾件",
       "description": "確認限時特賣及結帳頁的實際限購數量",
       "enabled": true,
-      "answerText": "請先打開商品頁，確認是否顯示「限時特賣」，再將商品加入購物車並進入結帳頁確認。\n限時特賣通常會限制購買數量，實際可購買數量請以結帳頁面顯示為主。\n結帳頁目前顯示：{{flash_sale_limit}}。"
+      "answerText": "確認步驟：\n1. 打開商品頁，確認是否顯示「限時特賣」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際可購買數量。\n\n回覆重點：\n▪ 限時特賣通常會限制購買數量。\n▪ 實際可購買數量以結帳頁面顯示為主。\n▪ 結帳頁目前顯示：{{flash_sale_limit}}。"
     },
     {
       "id": "Q006",
@@ -57,7 +57,7 @@ window.SOP_DATA = {
       "keywords": "運費,運送費,配送費,免運,要多少運費",
       "description": "從商品頁與結帳頁確認實際運費",
       "enabled": true,
-      "answerText": "請先開啟商品頁查看「運費說明」，再將商品加入購物車／進入結帳頁確認實際運費。\n商品頁顯示的運費說明：{{shipping_fee_details}}\n實際運費請以結帳頁面顯示為主。"
+      "answerText": "確認步驟：\n1. 開啟商品頁查看「運費說明」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際運費。\n\n查詢結果：\n▪ 商品頁顯示的運費說明：{{shipping_fee_details}}\n▪ 實際運費以結帳頁面顯示為主。"
     },
     {
       "id": "Q008",
@@ -73,7 +73,7 @@ window.SOP_DATA = {
       "keywords": "滿額贈,贈品,贈完,剩餘數量,購物車沒有贈品,贈品怎麼拿",
       "description": "依商品卡標籤與購物車是否自動加入贈品判斷",
       "enabled": true,
-      "answerText": "請先查看商品卡是否顯示「滿額贈」標籤，再將商品加入購物車確認。"
+      "answerText": "確認步驟：\n1. 查看商品卡是否顯示「滿額贈」標籤。\n2. 將商品加入購物車。\n3. 確認系統是否自動加入贈品。"
     }
   ],
   "flows": [
@@ -3045,7 +3045,7 @@ window.SOP_DATA = {
       "code": "flash_sale_limit",
       "label": "結帳頁顯示的限購數量",
       "hint": "例如：每人限購 2 件",
-      "sourceNote": "先在商品頁確認是否有「限時特賣」，再將商品加入購物車並進入結帳頁；限時特賣通常會限制數量，實際可購買數量以結帳頁面顯示為主。",
+      "sourceNote": "查詢步驟：\n1. 在商品頁確認是否有「限時特賣」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際可購買數量。\n\n注意：\n▪ 限時特賣通常會限制數量。\n▪ 實際數量以結帳頁面顯示為主。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -3064,7 +3064,7 @@ window.SOP_DATA = {
       "code": "shipping_fee_details",
       "label": "商品頁運費說明",
       "hint": "貼上商品頁顯示的運費說明",
-      "sourceNote": "開啟商品頁查看「運費說明」，再到購物車／結帳頁確認實際運費；以結帳頁面顯示為主。",
+      "sourceNote": "查詢步驟：\n1. 開啟商品頁查看「運費說明」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際運費。\n\n注意：\n▪ 實際運費以結帳頁面顯示為主。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -3102,7 +3102,7 @@ window.SOP_DATA = {
       "code": "addon_campaign_id",
       "label": "活動檔期／add_on_deal_id",
       "hint": "填入工具顯示的活動檔期或 add_on_deal_id",
-      "sourceNote": "SCS CS Tool 可從下拉選單查看活動檔期；[DB] Add-on / Gift / Bundle 則先在 Add-on_Sub 用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
+      "sourceNote": "可使用以下兩種方式查找：\n▪ SCS CS Tool：從下拉選單查看活動檔期。\n▪ [DB] Add-on / Gift / Bundle：先在 Add-on_Sub 使用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
       "sourceLinks": [
         {
           "title": "SCS CS Tool（正職）",
@@ -3134,7 +3134,7 @@ window.SOP_DATA = {
       "code": "addon_main_product",
       "label": "可搭配的主商品",
       "hint": "填入主商品的 Product ID 或商品名稱",
-      "sourceNote": "查到主商品後，將主商品的商品 ID 或商品名稱複製到聊聊系統搜尋，並透過商品卡傳送給買家。",
+      "sourceNote": "查到主商品後：\n1. 複製主商品的商品 ID 或商品名稱。\n2. 到聊聊系統搜尋。\n3. 透過商品卡傳送給買家。",
       "sourceLinks": [
         {
           "title": "SCS CS Tool（正職）",
@@ -3166,7 +3166,7 @@ window.SOP_DATA = {
       "code": "gift_item",
       "label": "滿額贈商品",
       "hint": "填入購物車自動加入的贈品名稱",
-      "sourceNote": "滿額贈不會顯示在商品頁的獨立區塊；達到活動條件時，系統會在購物車自動加入贈品。",
+      "sourceNote": "確認方式：\n▪ 滿額贈不會顯示在商品頁的獨立區塊。\n▪ 達到活動條件時，系統會在購物車自動加入贈品。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -3185,7 +3185,7 @@ window.SOP_DATA = {
       "code": "gift_remaining_quantity",
       "label": "滿額贈剩餘數量",
       "hint": "填入購物車顯示的贈品剩餘數量",
-      "sourceNote": "購物車會顯示目前滿額贈剩餘數量；若已贈完，贈品不會顯示。",
+      "sourceNote": "確認方式：\n▪ 購物車會顯示目前滿額贈剩餘數量。\n▪ 若贈品已贈完，購物車不會顯示。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -3204,7 +3204,7 @@ window.SOP_DATA = {
       "code": "available_voucher_codes",
       "label": "優惠代碼有哪些",
       "hint": "把 CS Portal 顯示可使用的優惠代碼全部貼上；多筆請一行一個",
-      "sourceNote": "CS Portal → 搜尋買家 Username → 詳細資訊（買家）→ 優惠代碼錢包；將目前可使用的優惠代碼填入此欄位。也可以直接用優惠代碼在 CS Portal 搜尋。",
+      "sourceNote": "使用 CS Portal 查詢：\n1. 搜尋買家 Username。\n2. 進入「詳細資訊（買家）」。\n3. 點選「優惠代碼錢包」。\n4. 將目前可使用的優惠代碼填入此欄位。\n\n其他查詢方式：\n▪ 也可以直接用優惠代碼在 CS Portal 搜尋。",
       "sourceLinks": [
         {
           "title": "CS Portal",
@@ -3309,47 +3309,47 @@ window.SOP_DATA = {
     {
       "q": "Q006",
       "branch": "哪裡領取／查看優惠券",
-      "text": "商品頁可以查看目前商品適用的賣場優惠券。\n買家也可以從蝦皮活動頁、電子票券頁、蝦皮會員、我的蝦幣、賣場店鋪首頁或遊戲領取優惠券。\n已領取的優惠券可到「我的優惠券」查看；使用紀錄則到「歷史記錄」查看已用完、已過期或已使用過的優惠券。"
+      "text": "可查找優惠券的位置：\n▪ 商品頁：查看目前商品適用的賣場優惠券。\n▪ 蝦皮活動頁\n▪ 電子票券頁\n▪ 蝦皮會員\n▪ 我的蝦幣\n▪ 賣場店鋪首頁\n▪ 遊戲\n\n查看方式：\n▪ 已領取的優惠券：到「我的優惠券」查看。\n▪ 使用紀錄：到「歷史記錄」查看已用完、已過期或已使用過的優惠券。"
     },
     {
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券",
-      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 下方會顯示買家目前可使用的優惠代碼。\n也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。\n\n查詢到買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
+      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 查看買家目前可使用的優惠代碼。\n\n其他查詢方式：\n▪ 也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。\n\n查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
     },
     {
       "q": "Q006",
       "branch": "取消訂單後優惠券是否返還",
-      "text": "取消訂單後優惠券是否返還，要依該張優惠券的使用規則為主。\n即使系統返還，若優惠券活動已結束、已逾期或名額已由其他用戶使用，返還的優惠券仍可能無法再次使用，因此不要承諾一定可以重複使用。"
+      "text": "判斷原則：\n▪ 是否返還要依該張優惠券的使用規則為主。\n▪ 即使系統返還，若活動已結束、優惠券已逾期或名額已由其他用戶使用，仍可能無法再次使用。\n▪ 不要向買家承諾優惠券一定可以重複使用。"
     },
     {
       "q": "Q008",
       "branch": "加價購標籤有顯示",
-      "text": "商品頁有顯示「加價購」標籤，表示此商品可以搭配其他商品進行優惠加購。\n請將商品加入購物車，實際可加購商品與優惠價格以結帳頁面顯示為主。"
+      "text": "確認結果：\n▪ 商品頁有顯示「加價購」標籤。\n▪ 此商品可以搭配其他商品進行優惠加購。\n\n下一步：\n1. 將商品加入購物車。\n2. 查看實際可加購商品與優惠價格。\n3. 以結帳頁面顯示為主。"
     },
     {
       "q": "Q008",
       "branch": "加價購標籤沒有顯示",
-      "text": "商品頁目前沒有顯示「加價購」標籤，因此目前無法確認有加價購活動。\n活動內容可能變動，請以商品頁及結帳頁實際顯示為主。"
+      "text": "確認結果：\n▪ 商品頁目前沒有顯示「加價購」標籤。\n▪ 目前無法確認有加價購活動。\n▪ 活動內容可能變動，請以商品頁及結帳頁實際顯示為主。"
     },
     {
       "q": "Q008",
       "branch": "反查加價購主商品",
-      "text": "先從加價購商品頁網址取得 Product ID：{{product_id}}。\n\n方法一．SCS CS Tool\n1. 開啟正職或派遣版 SCS CS Tool。\n2. 進入「加價購主商品」。\n3. 輸入 {{product_id}} 後搜尋。\n4. 從下拉選單查看對應的活動檔期。\n5. 在結果中選擇主商品，複製主商品的商品 ID 或商品名稱。\n\n方法二．[DB] Add-on / Gift / Bundle\n1. 到 Add-on_Sub 分頁，用 {{product_id}} 搜尋。\n2. 複製對應的 add_on_deal_id。\n3. 到 Add-on_Main 分頁搜尋該 add_on_deal_id。\n4. 查看該檔期適用的主商品清單。\n\n活動檔期／add_on_deal_id：{{addon_campaign_id}}\n可搭配的主商品：{{addon_main_product}}\n若要推薦買家，將主商品的商品 ID 或商品名稱貼到聊聊搜尋，再透過商品卡傳送。"
+      "text": "準備資料：\n▪ 從加價購商品頁網址取得 Product ID：{{product_id}}\n\n可使用以下兩種方式反查：\n\n方法一．SCS CS Tool\n1. 開啟正職或派遣版 SCS CS Tool。\n2. 進入「加價購主商品」。\n3. 輸入 {{product_id}} 後搜尋。\n4. 從下拉選單查看對應的活動檔期。\n5. 在結果中選擇主商品。\n6. 複製主商品的商品 ID 或商品名稱。\n\n方法二．[DB] Add-on / Gift / Bundle\n1. 到 Add-on_Sub 分頁。\n2. 使用 {{product_id}} 搜尋。\n3. 複製對應的 add_on_deal_id。\n4. 到 Add-on_Main 分頁搜尋該 add_on_deal_id。\n5. 查看該檔期適用的主商品清單。\n\n查詢結果：\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}\n\n推薦買家的步驟：\n1. 將主商品的商品 ID 或商品名稱貼到聊聊搜尋。\n2. 找到正確商品。\n3. 透過商品卡傳送給買家。"
     },
     {
       "q": "Q009",
       "branch": "商品卡沒有顯示滿額贈",
-      "text": "商品卡目前沒有顯示「滿額贈」標籤，因此目前無法確認商品有綁定滿額贈活動。\n活動內容可能變動，請以商品卡與購物車實際顯示為主。"
+      "text": "確認結果：\n▪ 商品卡目前沒有顯示「滿額贈」標籤。\n▪ 目前無法確認商品有綁定滿額贈活動。\n▪ 活動內容可能變動，請以商品卡與購物車實際顯示為主。"
     },
     {
       "q": "Q009",
       "branch": "購物車有顯示滿額贈",
-      "text": "商品卡有顯示「滿額贈」標籤，而且系統已在購物車自動加入贈品，不需要另外選取。\n滿額贈商品：{{gift_item}}\n購物車顯示的剩餘數量：{{gift_remaining_quantity}}\n請以結帳頁面實際顯示為主。"
+      "text": "確認結果：\n▪ 商品卡有顯示「滿額贈」標籤。\n▪ 系統已在購物車自動加入贈品，不需要另外選取。\n▪ 滿額贈商品：{{gift_item}}\n▪ 購物車顯示的剩餘數量：{{gift_remaining_quantity}}\n▪ 最終以結帳頁面實際顯示為主。"
     },
     {
       "q": "Q009",
       "branch": "購物車沒有顯示滿額贈",
-      "text": "商品卡雖然有顯示「滿額贈」標籤，但購物車沒有自動出現贈品。\n請先確認購物車是否達到活動條件；若符合條件仍未顯示，贈品可能已經贈完。滿額贈若已贈完，購物車就不會顯示。"
+      "text": "確認結果：\n▪ 商品卡有顯示「滿額贈」標籤。\n▪ 購物車沒有自動出現贈品。\n\n確認步驟：\n1. 檢查購物車是否達到活動條件。\n2. 若符合條件仍未顯示，贈品可能已經贈完。\n\n注意：\n▪ 滿額贈若已贈完，購物車就不會顯示。"
     }
   ],
   "actions": [
@@ -3446,7 +3446,7 @@ window.SOP_DATA = {
       "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
     }
   ],
-  "updatedAt": "2026-08-01T07:29:02.899Z",
+  "updatedAt": "2026-08-01T07:36:59.770Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -4813,7 +4813,7 @@ window.SOP_DATA = {
       "code": "flash_sale_limit",
       "label": "結帳頁顯示的限購數量",
       "hint": "例如：每人限購 2 件",
-      "sourceNote": "先在商品頁確認是否有「限時特賣」，再將商品加入購物車並進入結帳頁；限時特賣通常會限制數量，實際可購買數量以結帳頁面顯示為主。",
+      "sourceNote": "查詢步驟：\n1. 在商品頁確認是否有「限時特賣」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際可購買數量。\n\n注意：\n▪ 限時特賣通常會限制數量。\n▪ 實際數量以結帳頁面顯示為主。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -4830,7 +4830,7 @@ window.SOP_DATA = {
       "code": "shipping_fee_details",
       "label": "商品頁運費說明",
       "hint": "貼上商品頁顯示的運費說明",
-      "sourceNote": "開啟商品頁查看「運費說明」，再到購物車／結帳頁確認實際運費；以結帳頁面顯示為主。",
+      "sourceNote": "查詢步驟：\n1. 開啟商品頁查看「運費說明」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際運費。\n\n注意：\n▪ 實際運費以結帳頁面顯示為主。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -4847,7 +4847,7 @@ window.SOP_DATA = {
       "code": "addon_campaign_id",
       "label": "活動檔期／add_on_deal_id",
       "hint": "填入工具顯示的活動檔期或 add_on_deal_id",
-      "sourceNote": "SCS CS Tool 可從下拉選單查看活動檔期；[DB] Add-on / Gift / Bundle 則先在 Add-on_Sub 用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
+      "sourceNote": "可使用以下兩種方式查找：\n▪ SCS CS Tool：從下拉選單查看活動檔期。\n▪ [DB] Add-on / Gift / Bundle：先在 Add-on_Sub 使用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
       "sourceLinks": [
         {
           "title": "SCS CS Tool（正職）",
@@ -4877,7 +4877,7 @@ window.SOP_DATA = {
       "code": "addon_main_product",
       "label": "可搭配的主商品",
       "hint": "填入主商品的 Product ID 或商品名稱",
-      "sourceNote": "查到主商品後，將主商品的商品 ID 或商品名稱複製到聊聊系統搜尋，並透過商品卡傳送給買家。",
+      "sourceNote": "查到主商品後：\n1. 複製主商品的商品 ID 或商品名稱。\n2. 到聊聊系統搜尋。\n3. 透過商品卡傳送給買家。",
       "sourceLinks": [
         {
           "title": "SCS CS Tool（正職）",
@@ -4907,7 +4907,7 @@ window.SOP_DATA = {
       "code": "gift_item",
       "label": "滿額贈商品",
       "hint": "填入購物車自動加入的贈品名稱",
-      "sourceNote": "滿額贈不會顯示在商品頁的獨立區塊；達到活動條件時，系統會在購物車自動加入贈品。",
+      "sourceNote": "確認方式：\n▪ 滿額贈不會顯示在商品頁的獨立區塊。\n▪ 達到活動條件時，系統會在購物車自動加入贈品。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -4924,7 +4924,7 @@ window.SOP_DATA = {
       "code": "gift_remaining_quantity",
       "label": "滿額贈剩餘數量",
       "hint": "填入購物車顯示的贈品剩餘數量",
-      "sourceNote": "購物車會顯示目前滿額贈剩餘數量；若已贈完，贈品不會顯示。",
+      "sourceNote": "確認方式：\n▪ 購物車會顯示目前滿額贈剩餘數量。\n▪ 若贈品已贈完，購物車不會顯示。",
       "sourceLinks": [],
       "options": [],
       "defaultValue": "",
@@ -4941,7 +4941,7 @@ window.SOP_DATA = {
       "code": "available_voucher_codes",
       "label": "優惠代碼有哪些",
       "hint": "把 CS Portal 顯示可使用的優惠代碼全部貼上；多筆請一行一個",
-      "sourceNote": "CS Portal → 搜尋買家 Username → 詳細資訊（買家）→ 優惠代碼錢包；將目前可使用的優惠代碼填入此欄位。也可以直接用優惠代碼在 CS Portal 搜尋。",
+      "sourceNote": "使用 CS Portal 查詢：\n1. 搜尋買家 Username。\n2. 進入「詳細資訊（買家）」。\n3. 點選「優惠代碼錢包」。\n4. 將目前可使用的優惠代碼填入此欄位。\n\n其他查詢方式：\n▪ 也可以直接用優惠代碼在 CS Portal 搜尋。",
       "sourceLinks": [
         {
           "title": "CS Portal",

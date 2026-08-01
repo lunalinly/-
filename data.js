@@ -1834,7 +1834,7 @@ window.SOP_DATA = {
       "type": "select",
       "multiline": false,
       "sourceUrl": "",
-      "category": "未分類",
+      "category": "KAM表",
       "fillRules": []
     },
     {
@@ -2106,14 +2106,14 @@ window.SOP_DATA = {
       "sourceNote": "",
       "sourceLinks": [],
       "options": [],
-      "defaultValue": "",
+      "defaultValue": "轉單詢問",
       "autoDays": 0,
       "required": true,
       "common": false,
       "type": "text",
       "multiline": false,
       "sourceUrl": "",
-      "category": "未分類",
+      "category": "廠直表",
       "fillRules": []
     }
   ],
@@ -2247,7 +2247,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T03:49:05.532Z",
+  "updatedAt": "2026-08-01T03:59:35.040Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3032,7 +3032,7 @@ window.SOP_DATA = {
     {
       "code": "V023",
       "label": "問題分類_KAM_SBS",
-      "category": "未分類",
+      "category": "KAM表",
       "hint": "售前的話要選擇「售前-XXX」",
       "type": "select",
       "required": true,
@@ -3062,12 +3062,12 @@ window.SOP_DATA = {
     {
       "code": "V024",
       "label": "分頁_廠直表",
-      "category": "未分類",
+      "category": "廠直表",
       "hint": "廠直表的下方選分頁",
       "type": "text",
       "required": true,
       "options": [],
-      "defaultValue": "",
+      "defaultValue": "轉單詢問",
       "fillRules": [],
       "sourceNote": "",
       "sourceLinks": [],
@@ -3148,6 +3148,15 @@ window.SOP_DATA = {
               "action": "fill",
               "targetCode": "V027",
               "value": "MP SKU ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V032",
+              "value": "2",
               "answerText": "",
               "answerPosition": "end",
               "answerAnchor": "",
@@ -3279,6 +3288,44 @@ window.SOP_DATA = {
       "defaultValue": "",
       "fillRules": [],
       "sourceNote": "方法一：只有 Product ID，從 DSS 查 MP SKU ID\n1. 開啟商品頁，從網址取得 {Product ID}。\n▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 進入：供應商管理 → 商品\n4. 使用 {Product ID} 搜尋商品。\n5. 搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。\n6. 複製系統顯示的 {MP SKU ID}。\n注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。\n\n方法二：從 Order Admin 同時取得 Product ID 與 Model ID\n適用於已經有 {Order SN} 的售後訂單。\n1. 開啟 Order Admin Portal。\n2. 進入：Orders → 訂單查詢\n3. 輸入 {Order SN_OSN}。\n4. 點選搜尋並進入訂單詳細資料。\n5. 到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。\n6. 在同一筆商品規格資料中取得：\n▪ Product ID：{Product ID}\n▪ Model ID：{Model ID}\n7. 將兩個 ID 用底線組合：\n{Product ID}_{Model ID}\n組合完成的結果就是：\n{MP SKU ID}\n範例：\nProduct ID：{Product ID}\nModel ID：{Model ID}\nMP SKU ID：{Product ID}_{Model ID}\n\n使用時怎麼選\n▪ 只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。\n▪ 已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。\n\n商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V031",
+      "label": "Question_廠直表",
+      "category": "廠直表",
+      "hint": "不用填",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "不用動",
+      "fillRules": [],
+      "sourceLinks": [],
+      "sourceNote": "Question 會自動帶出，主要用於：\n▪ DSS 的「商談」內容，讓 KAM／廠商查看問題並回覆。\n▪ 「歷史發問查詢」，供後續專員搜尋過往相同問題與答案。",
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V032",
+      "label": "Priority_廠直表",
+      "category": "廠直表",
+      "hint": "依照緊急程度選擇",
+      "type": "select",
+      "required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "０：社群媒體法律健康風險(關鍵字等)\n１：有時間性問題(如改地址)\n２：一般基礎問題",
       "sourceLinks": [],
       "autoDays": 0,
       "multiline": false,

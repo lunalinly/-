@@ -329,6 +329,41 @@
 
   function questionIdForName(name) { return name === "共用" ? "GLOBAL" : (data.questions.find(question => question.name === name)?.id || ""); }
 
+  function variableDefinition(value) {
+    if (typeof value === "object" && value) return value;
+    return (data.fields || []).find(item => item.code === value)
+      || (data.variables || []).find(item => item.code === value)
+      || { code: String(value || ""), label: String(value || "") };
+  }
+
+  function variableTokenForms(value) {
+    const variable = variableDefinition(value);
+    return [...new Set([
+      `{{${variable.code}}}`,
+      `{${variable.code}}`,
+      variable.label ? `{${variable.label}}` : ""
+    ].filter(Boolean))].sort((a, b) => b.length - a.length);
+  }
+
+  function findVariableToken(text, value) {
+    let found = null;
+    variableTokenForms(value).forEach(token => {
+      const index = String(text || "").indexOf(token);
+      if (index >= 0 && (!found || index < found.index || (index === found.index && token.length > found.token.length))) found = { token, index };
+    });
+    return found;
+  }
+
+  function textUsesVariable(text, value) {
+    return Boolean(findVariableToken(text, value));
+  }
+
+  function replaceVariableTokens(text, value, replacement) {
+    let result = String(text || "");
+    variableTokenForms(value).forEach(token => { result = result.split(token).join(replacement); });
+    return result;
+  }
+
   function composedAnswerTemplate(flow) {
     const built = templatesFor(flow);
     const conditional = conditionalAnswerTexts();
@@ -345,9 +380,8 @@
     chunks.push(...conditional.filter(item => item.position === "end").map(item => item.text));
     let text = chunks.join("\n\n");
     conditional.filter(item => item.position === "after_field" && item.fieldCode).forEach(item => {
-      const token = `{{${item.fieldCode}}}`;
-      const index = text.indexOf(token);
-      if (index >= 0) text = text.slice(0, index + token.length) + item.text + text.slice(index + token.length);
+      const found = findVariableToken(text, item.fieldCode);
+      if (found) text = text.slice(0, found.index + found.token.length) + item.text + text.slice(found.index + found.token.length);
     });
     return text;
   }
@@ -363,7 +397,7 @@
     const codes = new Set();
     const questionText = String(state.question.answerText || "");
     data.variables.filter(variable =>
-      variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`)
+      variable.q === state.question.id && textUsesVariable(questionText, variable)
     ).forEach(variable => codes.add(variable.code));
     parts.forEach(part => {
       const q = questionIdForName(part.question);
@@ -378,7 +412,7 @@
   }
 
   function shouldShowConditionalField(variable, flow) {
-    if (composedAnswerTemplate(flow).includes(`{{${variable.code}}}`)) return true;
+    if (textUsesVariable(composedAnswerTemplate(flow), variable)) return true;
     if (state.revealedFields.has(variable.code)) return true;
     const definition = data.fields?.find(item => item.code === variable.code) || variable;
     if ((definition.fillRules || []).length) return true;
@@ -397,7 +431,7 @@
     const questionText = String(state.question.answerText || "");
     const catalog = new Map();
     data.variables.filter(variable =>
-      variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`)
+      variable.q === state.question.id && textUsesVariable(questionText, variable)
     ).forEach(variable => catalog.set(variable.code, variable));
     parts.forEach(part => {
       const q = questionIdForName(part.question);
@@ -412,6 +446,10 @@
     ).forEach(variable => {
       if (!catalog.has(variable.code)) catalog.set(variable.code, variable);
     });
+    const referencedAnswerText = composedAnswerTemplate(flow);
+    (data.fields || []).forEach(field => {
+      if (textUsesVariable(referencedAnswerText, field) && !catalog.has(field.code)) catalog.set(field.code, field);
+    });
     let added = true;
     while (added) {
       added = false;
@@ -425,8 +463,8 @@
     }
     const answerOrderText = composedAnswerTemplate(flow);
     return [...catalog.values()].map((variable, originalIndex) => {
-      const position = answerOrderText.indexOf(`{{${variable.code}}}`);
-      return { variable, originalIndex, position: position < 0 ? Number.POSITIVE_INFINITY : position };
+      const found = findVariableToken(answerOrderText, variable);
+      return { variable, originalIndex, position: found ? found.index : Number.POSITIVE_INFINITY };
     }).sort((a, b) => a.position - b.position || a.originalIndex - b.originalIndex).map(item => item.variable);
   }
 
@@ -727,15 +765,14 @@
     if (!parts.length) return { text: "這個問題與答案組合尚未設定文字。", missing: true, sources: [] };
     let text = parts.join("\n\n");
     conditional.filter(item => item.position === "after_field" && item.fieldCode).forEach(item => {
-      const token = `{{${item.fieldCode}}}`;
-      const index = text.indexOf(token);
-      if (index >= 0) text = text.slice(0, index + token.length) + item.text + text.slice(index + token.length);
+      const found = findVariableToken(text, item.fieldCode);
+      if (found) text = text.slice(0, found.index + found.token.length) + item.text + text.slice(found.index + found.token.length);
     });
     const sourceMap = new Map();
     variables.forEach(variable => {
       const links = sourceLinksFor(variable);
       const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(state.values[variable.code] ?? "").trim();
-      if (!inactiveConditional && text.includes(`{{${variable.code}}}`) && plainHintText(variable.sourceNote).trim() && !sourceMap.has(variable.code)) {
+      if (!inactiveConditional && textUsesVariable(text, variable) && plainHintText(variable.sourceNote).trim() && !sourceMap.has(variable.code)) {
         sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", links });
       }
     });
@@ -743,7 +780,7 @@
       const raw = state.values[variable.code] || "";
       const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(raw).trim();
       const value = displayValue(variable, raw) || (inactiveConditional ? "不用輸入" : `{請填：${variable.label}}`);
-      text = text.split(`{{${variable.code}}}`).join(value);
+      text = replaceVariableTokens(text, variable, value);
     });
     if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;
     const sources = [...sourceMap.values()];

@@ -53,11 +53,11 @@ window.SOP_DATA = {
     },
     {
       "id": "Q007",
-      "name": "詢問運費",
-      "keywords": "運費,運送費,配送費,免運,運費折扣,滿額折價,滿額免運,要多少運費",
-      "description": "共用說明一般商品與蝦皮直營的運費、配送方式、滿額折價及查詢位置",
+      "name": "詢問運費／物流",
+      "keywords": "運費,免運門檻,滿額免運,店取最快當日到,宅配最快隔日到,蝦皮店到店隔日到貨,到貨時間,什麼時候到貨,預計配達,退貨步驟,商品怎麼退",
+      "description": "共用處理直營物流運費、預計到貨時間及一般退貨步驟",
       "enabled": true,
-      "answerText": "運費共用說明：\n▪ 蝦皮會依賣家提供的包裹重量、尺寸及物流合作夥伴費率計算運費。\n▪ 超商／蝦皮店到店運費通常為 NT$45～60；優惠期間依下單頁面顯示為準。\n▪ 全家冷凍超取運費為 NT$120。\n▪ 宅配運費由賣家依商品或包裹大小設定。\n▪ 不同賣場的商品合併結帳時，各賣場運費會分別計算後加總。\n▪ 物流選項只能在結帳前更改；訂單成立後無法直接更換。\n\n蝦皮直營配送說明：\n▪ 主要配送方式包含「店取－最快當日到」、「宅配－最快隔日到」及「宅配」。\n▪ 部分門市及部分區域可能不支援特定配送方式。\n▪ 預購／預約等特殊活動商品及國定假期訂單，配送時間可能調整。\n\n滿額折價／運費優惠說明：\n▪ 滿額折價與運費減免是不同優惠，需先確認結帳頁折抵的是商品金額或運費。\n▪ 是否符合優惠，須依適用商品、消費門檻、物流方式、活動期限及名額判斷。\n▪ 活動內容可能變動，最終以結帳頁是否成功套用為準。\n\n查詢結果：\n▪ 運費／配送資訊：{{shipping_fee_details}}\n▪ 滿額折價／運費優惠：{{shipping_threshold_discount}}\n▪ 實際物流方式、運費及預計到貨時間，請以商品頁、結帳頁或已成立訂單詳情的系統顯示為準。"
+      "answerText": ""
     },
     {
       "id": "Q008",
@@ -569,12 +569,61 @@ window.SOP_DATA = {
       "next": "依後台狀態說明優惠券目前不能返還或再次使用"
     },
     {
-      "question": "詢問運費",
-      "branch": "共用",
-      "steps": [],
+      "question": "詢問運費／物流",
+      "branch": "問運費",
+      "steps": [
+        {
+          "prompt": "客人詢問哪一種物流問題？",
+          "option": "問運費"
+        }
+      ],
       "routes": [],
-      "answerParts": [],
-      "next": "填入實際運費／配送資訊及滿額折價／運費優惠結果"
+      "answerParts": [
+        {
+          "question": "詢問運費／物流",
+          "branch": "問運費",
+          "beforeText": ""
+        }
+      ],
+      "next": "依直營物流費率說明，並填入結帳頁實際顯示的運費"
+    },
+    {
+      "question": "詢問運費／物流",
+      "branch": "問什麼時候到貨",
+      "steps": [
+        {
+          "prompt": "客人詢問哪一種物流問題？",
+          "option": "問什麼時候到貨"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問運費／物流",
+          "branch": "問什麼時候到貨",
+          "beforeText": ""
+        }
+      ],
+      "next": "依物流方式、下單時間與配送區域判斷，並以系統預計配達日為準"
+    },
+    {
+      "question": "詢問運費／物流",
+      "branch": "退貨步驟是什麼",
+      "steps": [
+        {
+          "prompt": "客人詢問哪一種物流問題？",
+          "option": "退貨步驟是什麼"
+        }
+      ],
+      "routes": [],
+      "answerParts": [
+        {
+          "question": "詢問運費／物流",
+          "branch": "退貨步驟是什麼",
+          "beforeText": ""
+        }
+      ],
+      "next": "先確認退貨原因、照片及退貨規範，再引導買家依系統申請與交寄"
     },
     {
       "question": "詢問加價購",
@@ -3079,70 +3128,6 @@ window.SOP_DATA = {
       "branch": "共用"
     },
     {
-      "code": "shipping_fee_details",
-      "label": "運費／配送查詢結果",
-      "hint": "貼上商品頁、結帳頁或訂單詳情顯示的運費與配送資訊",
-      "sourceNote": "查詢方式：\n\n方法一．下單前從商品頁查看\n1. 開啟商品頁。\n2. App 點選「運送」欄位；網頁版查看「運送」欄位。\n3. 查看賣家設定的物流方式、預估運費與預計到貨時間。\n\n方法二．下單前從結帳頁查看\n1. 將商品加入購物車並進入結帳頁。\n2. 點選「寄送方式」。\n3. 查看可選擇的物流方式及實際運費。\n\n方法三．訂單成立後從 App 查看\n1. 開啟要查詢的訂單。\n2. 點選「訂單金額」。\n3. 展開金額明細，查看訂單運費。\n\n方法四．訂單成立後從網頁版查看\n1. 進入「購買清單」。\n2. 點選要查詢的訂單。\n3. 往下滑到訂單詳情，查看運費金額。\n\n其他注意事項：\n▪ 購物車清單顯示的商品價格不包含運費，含運費總額需到結帳頁確認。\n▪ 不同賣場商品合併結帳時，運費會分別計算後加總。\n▪ 蝦皮直營商品可在商品頁點選物流車圖示，查看可用的配送方式。\n▪ 實際物流方式、運費與配送時間均以系統顯示為準。",
-      "sourceLinks": [
-        {
-          "title": "蝦皮幫助中心－配送相關",
-          "url": "https://help.shopee.tw/portal/4/category/53-%E8%A8%82%E5%96%AE%E8%88%87%E7%89%A9%E6%B5%81/742-%E9%85%8D%E9%80%81%E7%9B%B8%E9%97%9C?page=1"
-        },
-        {
-          "title": "如何查看訂單的運費",
-          "url": "https://help.shopee.tw/portal/4/article/79982"
-        },
-        {
-          "title": "蝦皮直營－生活超市賣場介紹",
-          "url": "https://help.shopee.tw/portal/4/article/149656"
-        }
-      ],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "https://help.shopee.tw/portal/4/article/79982",
-      "category": "物流相關",
-      "fillRules": [],
-      "q": "Q007",
-      "branch": "共用"
-    },
-    {
-      "code": "shipping_threshold_discount",
-      "label": "滿額折價／運費優惠內容",
-      "hint": "填入活動門檻、折抵金額、適用物流及結帳頁套用結果；沒有則填「無」",
-      "sourceNote": "確認步驟：\n1. 開啟商品頁，查看是否顯示滿額折價、運費折扣或免運活動。\n2. 點選活動說明，確認適用商品、消費門檻、折抵金額、物流方式及活動期限。\n3. 將符合活動的商品加入購物車。\n4. 確認商品金額是否達到門檻。\n5. 進入結帳頁，查看滿額折價或運費減免是否實際套用。\n\n判斷方式：\n▪ 顯示商品金額折抵：填寫滿額折價的門檻與折抵金額。\n▪ 顯示運費折扣／免運：填寫適用物流、滿額門檻與實際減免金額。\n▪ 未達門檻、物流方式不適用或活動已結束：以結帳頁未套用的結果為準。\n▪ 若沒有滿額折價或運費優惠，填入「無」。",
-      "sourceLinks": [
-        {
-          "title": "蝦皮幫助中心－配送相關",
-          "url": "https://help.shopee.tw/portal/4/category/53-%E8%A8%82%E5%96%AE%E8%88%87%E7%89%A9%E6%B5%81/742-%E9%85%8D%E9%80%81%E7%9B%B8%E9%97%9C?page=1"
-        },
-        {
-          "title": "如何查看訂單的運費",
-          "url": "https://help.shopee.tw/portal/4/article/79982"
-        },
-        {
-          "title": "蝦皮直營－生活超市賣場介紹",
-          "url": "https://help.shopee.tw/portal/4/article/149656"
-        }
-      ],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "https://help.shopee.tw/portal/4/article/79982",
-      "category": "促銷活動",
-      "fillRules": [],
-      "q": "Q007",
-      "branch": "共用"
-    },
-    {
       "code": "product_id",
       "label": "商品代碼_Product ID",
       "hint": "貼上Product ID",
@@ -3712,6 +3697,70 @@ window.SOP_DATA = {
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "category": "優惠券",
       "fillRules": []
+    },
+    {
+      "code": "shipping_fee_details",
+      "label": "結帳頁實際運費",
+      "hint": "填入結帳頁顯示的物流方式、免運門檻及實際運費",
+      "sourceNote": "查詢方式：\n\n方法一．從商品頁查看\n1. 開啟商品頁。\n2. 查看「運費說明」及商品可使用的物流方式。\n3. 確認是否有「店取 - 最快當日到」或「宅配 - 最快隔日到」標籤。\n\n方法二．從結帳頁查看\n1. 將商品加入購物車。\n2. 進入結帳頁。\n3. 點選「寄送方式」。\n4. 查看可選物流、免運門檻及實際運費。\n\n注意事項：\n▪ 一般宅配及活動期間的實際運費，以結帳頁系統顯示為準。\n▪ 商品、配送地址或區域不適用時，結帳頁可能不會顯示該物流方式。",
+      "sourceLinks": [
+        {
+          "title": "什麼是宅配 - 最快隔日到",
+          "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+        },
+        {
+          "title": "什麼是蝦皮店到店隔日到貨",
+          "url": "https://help.shopee.tw/portal/4/article/145979?previousPage=other%20articles"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles",
+      "category": "物流相關",
+      "fillRules": [],
+      "q": "Q007",
+      "branch": "問運費"
+    },
+    {
+      "code": "estimated_delivery_result",
+      "label": "系統預計配達日期",
+      "hint": "填入系統顯示的物流方式、預計配達日期及服務區域",
+      "sourceNote": "查詢方式：\n\n方法一．從商品頁或結帳頁確認\n1. 查看商品是否有「店取 - 最快當日到」、「宅配 - 最快隔日到」或「蝦皮店到店 - 隔日到貨」標籤。\n2. 進入結帳頁選擇寄送方式及收件地址。\n3. 查看系統顯示的預計配達日期。\n\n方法二．從 InHouse 聊聊控制台查詢已成立訂單\n1. 開啟買家的訂單資訊。\n2. 依訂單狀態、建立時間或 Order SN 找到正確訂單。\n3. 點選 Order SN，開啟 CS Portal。\n4. 查看訂單資訊中的「預計交貨日期」及物流狀態。\n\n注意事項：\n▪ 一般宅配的預計配達時間為系統預測，實際到貨時間以物流通知為準。\n▪ 若商品、地址、時段或配送量不適用，系統可能不會顯示快速配送。\n▪ 辦公室地址、國定假日、天災、特殊活動或不可抗力因素，可能使配送時間順延。",
+      "sourceLinks": [
+        {
+          "title": "InHouse 聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "什麼是宅配 - 最快隔日到",
+          "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+        },
+        {
+          "title": "什麼是蝦皮店到店隔日到貨",
+          "url": "https://help.shopee.tw/portal/4/article/145979?previousPage=other%20articles"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "物流相關",
+      "fillRules": [],
+      "q": "Q007",
+      "branch": "問什麼時候到貨"
     }
   ],
   "templates": [
@@ -3789,6 +3838,21 @@ window.SOP_DATA = {
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券",
       "text": "查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
+    },
+    {
+      "q": "Q007",
+      "branch": "問運費",
+      "text": "蝦皮直營物流與運費：\n▪ 店取 - 最快當日到：滿 NT$69 免運；未達門檻運費 NT$9。\n▪ 宅配 - 最快隔日到：滿 NT$199 免運；未達門檻運費 NT$65。\n▪ 宅配：滿 NT$490 免運；未達門檻運費 NT$70。\n▪ 一般宅配及推廣期間的運費可能調整，實際金額以結帳頁系統顯示為準。\n\n查詢結果：\n▪ 結帳頁實際顯示：{{shipping_fee_details}}"
+    },
+    {
+      "q": "Q007",
+      "branch": "問什麼時候到貨",
+      "text": "店取 - 最快當日到：\n▪ 週一至週日 00:00～09:59 下單：最快當日到。\n▪ 週一至週日 10:00～23:59 下單：最快隔日到。\n▪ 並非所有商品與地區都適用，實際到貨時間以系統顯示為準。\n\n宅配 - 最快隔日到：\n▪ 臺北、新北適用區域：週一至週日 00:00～23:59 下單，最快隔日到。\n▪ 桃園、新竹、臺中、彰化、雲林、嘉義、臺南、高雄適用區域：00:00～09:59 下單最快隔日到；10:00～23:59 下單最快後天到。\n▪ 部分行政區及區域不適用；辦公室地址僅限平日配送，遇假日順延至下一個工作日。\n▪ 商品可能依大小與數量合併或拆成多個包裹，可到「訂單詳情」查看包裝編號。\n\n蝦皮店到店 - 隔日到貨：\n▪ 週一至週五 14:00 前下單：隔天 16:00 後可至門市取貨。\n▪ 週一至週四 14:00 後下單：後天 16:00 後可至門市取貨。\n▪ 週五 14:00 至週日 23:59 下單：下週二 16:00 後可至門市取貨。\n▪ 非貨到付款訂單以下單付款完成時間為準；部分門市、國定假日、大型活動或特殊節慶可能不適用。\n\n一般宅配：\n▪ 預計配達時間依系統顯示。\n▪ 實際到貨時間依物流通知為準。\n\n查詢結果：\n▪ 系統顯示的物流方式與預計配達日期：{{estimated_delivery_result}}"
+    },
+    {
+      "q": "Q007",
+      "branch": "退貨步驟是什麼",
+      "text": "退貨前先確認：\n1. 詢問買家的退貨原因。\n2. 請買家提供商品、瑕疵處及包裝照片。\n3. 確認是否仍在 15 天鑑賞期內。\n4. 提醒商品、包裝、說明書、保固書及配件需完整退回，以免影響退款權益。\n5. 接觸性商品、已拆封使用或人為毀損商品，可能不符合退貨規範；高單價或特殊 3C 商品可能需要回收檢測。\n\n買家自行申請退貨退款：\n1. 進入「我的」→「購買清單」。\n2. 點選「退貨／退款」。\n3. 選擇要退貨的商品並調整數量。\n4. 選擇退貨退款類型及退貨原因。\n5. 填寫說明並上傳商品、包裝或瑕疵照片。\n6. 送出申請；若顯示「申請審核中」，需等待蝦皮審核並留意推播通知。\n7. 審核通過後，在退貨退款詳情中依期限選擇退貨方式。\n8. 依系統顯示的寄件編號、取件時間或地址完成退貨，並保留退貨單據或取件證明至退款完成。\n\n可選擇的退貨方式：\n▪ 7-11／蝦皮店到店寄件：系統會產生退貨寄件編號，需在期限內將商品完整包裝後交寄。\n▪ 黑貓宅急便／宅配通／新竹物流取件：物流通常會在申請後 3～7 天內聯繫取件。\n▪ 賣家自行安排：等待賣家聯繫安排取件；系統不會產生寄件編號。\n▪ 實際可用的退貨方式依訂單與系統顯示為準。\n\n退貨後流程：\n1. 買家交寄後，狀態會顯示「退貨進行中」。\n2. 賣家收到退貨商品後，狀態會顯示「檢驗中／商品驗收中」。\n3. 賣家驗收無誤並同意退款後，狀態會進入「退款處理中」。\n4. 完成退款後，狀態會顯示「退貨退款已完成」。\n5. 若賣家提出爭議，後續依蝦皮審核結果處理。\n\n若需客服代替買家提出 Offline RR：\n1. 在 CS Portal 搜尋訂單。\n2. 點選「TW 商城退貨／退款」。\n3. 選擇「退還商品並退款」或「僅需退回款項」。\n4. 選擇要退貨退款的商品。\n5. 選擇退貨原因，填寫公版備註並上傳退貨圖片。\n6. 送出後告知買家留意蝦皮通知；審核通過後，需在通知期限內到退貨退款詳情選擇退貨物流。"
     },
     {
       "q": "Q008",
@@ -3981,6 +4045,75 @@ window.SOP_DATA = {
         }
       ],
       "url": "https://dms.cs.shopee.tw/portal/info/search"
+    },
+    {
+      "q": "Q007",
+      "branch": "問運費",
+      "action": "查看直營物流運費",
+      "needed": true,
+      "note": "查看適用物流；實際運費以結帳頁為準",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "什麼是宅配 - 最快隔日到",
+          "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+        },
+        {
+          "title": "什麼是蝦皮店到店隔日到貨",
+          "url": "https://help.shopee.tw/portal/4/article/145979?previousPage=other%20articles"
+        }
+      ],
+      "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+    },
+    {
+      "q": "Q007",
+      "branch": "問什麼時候到貨",
+      "action": "查詢預計配達日期",
+      "needed": true,
+      "note": "從商品／結帳頁或 InHouse 訂單資訊確認",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "InHouse 聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "什麼是宅配 - 最快隔日到",
+          "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+        },
+        {
+          "title": "什麼是蝦皮店到店隔日到貨",
+          "url": "https://help.shopee.tw/portal/4/article/145979?previousPage=other%20articles"
+        }
+      ],
+      "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+    },
+    {
+      "q": "Q007",
+      "branch": "退貨步驟是什麼",
+      "action": "查看退貨申請與交寄方式",
+      "needed": true,
+      "note": "依系統顯示的退貨方式與期限完成交寄",
+      "sourceNote": "",
+      "sourceLinks": [
+        {
+          "title": "如何申請退貨退款",
+          "url": "https://help.shopee.tw/portal/4/article/79943"
+        },
+        {
+          "title": "申請退貨後，商品如何退回",
+          "url": "https://help.shopee.tw/portal/4/article/79856"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "url": "https://help.shopee.tw/portal/4/article/79943"
     }
   ],
   "updatedAt": "2026-08-01T08:39:20.235Z",
@@ -5347,6 +5480,66 @@ window.SOP_DATA = {
       "sourceUrl": ""
     },
     {
+      "code": "shipping_fee_details",
+      "label": "結帳頁實際運費",
+      "hint": "填入結帳頁顯示的物流方式、免運門檻及實際運費",
+      "sourceNote": "查詢方式：\n\n方法一．從商品頁查看\n1. 開啟商品頁。\n2. 查看「運費說明」及商品可使用的物流方式。\n3. 確認是否有「店取 - 最快當日到」或「宅配 - 最快隔日到」標籤。\n\n方法二．從結帳頁查看\n1. 將商品加入購物車。\n2. 進入結帳頁。\n3. 點選「寄送方式」。\n4. 查看可選物流、免運門檻及實際運費。\n\n注意事項：\n▪ 一般宅配及活動期間的實際運費，以結帳頁系統顯示為準。\n▪ 商品、配送地址或區域不適用時，結帳頁可能不會顯示該物流方式。",
+      "sourceLinks": [
+        {
+          "title": "什麼是宅配 - 最快隔日到",
+          "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+        },
+        {
+          "title": "什麼是蝦皮店到店隔日到貨",
+          "url": "https://help.shopee.tw/portal/4/article/145979?previousPage=other%20articles"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles",
+      "category": "物流相關",
+      "fillRules": []
+    },
+    {
+      "code": "estimated_delivery_result",
+      "label": "系統預計配達日期",
+      "hint": "填入系統顯示的物流方式、預計配達日期及服務區域",
+      "sourceNote": "查詢方式：\n\n方法一．從商品頁或結帳頁確認\n1. 查看商品是否有「店取 - 最快當日到」、「宅配 - 最快隔日到」或「蝦皮店到店 - 隔日到貨」標籤。\n2. 進入結帳頁選擇寄送方式及收件地址。\n3. 查看系統顯示的預計配達日期。\n\n方法二．從 InHouse 聊聊控制台查詢已成立訂單\n1. 開啟買家的訂單資訊。\n2. 依訂單狀態、建立時間或 Order SN 找到正確訂單。\n3. 點選 Order SN，開啟 CS Portal。\n4. 查看訂單資訊中的「預計交貨日期」及物流狀態。\n\n注意事項：\n▪ 一般宅配的預計配達時間為系統預測，實際到貨時間以物流通知為準。\n▪ 若商品、地址、時段或配送量不適用，系統可能不會顯示快速配送。\n▪ 辦公室地址、國定假日、天災、特殊活動或不可抗力因素，可能使配送時間順延。",
+      "sourceLinks": [
+        {
+          "title": "InHouse 聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "什麼是宅配 - 最快隔日到",
+          "url": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles"
+        },
+        {
+          "title": "什麼是蝦皮店到店隔日到貨",
+          "url": "https://help.shopee.tw/portal/4/article/145979?previousPage=other%20articles"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "物流相關",
+      "fillRules": []
+    },
+    {
       "code": "flash_sale_limit",
       "label": "結帳頁顯示的限購數量",
       "hint": "例如：每人限購 2 件",
@@ -5360,66 +5553,6 @@ window.SOP_DATA = {
       "type": "text",
       "multiline": false,
       "sourceUrl": "",
-      "category": "促銷活動",
-      "fillRules": []
-    },
-    {
-      "code": "shipping_fee_details",
-      "label": "運費／配送查詢結果",
-      "hint": "貼上商品頁、結帳頁或訂單詳情顯示的運費與配送資訊",
-      "sourceNote": "查詢方式：\n\n方法一．下單前從商品頁查看\n1. 開啟商品頁。\n2. App 點選「運送」欄位；網頁版查看「運送」欄位。\n3. 查看賣家設定的物流方式、預估運費與預計到貨時間。\n\n方法二．下單前從結帳頁查看\n1. 將商品加入購物車並進入結帳頁。\n2. 點選「寄送方式」。\n3. 查看可選擇的物流方式及實際運費。\n\n方法三．訂單成立後從 App 查看\n1. 開啟要查詢的訂單。\n2. 點選「訂單金額」。\n3. 展開金額明細，查看訂單運費。\n\n方法四．訂單成立後從網頁版查看\n1. 進入「購買清單」。\n2. 點選要查詢的訂單。\n3. 往下滑到訂單詳情，查看運費金額。\n\n其他注意事項：\n▪ 購物車清單顯示的商品價格不包含運費，含運費總額需到結帳頁確認。\n▪ 不同賣場商品合併結帳時，運費會分別計算後加總。\n▪ 蝦皮直營商品可在商品頁點選物流車圖示，查看可用的配送方式。\n▪ 實際物流方式、運費與配送時間均以系統顯示為準。",
-      "sourceLinks": [
-        {
-          "title": "蝦皮幫助中心－配送相關",
-          "url": "https://help.shopee.tw/portal/4/category/53-%E8%A8%82%E5%96%AE%E8%88%87%E7%89%A9%E6%B5%81/742-%E9%85%8D%E9%80%81%E7%9B%B8%E9%97%9C?page=1"
-        },
-        {
-          "title": "如何查看訂單的運費",
-          "url": "https://help.shopee.tw/portal/4/article/79982"
-        },
-        {
-          "title": "蝦皮直營－生活超市賣場介紹",
-          "url": "https://help.shopee.tw/portal/4/article/149656"
-        }
-      ],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "https://help.shopee.tw/portal/4/article/79982",
-      "category": "物流相關",
-      "fillRules": []
-    },
-    {
-      "code": "shipping_threshold_discount",
-      "label": "滿額折價／運費優惠內容",
-      "hint": "填入活動門檻、折抵金額、適用物流及結帳頁套用結果；沒有則填「無」",
-      "sourceNote": "確認步驟：\n1. 開啟商品頁，查看是否顯示滿額折價、運費折扣或免運活動。\n2. 點選活動說明，確認適用商品、消費門檻、折抵金額、物流方式及活動期限。\n3. 將符合活動的商品加入購物車。\n4. 確認商品金額是否達到門檻。\n5. 進入結帳頁，查看滿額折價或運費減免是否實際套用。\n\n判斷方式：\n▪ 顯示商品金額折抵：填寫滿額折價的門檻與折抵金額。\n▪ 顯示運費折扣／免運：填寫適用物流、滿額門檻與實際減免金額。\n▪ 未達門檻、物流方式不適用或活動已結束：以結帳頁未套用的結果為準。\n▪ 若沒有滿額折價或運費優惠，填入「無」。",
-      "sourceLinks": [
-        {
-          "title": "蝦皮幫助中心－配送相關",
-          "url": "https://help.shopee.tw/portal/4/category/53-%E8%A8%82%E5%96%AE%E8%88%87%E7%89%A9%E6%B5%81/742-%E9%85%8D%E9%80%81%E7%9B%B8%E9%97%9C?page=1"
-        },
-        {
-          "title": "如何查看訂單的運費",
-          "url": "https://help.shopee.tw/portal/4/article/79982"
-        },
-        {
-          "title": "蝦皮直營－生活超市賣場介紹",
-          "url": "https://help.shopee.tw/portal/4/article/149656"
-        }
-      ],
-      "options": [],
-      "defaultValue": "",
-      "autoDays": 0,
-      "required": true,
-      "common": false,
-      "type": "text",
-      "multiline": true,
-      "sourceUrl": "https://help.shopee.tw/portal/4/article/79982",
       "category": "促銷活動",
       "fillRules": []
     },
@@ -5672,6 +5805,14 @@ window.SOP_DATA = {
       "options": [
         "可以返還／可以再次使用",
         "不能返還／不能再次使用"
+      ]
+    },
+    {
+      "prompt": "客人詢問哪一種物流問題？",
+      "options": [
+        "問運費",
+        "問什麼時候到貨",
+        "退貨步驟是什麼"
       ]
     }
   ]

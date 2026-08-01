@@ -3223,6 +3223,38 @@ window.SOP_DATA = {
       "fillRules": [],
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券"
+    },
+    {
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "category": "常用",
+      "hint": "是填入Buyer Username／User Name",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "autoDays": 0,
+      "multiline": false,
+      "common": true,
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "q": "Q006",
+      "branch": "查詢買家目前可用優惠券"
     }
   ],
   "templates": [
@@ -3314,7 +3346,7 @@ window.SOP_DATA = {
     {
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券",
-      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 查看買家目前可使用的優惠代碼。\n\n其他查詢方式：\n▪ 也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。\n\n查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
+      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username：{{V018}}，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 查看買家目前可使用的優惠代碼。\n\n其他查詢方式：\n▪ 也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。\n\n查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
     },
     {
       "q": "Q006",
@@ -3446,7 +3478,7 @@ window.SOP_DATA = {
       "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
     }
   ],
-  "updatedAt": "2026-08-01T07:36:59.770Z",
+  "updatedAt": "2026-08-01T07:41:42.171Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

@@ -490,3 +490,22 @@ footer a:hover { color: var(--accent-dark); }
   .output-panel { height: auto !important; overflow: visible; }
   .output-panel .output { min-height: 210px; }
 }
+
+
+/* Frontend and editor top/bottom navigation */
+.page-jump-controls { display: flex; flex-direction: column; gap: 7px; z-index: 45; }
+.page-jump-controls button {
+  padding: 9px 12px; border: 1px solid #efb8a5; border-radius: 9px;
+  color: #a94325; background: rgba(255,255,255,.96); box-shadow: 0 5px 18px rgba(67,44,32,.12);
+  cursor: pointer; font-size: 12px; font-weight: 750; backdrop-filter: blur(7px);
+}
+.page-jump-controls button:hover { border-color: #e86138; color: #8e341b; background: #fff2ed; }
+.front-jump-controls { position: fixed; right: 18px; bottom: 22px; }
+.studio-open .front-jump-controls { display: none; }
+.studio-editor { position: relative; }
+.studio-jump-controls { position: absolute; right: 34px; bottom: 82px; }
+@media (max-width: 680px) {
+  .front-jump-controls { right: 10px; bottom: 12px; }
+  .studio-jump-controls { right: 16px; bottom: 78px; }
+  .page-jump-controls button { padding: 8px 9px; font-size: 11px; }
+}

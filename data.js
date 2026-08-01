@@ -1122,7 +1122,7 @@ window.SOP_DATA = {
       "q": "GLOBAL",
       "branch": "KAM表",
       "code": "V019",
-      "label": "個案擁有者",
+      "label": "個案擁有者／填表人",
       "hint": "選自己",
       "sourceNote": "",
       "sourceLinks": [],
@@ -1581,7 +1581,7 @@ window.SOP_DATA = {
       "q": "GLOBAL",
       "branch": "KAM表．SBS",
       "code": "V019",
-      "label": "個案擁有者",
+      "label": "個案擁有者／填表人",
       "hint": "選自己",
       "sourceNote": "",
       "sourceLinks": [],
@@ -2247,7 +2247,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T03:59:35.040Z",
+  "updatedAt": "2026-08-01T04:19:19.106Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -2960,7 +2960,7 @@ window.SOP_DATA = {
     },
     {
       "code": "V019",
-      "label": "個案擁有者",
+      "label": "個案擁有者／填表人",
       "category": "常用",
       "hint": "選自己",
       "type": "text",
@@ -3120,6 +3120,15 @@ window.SOP_DATA = {
               "answerPosition": "end",
               "answerAnchor": "",
               "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V037",
+              "value": "order",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
             }
           ]
         },
@@ -3132,6 +3141,15 @@ window.SOP_DATA = {
               "action": "fill",
               "targetCode": "V027",
               "value": "SCM Return Order ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V037",
+              "value": "return",
               "answerText": "",
               "answerPosition": "end",
               "answerAnchor": "",
@@ -3157,6 +3175,15 @@ window.SOP_DATA = {
               "action": "fill",
               "targetCode": "V032",
               "value": "2",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            },
+            {
+              "action": "fill",
+              "targetCode": "V037",
+              "value": "sku",
               "answerText": "",
               "answerPosition": "end",
               "answerAnchor": "",
@@ -3326,6 +3353,189 @@ window.SOP_DATA = {
       "defaultValue": "",
       "fillRules": [],
       "sourceNote": "０：社群媒體法律健康風險(關鍵字等)\n１：有時間性問題(如改地址)\n２：一般基礎問題",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V033",
+      "label": "簡述問題_廠直表",
+      "category": "廠直表",
+      "hint": "簡述問題",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": true,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V035",
+      "label": "廠商回覆（剛填表）_廠直表",
+      "category": "廠直表",
+      "hint": "不用輸入",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "不用輸入",
+      "fillRules": [],
+      "sourceNote": "有回覆了整理一下內容再給客人回覆",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": true,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V036",
+      "label": "廠商回覆（有回覆）_廠直表",
+      "category": "廠直表",
+      "hint": "不用輸入",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "有回覆了整理一下內容再給客人回覆",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": true,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V034",
+      "label": "問題分類_廠直表",
+      "category": "廠直表",
+      "hint": "依照問題種類做選擇",
+      "type": "select",
+      "required": true,
+      "options": [
+        "退貨-廠商出錯貨",
+        "退貨-商品瑕疵",
+        "退貨-缺件",
+        "退貨-拒收",
+        "退貨-驗收流程",
+        "退貨-其他",
+        "換貨-商品瑕疵",
+        "補寄-缺件",
+        "補寄-商品瑕疵",
+        "物流-改資訊",
+        "物流-調閱簽收單",
+        "物流-分箱出貨單號",
+        "物流-合併訂單",
+        "物流-配送追蹤",
+        "物流-客訴配送服務",
+        "物流-催促配送",
+        "商品規格",
+        "商品使用配件/贈品",
+        "OOS",
+        "保固相關",
+        "訂單備註",
+        "其他",
+        "廠商-多寄"
+      ],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V037",
+      "label": "CS內部備註TYPE_廠直表",
+      "category": "廠直表",
+      "hint": "自動填入",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [
+        {
+          "values": [
+            "sku"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "V018",
+              "value": "",
+              "answerText": "，所以要填{{V018}}",
+              "answerPosition": "after_field",
+              "answerAnchor": "",
+              "answerFieldCode": "V037"
+            }
+          ]
+        },
+        {
+          "values": [
+            "return",
+            "order"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "V026",
+              "value": "",
+              "answerText": "，不用輸入",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V038",
+      "label": "A組聊聊結案_廠直表",
+      "category": "廠直表",
+      "hint": "結案再打勾",
+      "type": "select",
+      "required": true,
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V039",
+      "label": "需再次溝通_廠直表",
+      "category": "廠直表",
+      "hint": "要第二次溝通再打勾",
+      "type": "select",
+      "required": true,
+      "options": [
+        "要打勾",
+        "不打勾"
+      ],
+      "defaultValue": "不打勾",
+      "fillRules": [],
+      "sourceNote": "",
       "sourceLinks": [],
       "autoDays": 0,
       "multiline": false,

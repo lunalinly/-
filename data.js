@@ -17,7 +17,7 @@ window.SOP_DATA = {
       "keywords": "付款,付款方式,刷卡,分期,貨到付款",
       "description": "說明商城支援付款方式",
       "enabled": true,
-      "answerText": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。\n{{V001}}"
+      "answerText": "告訴客人：\n▪ 蝦皮商城支援貨到付款（僅限現金）、信用卡／金融卡及信用卡分期付款。\n▪ 信用卡分期付款需結帳總金額滿 NT$1,000。\n▪ 若與其他蝦皮商家商品合併結帳，僅能選擇貨到付款。\n▪ 蝦皮商城訂單成立後，無法變更付款方式。"
     },
     {
       "id": "Q003",
@@ -3938,7 +3938,7 @@ window.SOP_DATA = {
       "url": "https://dms.cs.shopee.tw/portal/info/search"
     }
   ],
-  "updatedAt": "2026-08-01T08:30:26.307Z",
+  "updatedAt": "2026-08-01T08:31:33.127Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

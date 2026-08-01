@@ -447,3 +447,20 @@ footer a:hover { color: var(--accent-dark); }
   .input-panel .variable-grid { grid-template-columns: 1fr; }
 }
 .field textarea { min-height: 112px; }
+
+
+/* Operation hint rich-text controls and rendering */
+.note-format-toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 2px; }
+.note-format-toolbar button { padding: 5px 9px; border: 1px solid #d7dde0; border-radius: 7px; color: #4c5961; background: #fff; cursor: pointer; font-size: 11px; font-weight: 700; }
+.note-format-toolbar button:hover { border-color: #e86138; color: #b84421; background: #fff2ed; }
+.hints-panel .action-box > ul { padding-left: 0; list-style: none; }
+.hints-panel .action-box > ul > li { padding: 0; white-space: normal; }
+.hints-panel .action-box > ul > li + li { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(155, 66, 31, .16); }
+.hint-source-item > b { display: block; margin-bottom: 7px; color: #503318; font-size: 15px; }
+.hint-rich-text { margin-top: 6px; white-space: normal; line-height: 1.65; }
+.hint-rich-text .hint-line { white-space: pre-wrap; }
+.hint-rich-text .hint-spacer { height: 8px; }
+.hint-rich-text h4 { margin: 10px 0 5px; color: #503318; font-size: 14px; }
+.hint-rich-text h4:first-child { margin-top: 0; }
+.hint-rich-text ol, .hint-rich-text ul { margin: 5px 0; padding-left: 22px; }
+.hint-rich-text li + li { margin-top: 3px !important; padding-top: 0 !important; border-top: 0 !important; }

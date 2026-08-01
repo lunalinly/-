@@ -378,6 +378,7 @@
   }
 
   function shouldShowConditionalField(variable, flow) {
+    if (composedAnswerTemplate(flow).includes(`{{${variable.code}}}`)) return true;
     if (!revealTargetCodes().has(variable.code)) return true;
     if (String(state.values[variable.code] ?? "").trim()) return true;
     if (state.revealedFields.has(variable.code)) return true;

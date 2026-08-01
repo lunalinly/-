@@ -3675,17 +3675,17 @@ window.SOP_DATA = {
     {
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券",
-      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username：{{V018}}，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 查看買家目前可使用的優惠代碼。\n\n其他查詢方式：\n▪ 也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。\n\n查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
+      "text": "查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
     },
     {
       "q": "Q006",
       "branch": "取消訂單後優惠券可以返還",
-      "text": "準備資料：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 原 Voucher Code：{{original_voucher_code}}\n\n方法一．CS Portal「一般資訊」\n1. 開啟 CS Portal。\n2. 使用 {{order_id}} 或 {{V018}} 搜尋。\n3. 展開正確的 Order。\n4. 查看「一般資訊」的訂單狀態、取消時間序與優惠券資訊。\n5. 找出此訂單使用的原 Voucher Code。\n\n方法二．CS Portal「優惠代碼錢包」\n1. 使用 Buyer Username：{{V018}} 搜尋。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 使用原 Voucher Code：{{original_voucher_code}} 搜尋或比對清單。\n6. 查看是否出現在可用清單、目前狀態與有效期限。\n\n方法三．Order Admin（免運券輔助確認）\n1. 進入 Orders → Order Information。\n2. 使用 Order SN：{{order_id}} 找到正確訂單。\n3. 查看 Free Shipping Fee Voucher Promo ID。\n4. 此位置可確認訂單使用的免運券資料；是否已返還且可使用，仍以 CS Portal「優惠代碼錢包」為準。\n\n後台查詢結果：\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券已出現在可用清單，且狀態／有效期限仍可使用。\n▪ 可以告知買家優惠券已返還並可再次使用；實際使用仍須符合該券規則。"
+      "text": "查詢資料與結果：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 原 Voucher Code：{{original_voucher_code}}\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券已出現在可用清單，且狀態／有效期限仍可使用。\n▪ 可以告知買家優惠券已返還並可再次使用；實際使用仍須符合該券規則。"
     },
     {
       "q": "Q006",
       "branch": "取消訂單後優惠券不能返還",
-      "text": "準備資料：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 原 Voucher Code：{{original_voucher_code}}\n\n方法一．CS Portal「一般資訊」\n1. 開啟 CS Portal。\n2. 使用 {{order_id}} 或 {{V018}} 搜尋。\n3. 展開正確的 Order。\n4. 查看「一般資訊」的訂單狀態、取消時間序與優惠券資訊。\n5. 找出此訂單使用的原 Voucher Code。\n\n方法二．CS Portal「優惠代碼錢包」\n1. 使用 Buyer Username：{{V018}} 搜尋。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 使用原 Voucher Code：{{original_voucher_code}} 搜尋或比對清單。\n6. 查看是否出現在可用清單、目前狀態與有效期限。\n\n方法三．Order Admin（免運券輔助確認）\n1. 進入 Orders → Order Information。\n2. 使用 Order SN：{{order_id}} 找到正確訂單。\n3. 查看 Free Shipping Fee Voucher Promo ID。\n4. 此位置可確認訂單使用的免運券資料；是否已返還且可使用，仍以 CS Portal「優惠代碼錢包」為準。\n\n後台查詢結果：\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前其他可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券未出現在可用清單，或狀態／有效期限顯示不可使用。\n▪ 目前不能告知買家原優惠券可以再次使用。\n▪ 可能原因包含優惠券規則不返還、活動已結束、優惠券已過期或名額已用完。\n▪ 不要承諾原優惠券一定會返還。"
+      "text": "查詢資料與結果：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 原 Voucher Code：{{original_voucher_code}}\n▪ 優惠券返還／使用狀態：{{voucher_return_status}}\n▪ 買家目前其他可使用的優惠代碼：\n{{available_voucher_codes}}\n\n判斷結果：\n▪ 原優惠券未出現在可用清單，或狀態／有效期限顯示不可使用。\n▪ 目前不能告知買家原優惠券可以再次使用。\n▪ 可能原因包含優惠券規則不返還、活動已結束、優惠券已過期或名額已用完。\n▪ 不要承諾原優惠券一定會返還。"
     },
     {
       "q": "Q008",
@@ -3700,7 +3700,7 @@ window.SOP_DATA = {
     {
       "q": "Q008",
       "branch": "反查加價購主商品",
-      "text": "準備資料：\n▪ 從加價購商品頁網址取得 Product ID：{{product_id}}\n\n可使用以下兩種方式反查：\n\n方法一．SCS CS Tool\n1. 開啟正職或派遣版 SCS CS Tool。\n2. 進入「加價購主商品」。\n3. 輸入 {{product_id}} 後搜尋。\n4. 從下拉選單查看對應的活動檔期。\n5. 在結果中選擇主商品。\n6. 複製主商品的商品 ID 或商品名稱。\n\n方法二．[DB] Add-on / Gift / Bundle\n1. 到 Add-on_Sub 分頁。\n2. 使用 {{product_id}} 搜尋。\n3. 複製對應的 add_on_deal_id。\n4. 到 Add-on_Main 分頁搜尋該 add_on_deal_id。\n5. 查看該檔期適用的主商品清單。\n\n查詢結果：\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}\n\n推薦買家的步驟：\n1. 將主商品的商品 ID 或商品名稱貼到聊聊搜尋。\n2. 找到正確商品。\n3. 透過商品卡傳送給買家。"
+      "text": "查詢結果：\n▪ Product ID：{{product_id}}\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}"
     },
     {
       "q": "Q009",

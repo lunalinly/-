@@ -878,6 +878,8 @@
     if (hintsPanel) renderHintsPanel(hintsPanel, flow, variables);
   }
 
+  $("#frontJumpTop")?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  $("#frontJumpBottom")?.addEventListener("click", () => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" }));
   window.addEventListener("resize", () => syncResultPanelHeight(document.querySelector(".output-panel"), document.querySelector(".hints-panel")));
   els.search.addEventListener("input", renderQuestions);
   $("#resetButton").addEventListener("click", reset);

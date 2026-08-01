@@ -480,3 +480,13 @@ footer a:hover { color: var(--accent-dark); }
 .hint-rich-text ol, .hint-rich-text ul { margin: 5px 0; padding-left: 22px; }
 .hint-rich-text a { color: #9b421f; font-weight: 700; text-decoration: underline; }
 .hint-rich-text .hint-spacer { height: 8px; }
+
+
+/* Match answer panel height to operation hints */
+.output-panel { display: flex; flex-direction: column; overflow: hidden; }
+.output-panel .output { flex: 1 1 auto; min-height: 0; }
+.output-panel .output-actions { flex: 0 0 auto; }
+@media (max-width: 860px) {
+  .output-panel { height: auto !important; overflow: visible; }
+  .output-panel .output { min-height: 210px; }
+}

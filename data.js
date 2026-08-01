@@ -3199,6 +3199,30 @@ window.SOP_DATA = {
       "fillRules": [],
       "q": "Q009",
       "branch": "購物車有顯示滿額贈"
+    },
+    {
+      "code": "available_voucher_codes",
+      "label": "優惠代碼有哪些",
+      "hint": "把 CS Portal 顯示可使用的優惠代碼全部貼上；多筆請一行一個",
+      "sourceNote": "CS Portal → 搜尋買家 Username → 詳細資訊（買家）→ 優惠代碼錢包；將目前可使用的優惠代碼填入此欄位。也可以直接用優惠代碼在 CS Portal 搜尋。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
+      "fillRules": [],
+      "q": "Q006",
+      "branch": "查詢買家目前可用優惠券"
     }
   ],
   "templates": [
@@ -3290,7 +3314,7 @@ window.SOP_DATA = {
     {
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券",
-      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 下方會顯示買家目前可使用的優惠代碼。\n也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。"
+      "text": "使用 CS Portal 查詢：\n1. 在搜尋欄輸入買家 Username，點選 Search。\n2. 點選正確的使用者帳號。\n3. 進入「詳細資訊（買家）」。\n4. 點選「優惠代碼錢包」。\n5. 下方會顯示買家目前可使用的優惠代碼。\n也可以直接在 CS Portal 輸入買家的優惠代碼搜尋。\n\n查詢到買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
     },
     {
       "q": "Q006",
@@ -3422,7 +3446,7 @@ window.SOP_DATA = {
       "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
     }
   ],
-  "updatedAt": "2026-08-01T07:21:55.270Z",
+  "updatedAt": "2026-08-01T07:29:02.899Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -4911,6 +4935,28 @@ window.SOP_DATA = {
       "multiline": false,
       "sourceUrl": "",
       "category": "促銷活動",
+      "fillRules": []
+    },
+    {
+      "code": "available_voucher_codes",
+      "label": "優惠代碼有哪些",
+      "hint": "把 CS Portal 顯示可使用的優惠代碼全部貼上；多筆請一行一個",
+      "sourceNote": "CS Portal → 搜尋買家 Username → 詳細資訊（買家）→ 優惠代碼錢包；將目前可使用的優惠代碼填入此欄位。也可以直接用優惠代碼在 CS Portal 搜尋。",
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "options": [],
+      "defaultValue": "",
+      "autoDays": 0,
+      "required": true,
+      "common": false,
+      "type": "text",
+      "multiline": true,
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "優惠券",
       "fillRules": []
     }
   ],

@@ -449,18 +449,34 @@ footer a:hover { color: var(--accent-dark); }
 .field textarea { min-height: 112px; }
 
 
-/* Operation hint rich-text controls and rendering */
-.note-format-toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 2px; }
-.note-format-toolbar button { padding: 5px 9px; border: 1px solid #d7dde0; border-radius: 7px; color: #4c5961; background: #fff; cursor: pointer; font-size: 11px; font-weight: 700; }
-.note-format-toolbar button:hover { border-color: #e86138; color: #b84421; background: #fff2ed; }
+
+
+/* Operation hint WYSIWYG editor */
+.rich-note-editor { overflow: hidden; border: 1px solid #d7dde0; border-radius: 9px; background: #fff; }
+.rich-note-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 8px; border-bottom: 1px solid #dfe4e7; background: #f7f8f9; }
+.rich-note-toolbar select, .rich-note-toolbar button { min-height: 30px; border: 1px solid transparent; border-radius: 6px; color: #465159; background: transparent; font-size: 12px; cursor: pointer; }
+.rich-note-toolbar select { padding: 4px 7px; border-color: #d7dde0; background: #fff; }
+.rich-note-toolbar button { min-width: 31px; padding: 4px 7px; }
+.rich-note-toolbar button:hover { border-color: #efb8a5; color: #b84421; background: #fff2ed; }
+.rich-tool-group { display: inline-flex; gap: 2px; padding-left: 6px; border-left: 1px solid #d7dde0; }
+.rich-note-content { min-height: 230px; max-height: 520px; overflow: auto; padding: 14px; outline: 0; color: #222a2f; line-height: 1.7; }
+.rich-note-content:focus { box-shadow: inset 0 0 0 2px rgba(232,97,56,.16); }
+.rich-note-content:empty::before { content: attr(data-placeholder); color: #9ba4aa; pointer-events: none; }
+.rich-note-content h2 { margin: 14px 0 8px; font-size: 22px; }
+.rich-note-content h3 { margin: 12px 0 7px; font-size: 17px; }
+.rich-note-content p, .rich-note-content div { margin: 0 0 7px; }
+.rich-note-content blockquote { margin: 9px 0; padding-left: 13px; border-left: 3px solid #efb8a5; color: #59656d; }
+.rich-note-content a { color: #b84421; text-decoration: underline; }
 .hints-panel .action-box > ul { padding-left: 0; list-style: none; }
 .hints-panel .action-box > ul > li { padding: 0; white-space: normal; }
-.hints-panel .action-box > ul > li + li { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(155, 66, 31, .16); }
+.hints-panel .action-box > ul > li + li { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(155,66,31,.16); }
 .hint-source-item > b { display: block; margin-bottom: 7px; color: #503318; font-size: 15px; }
 .hint-rich-text { margin-top: 6px; white-space: normal; line-height: 1.65; }
-.hint-rich-text .hint-line { white-space: pre-wrap; }
-.hint-rich-text .hint-spacer { height: 8px; }
-.hint-rich-text h4 { margin: 10px 0 5px; color: #503318; font-size: 14px; }
-.hint-rich-text h4:first-child { margin-top: 0; }
+.hint-rich-text p, .hint-rich-text div { margin: 0 0 6px; }
+.hint-rich-text h2, .hint-rich-text h3, .hint-rich-text h4 { margin: 10px 0 5px; color: #503318; }
+.hint-rich-text h2 { font-size: 17px; }
+.hint-rich-text h3, .hint-rich-text h4 { font-size: 14px; }
+.hint-rich-text blockquote { margin: 8px 0; padding-left: 11px; border-left: 3px solid rgba(155,66,31,.28); }
 .hint-rich-text ol, .hint-rich-text ul { margin: 5px 0; padding-left: 22px; }
-.hint-rich-text li + li { margin-top: 3px !important; padding-top: 0 !important; border-top: 0 !important; }
+.hint-rich-text a { color: #9b421f; font-weight: 700; text-decoration: underline; }
+.hint-rich-text .hint-spacer { height: 8px; }

@@ -2247,7 +2247,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-08-01T03:17:09.828Z",
+  "updatedAt": "2026-08-01T03:45:36.646Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3165,14 +3165,63 @@ window.SOP_DATA = {
     },
     {
       "code": "V027",
-      "label": "ID-Type＿廠直表",
+      "label": "ID-Type_廠直表",
       "category": "廠直表",
       "hint": "會自動帶入",
       "type": "text",
       "required": true,
       "options": [],
       "defaultValue": "",
-      "fillRules": [],
+      "fillRules": [
+        {
+          "values": [
+            "SCM Order ID"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "：{{V028}}",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "SCM Return Order ID"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "：{{V029}}",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "MP SKU ID"
+          ],
+          "assignments": [
+            {
+              "action": "reveal",
+              "targetCode": "invoice_period_deadline",
+              "value": "",
+              "answerText": "：{{V030}}",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ],
       "sourceNote": "Type=order ，填入SCM Order ID \nType=return ，填入SCM Return Order ID \nType=sku ，填入MP SKU ID",
       "sourceLinks": [],
       "autoDays": 0,
@@ -3206,13 +3255,30 @@ window.SOP_DATA = {
       "code": "V029",
       "label": "SCM Return Order ID_廠直表",
       "category": "廠直表",
-      "hint": "",
+      "hint": "CS Portal → 搜尋 {Order SN_OSN／Buyer Username} → Return 資訊 → {Return SN} → DSS → Admin_Return → {SCM Return Order ID}",
       "type": "text",
       "required": true,
       "options": [],
       "defaultValue": "",
       "fillRules": [],
-      "sourceNote": "",
+      "sourceNote": "方法一：CS Portal 反查\n1. 開啟 CS Portal。\n2. 搜尋欄輸入：{Order SN_OSN}，或{Buyer Username}\n▪ 若使用 Username 查詢，選擇正確的 {Order SN_OSN}\n3. 按 Enter\n4, 展開 Order\n▪ 在一般資訊區找到 Return 資訊。\n5. 複製 {Return SN}。\n6. 開啟 Shopee Drop Shipping（DSS）。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 貼上 {Return SN}，點選搜尋。\n9. 進入退貨訂單詳細資料。\n10. 複製 {SCM Return Order ID}。\n\n方法二：Order Admin Portal 反查\n1. 開啟 Order Admin Portal。\n2. 進入：Return → Return & Refund Requests\n3. 在查詢欄位輸入 {Order SN_OSN}。\n4. 找到對應的退貨退款申請。\n5. 進入申請詳情。\n6. 複製 {Return SN／Return ID}。\n7. 開啟 DSS。\n8. 進入 Admin_Return／退貨訂單查詢。\n9. 輸入 {Return SN}。\n10. 點選搜尋並開啟詳細資料。\n11.複製 {SCM Return Order ID}。\n\n方法三：InHouse CS System／聊聊控制台反查\n1. 開啟買家的聊聊。\n2. 切換到 訂單詳情。\n3. 選擇正確的 {Order SN_OSN}。\n4. 展開 Order Info。\n5. 找到「退貨退款編號」，複製 {Return SN}。\n▪ 同時確認退貨退款狀態：\n▫ Processing：已申請，處理中\n▫ Accepted：申請已接受／退款完成\n▫ Cancelled：申請已取消\n6. 開啟 DSS。\n7. 進入 Admin_Return／退貨訂單查詢。\n8. 輸入 {Return SN}。\n9. 開啟詳細資料並複製 {SCM Return Order ID}。\n\n方法四：從既有案件紀錄查詢\n如果案件之前有人處理過，可以先查：\n1. 使用 {Order SN} 搜尋 KAM／廠商直送表。\n2. 使用 {Order SN} 或 {Buyer Username} 搜尋 Shopee Jira。\n查看既有紀錄是否已填寫：\n{Return SN}\n{SCM Return Order ID}\n如果只有 Return SN，再貼到 DSS 的 Admin_Return 查詢 SCM Return Order ID。\n使用既有 ID 前，務必確認是同一筆訂單、同一次退貨退款申請。",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V030",
+      "label": "MP SKU ID_廠直表",
+      "category": "廠直表",
+      "hint": "商品頁 → 取得 {Product ID} → DSS → 供應商管理 → 商品 → 搜尋 {Product ID} → 選擇 {商品規格}（如果客人有指定）→ 複製 {MP SKU ID}",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "方法一：只有 Product ID，從 DSS 查 MP SKU ID\n1. 開啟商品頁，從網址取得 {Product ID}。\n▪ 商品頁網址通常有兩段數字，後面一段是 Product ID。\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 進入：供應商管理 → 商品\n4. 使用 {Product ID} 搜尋商品。\n5. 搜尋結果會列出該商品的不同規格，根據買家詢問的 {商品規格}（如果客人有指定），找到正確的 {Model ID}。\n6. 複製系統顯示的 {MP SKU ID}。\n注意：同一個 Product ID 可能有多個 Model ID，必須依買家詢問的規格選擇（如果客人有指定），沒指定就隨便選一個。\n\n方法二：從 Order Admin 同時取得 Product ID 與 Model ID\n適用於已經有 {Order SN} 的售後訂單。\n1. 開啟 Order Admin Portal。\n2. 進入：Orders → 訂單查詢\n3. 輸入 {Order SN_OSN}。\n4. 點選搜尋並進入訂單詳細資料。\n5. 到商品資訊區，找到買家詢問的 {商品名稱} 與 {商品規格}。\n6. 在同一筆商品規格資料中取得：\n▪ Product ID：{Product ID}\n▪ Model ID：{Model ID}\n7. 將兩個 ID 用底線組合：\n{Product ID}_{Model ID}\n組合完成的結果就是：\n{MP SKU ID}\n範例：\nProduct ID：{Product ID}\nModel ID：{Model ID}\nMP SKU ID：{Product ID}_{Model ID}\n\n使用時怎麼選\n▪ 只有商品頁及 Product ID：使用 方法一，從 DSS 查詢。\n▪ 已有訂單編號：使用 方法二，從 Order Admin 同時取得 Product ID 與 Model ID。\n\n商品只有單一規格，也不建議自行填 {Product ID}_0；仍應確認實際 Model ID。",
       "sourceLinks": [],
       "autoDays": 0,
       "multiline": false,

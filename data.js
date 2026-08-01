@@ -3378,7 +3378,7 @@ window.SOP_DATA = {
     {
       "code": "voucher_return_status",
       "label": "優惠券返還／使用狀態",
-      "hint": "填入後台顯示的狀態、有效期限及是否可再次使用",
+      "hint": "請選擇後台查詢結果",
       "sourceNote": "查詢步驟：\n1. 開啟 CS Portal。\n2. 使用 {Buyer Username} 搜尋買家。\n3. 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n4. 使用原 Voucher Code 搜尋或比對清單。\n5. 查看優惠券是否出現在可用清單、目前狀態及有效期限。\n\n判斷方式：\n▪ 顯示在可用清單且狀態為 Valid／可使用：代表已返還且仍可使用。\n▪ 未出現在可用清單，或狀態為失效／過期／不可使用：代表目前不能再次使用。",
       "sourceLinks": [
         {
@@ -3390,13 +3390,18 @@ window.SOP_DATA = {
           "url": "https://order-admin.shopee.tw/"
         }
       ],
-      "options": [],
+      "options": [
+        "已返還，可再次使用",
+        "已返還，但已失效／不可使用",
+        "未返還",
+        "查無原優惠券資料"
+      ],
       "defaultValue": "",
       "autoDays": 0,
       "required": true,
       "common": false,
-      "type": "text",
-      "multiline": true,
+      "type": "select",
+      "multiline": false,
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "category": "優惠券",
       "fillRules": [],
@@ -3522,7 +3527,7 @@ window.SOP_DATA = {
     {
       "code": "voucher_return_status",
       "label": "優惠券返還／使用狀態",
-      "hint": "填入後台顯示的狀態、有效期限及是否可再次使用",
+      "hint": "請選擇後台查詢結果",
       "sourceNote": "查詢步驟：\n1. 開啟 CS Portal。\n2. 使用 {Buyer Username} 搜尋買家。\n3. 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n4. 使用原 Voucher Code 搜尋或比對清單。\n5. 查看優惠券是否出現在可用清單、目前狀態及有效期限。\n\n判斷方式：\n▪ 顯示在可用清單且狀態為 Valid／可使用：代表已返還且仍可使用。\n▪ 未出現在可用清單，或狀態為失效／過期／不可使用：代表目前不能再次使用。",
       "sourceLinks": [
         {
@@ -3534,13 +3539,18 @@ window.SOP_DATA = {
           "url": "https://order-admin.shopee.tw/"
         }
       ],
-      "options": [],
+      "options": [
+        "已返還，可再次使用",
+        "已返還，但已失效／不可使用",
+        "未返還",
+        "查無原優惠券資料"
+      ],
       "defaultValue": "",
       "autoDays": 0,
       "required": true,
       "common": false,
-      "type": "text",
-      "multiline": true,
+      "type": "select",
+      "multiline": false,
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "category": "優惠券",
       "fillRules": [],
@@ -3836,7 +3846,7 @@ window.SOP_DATA = {
       "url": "https://dms.cs.shopee.tw/portal/info/search"
     }
   ],
-  "updatedAt": "2026-08-01T07:49:38.834Z",
+  "updatedAt": "2026-08-01T07:53:09.498Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -5378,7 +5388,7 @@ window.SOP_DATA = {
     {
       "code": "voucher_return_status",
       "label": "優惠券返還／使用狀態",
-      "hint": "填入後台顯示的狀態、有效期限及是否可再次使用",
+      "hint": "請選擇後台查詢結果",
       "sourceNote": "查詢步驟：\n1. 開啟 CS Portal。\n2. 使用 {Buyer Username} 搜尋買家。\n3. 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n4. 使用原 Voucher Code 搜尋或比對清單。\n5. 查看優惠券是否出現在可用清單、目前狀態及有效期限。\n\n判斷方式：\n▪ 顯示在可用清單且狀態為 Valid／可使用：代表已返還且仍可使用。\n▪ 未出現在可用清單，或狀態為失效／過期／不可使用：代表目前不能再次使用。",
       "sourceLinks": [
         {
@@ -5390,13 +5400,18 @@ window.SOP_DATA = {
           "url": "https://order-admin.shopee.tw/"
         }
       ],
-      "options": [],
+      "options": [
+        "已返還，可再次使用",
+        "已返還，但已失效／不可使用",
+        "未返還",
+        "查無原優惠券資料"
+      ],
       "defaultValue": "",
       "autoDays": 0,
       "required": true,
       "common": false,
-      "type": "text",
-      "multiline": true,
+      "type": "select",
+      "multiline": false,
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "category": "優惠券",
       "fillRules": []

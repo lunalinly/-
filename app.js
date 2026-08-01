@@ -379,10 +379,12 @@
 
   function shouldShowConditionalField(variable, flow) {
     if (composedAnswerTemplate(flow).includes(`{{${variable.code}}}`)) return true;
-    if (!revealTargetCodes().has(variable.code)) return true;
-    if (String(state.values[variable.code] ?? "").trim()) return true;
     if (state.revealedFields.has(variable.code)) return true;
-    return directVariableCodesFor(flow).has(variable.code) && isRevealRuleStarter(variable.code);
+    const definition = data.fields?.find(item => item.code === variable.code) || variable;
+    if ((definition.fillRules || []).length) return true;
+    if ((flow.routes || []).some(route => route.sourceCode === variable.code)) return true;
+    if ((data.fields || []).some(item => item.autoSource === variable.code)) return true;
+    return false;
   }
 
   function variablesFor(flow) {

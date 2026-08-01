@@ -309,6 +309,31 @@
     return text;
   }
 
+  function directVariableCodesFor(flow) {
+    const baseParts = Array.isArray(flow.answerParts)
+      ? [...flow.answerParts]
+      : (Array.isArray(flow.answerBranches) && flow.answerBranches.length ? flow.answerBranches : [flow.branch]).map(branch => ({ question: flow.question, branch }));
+    const currentIndex = baseParts.findIndex(part => part.question === flow.question && part.branch === flow.branch);
+    const parts = currentIndex >= 0 ? baseParts.slice(0, currentIndex + 1) : [...baseParts];
+    state.appendedSharedBranches.forEach(branch => parts.push({ question: "共用", branch }));
+
+    const codes = new Set();
+    const questionText = String(state.question.answerText || "");
+    data.variables.filter(variable =>
+      variable.q === state.question.id && questionText.includes(`{{${variable.code}}}`)
+    ).forEach(variable => codes.add(variable.code));
+    parts.forEach(part => {
+      const q = questionIdForName(part.question);
+      data.variables.filter(variable =>
+        variable.q === q && (variable.branch === part.branch || isSharedBranch(variable.branch))
+      ).forEach(variable => codes.add(variable.code));
+    });
+    data.variables.filter(variable =>
+      variable.q === questionIdForName(flow.question) && (variable.branch === flow.branch || isSharedBranch(variable.branch))
+    ).forEach(variable => codes.add(variable.code));
+    return codes;
+  }
+
   function variablesFor(flow) {
     const baseParts = Array.isArray(flow.answerParts)
       ? [...flow.answerParts]
@@ -460,7 +485,7 @@
   function makeField(variable, flow, variables) {
     const wrap = document.createElement("div");
     wrap.className = "field" + (variable.multiline ? " full" : "");
-    wrap.hidden = revealTargetCodes().has(variable.code) && !state.revealedFields.has(variable.code);
+    wrap.hidden = revealTargetCodes().has(variable.code) && !directVariableCodesFor(flow).has(variable.code) && !state.revealedFields.has(variable.code);
     const label = document.createElement("label");
     label.htmlFor = `field-${variable.code}`;
     label.append(document.createTextNode(variable.label));

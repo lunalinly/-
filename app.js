@@ -458,12 +458,14 @@
 
   function renderResult(flow, variables) {
     const layout = document.createElement("div"); layout.className = "result-layout";
-    const inputPanel = document.createElement("section"); inputPanel.className = "panel";
+    const inputPanel = document.createElement("section"); inputPanel.className = "panel input-panel";
     const outputPanel = document.createElement("section"); outputPanel.className = "panel output-panel";
+    const hintsPanel = document.createElement("section"); hintsPanel.id = "operationHintsPanel"; hintsPanel.className = "panel hints-panel";
+    layout.append(inputPanel, outputPanel, hintsPanel);
+    els.result.append(layout);
     renderInputPanel(inputPanel, flow, variables);
     renderOutputPanel(outputPanel, flow, variables);
-    layout.append(inputPanel, outputPanel);
-    els.result.append(layout);
+    renderHintsPanel(hintsPanel, flow, variables);
   }
 
   function sourceLinksFor(item) {
@@ -483,46 +485,57 @@
       panel.append(grid);
       recalculateFieldRules(flow, variables);
     }
+  }
+
+  function renderHintsPanel(panel, flow, variables) {
+    panel.replaceChildren();
+    const label = document.createElement("div"); label.className = "panel-label"; label.textContent = "操作資訊";
+    const title = document.createElement("h3"); title.textContent = "操作提示";
+    panel.append(label, title);
 
     const actions = actionsFor(flow);
     const sources = buildOutput(flow, variables).sources || [];
-    if (actions.length || sources.length) {
-      const box = document.createElement("details"); box.className = "action-box"; box.open = true;
-      const summary = document.createElement("summary"); summary.textContent = "操作提示";
-      const list = document.createElement("ul");
-      const shownSourceUrls = new Set();
-      actions.forEach(item => {
-        const li = document.createElement("li");
-        li.append(document.createTextNode(`${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`));
-        if (item.sourceNote) li.append(document.createTextNode(`\n值從哪裡找：${item.sourceNote}`));
-        sourceLinksFor(item).forEach(sourceLink => {
-          if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
-          const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
-          if (shownSourceUrls.has(normalizedUrl)) return;
-          shownSourceUrls.add(normalizedUrl);
-          const link = document.createElement("a");
-          link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
-          li.append(document.createTextNode(" "), link);
-        });
-        list.append(li);
-      });
-      sources.forEach(source => {
-        const li = document.createElement("li");
-        const name = document.createElement("b"); name.textContent = `{${source.label}}`;
-        li.append(name, document.createTextNode(` 的值從這裡找：${source.note || "請開啟來源連結"}`));
-        (source.links || []).forEach(sourceLink => {
-          if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
-          const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
-          if (shownSourceUrls.has(normalizedUrl)) return;
-          shownSourceUrls.add(normalizedUrl);
-          const link = document.createElement("a");
-          link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
-          li.append(document.createTextNode(" "), link);
-        });
-        list.append(li);
-      });
-      box.append(summary, list); panel.append(box);
+    if (!actions.length && !sources.length) {
+      const empty = document.createElement("p"); empty.className = "hints-empty"; empty.textContent = "目前沒有額外操作提示。";
+      panel.append(empty);
+      return;
     }
+
+    const box = document.createElement("div"); box.className = "action-box";
+    const list = document.createElement("ul");
+    const shownSourceUrls = new Set();
+    actions.forEach(item => {
+      const li = document.createElement("li");
+      li.append(document.createTextNode(`${item.action}：${item.needed ? "是" : "否"}${item.note ? `（${item.note}）` : ""}`));
+      if (item.sourceNote) li.append(document.createTextNode(`\n值從哪裡找：${item.sourceNote}`));
+      sourceLinksFor(item).forEach(sourceLink => {
+        if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
+        const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
+        if (shownSourceUrls.has(normalizedUrl)) return;
+        shownSourceUrls.add(normalizedUrl);
+        const link = document.createElement("a");
+        link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
+        li.append(document.createTextNode(" "), link);
+      });
+      list.append(li);
+    });
+    sources.forEach(source => {
+      const li = document.createElement("li");
+      const name = document.createElement("b"); name.textContent = `{${source.label}}`;
+      li.append(name, document.createTextNode(` 的值從這裡找：${source.note || "請開啟來源連結"}`));
+      (source.links || []).forEach(sourceLink => {
+        if (!sourceLink.url || !/^https?:\/\//i.test(sourceLink.url)) return;
+        const normalizedUrl = sourceLink.url.trim().replace(/\/$/, "").toLowerCase();
+        if (shownSourceUrls.has(normalizedUrl)) return;
+        shownSourceUrls.add(normalizedUrl);
+        const link = document.createElement("a");
+        link.href = sourceLink.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${sourceLink.title || "開啟來源"} ↗`;
+        li.append(document.createTextNode(" "), link);
+      });
+      list.append(li);
+    });
+    box.append(list);
+    panel.append(box);
   }
 
   function setFieldInputValue(input, value) {
@@ -720,6 +733,8 @@
       });
       guide.append(heading, list);
     }
+    const hintsPanel = document.getElementById("operationHintsPanel");
+    if (hintsPanel) renderHintsPanel(hintsPanel, flow, variables);
   }
 
   els.search.addEventListener("input", renderQuestions);

@@ -3232,7 +3232,7 @@ window.SOP_DATA = {
       "type": "text",
       "required": true,
       "options": [],
-      "defaultValue": "",
+      "defaultValue": "Luna Lin",
       "fillRules": [],
       "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
       "sourceLinks": [
@@ -3251,7 +3251,7 @@ window.SOP_DATA = {
       ],
       "autoDays": 0,
       "multiline": false,
-      "common": true,
+      "common": false,
       "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券"
@@ -3478,7 +3478,7 @@ window.SOP_DATA = {
       "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
     }
   ],
-  "updatedAt": "2026-08-01T07:41:42.171Z",
+  "updatedAt": "2026-08-01T07:42:24.344Z",
   "fields": [
     {
       "code": "invoice_period_deadline",

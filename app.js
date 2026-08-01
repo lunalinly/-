@@ -125,6 +125,31 @@
     ).filter(Boolean));
   }
 
+  function canFieldRuleReach(startCode, targetCode, visited = new Set()) {
+    if (!startCode || visited.has(startCode)) return false;
+    if (startCode === targetCode) return true;
+    const nextVisited = new Set(visited);
+    nextVisited.add(startCode);
+    const definition = (data.fields || []).find(item => item.code === startCode);
+    return (definition?.fillRules || []).some(rule =>
+      (rule.assignments || []).some(assignment =>
+        assignment.targetCode && canFieldRuleReach(assignment.targetCode, targetCode, nextVisited)
+      )
+    );
+  }
+
+  function isRevealRuleStarter(code) {
+    return (data.fields || []).some(source =>
+      (source.fillRules || []).some(rule =>
+        (rule.assignments || []).some(assignment =>
+          assignment.action === "reveal" &&
+          assignment.targetCode === code &&
+          canFieldRuleReach(code, source.code)
+        )
+      )
+    );
+  }
+
   function conditionalAnswerTexts() {
     const entries = [];
     const seen = new Set();
@@ -160,7 +185,10 @@
     insertionPoint.insertAdjacentElement("afterend", targetField);
   }
 
-  function applyFieldFillRules(variable) {
+  function applyFieldFillRules(variable, visited = new Set()) {
+    if (!variable?.code || visited.has(variable.code)) return 0;
+    const nextVisited = new Set(visited);
+    nextVisited.add(variable.code);
     const definition = data.fields?.find(item => item.code === variable.code) || variable;
     const matched = (definition.fillRules || []).filter(rule => ruleMatches(definition, rule));
     let affected = 0;
@@ -181,7 +209,26 @@
       const targetInput = document.getElementById(`field-${assignment.targetCode}`);
       if (targetInput) setFieldInputValue(targetInput, state.values[assignment.targetCode]);
       affected += 1;
+      if (targetVariable) affected += applyFieldFillRules(targetVariable, nextVisited);
     }));
+    return affected;
+  }
+
+  function recalculateFieldRules(flow, variables) {
+    state.revealedFields = new Set();
+    let affected = 0;
+    variables.filter(variable => String(state.values[variable.code] ?? "").trim()).forEach(variable => {
+      affected += applyFieldFillRules(variable);
+    });
+    const directCodes = directVariableCodesFor(flow);
+    const conditionalCodes = revealTargetCodes();
+    variables.forEach(variable => {
+      const input = document.getElementById(`field-${variable.code}`);
+      const wrap = input?.closest(".field");
+      if (!wrap) return;
+      const isStarter = directCodes.has(variable.code) && isRevealRuleStarter(variable.code);
+      wrap.hidden = conditionalCodes.has(variable.code) && !isStarter && !state.revealedFields.has(variable.code);
+    });
     return affected;
   }
 
@@ -428,9 +475,7 @@
       const grid = document.createElement("div"); grid.className = "variable-grid";
       variables.forEach(variable => grid.append(makeField(variable, flow, variables)));
       panel.append(grid);
-      variables.forEach(variable => {
-        if (String(state.values[variable.code] ?? "").trim()) applyFieldFillRules(variable);
-      });
+      recalculateFieldRules(flow, variables);
     }
 
     const actions = actionsFor(flow);
@@ -485,7 +530,7 @@
   function makeField(variable, flow, variables) {
     const wrap = document.createElement("div");
     wrap.className = "field" + (variable.multiline ? " full" : "");
-    wrap.hidden = revealTargetCodes().has(variable.code) && !directVariableCodesFor(flow).has(variable.code) && !state.revealedFields.has(variable.code);
+    wrap.hidden = revealTargetCodes().has(variable.code) && !(directVariableCodesFor(flow).has(variable.code) && isRevealRuleStarter(variable.code)) && !state.revealedFields.has(variable.code);
     const label = document.createElement("label");
     label.htmlFor = `field-${variable.code}`;
     label.append(document.createTextNode(variable.label));
@@ -517,12 +562,12 @@
     input.addEventListener("input", () => {
       state.values[variable.code] = input.value;
       if (variable.common) saveCommonValue(variable.code, input.value);
-      const autoFilledCount = applyFieldFillRules(variable);
       variables.filter(v => v.auto || v.autoSource).forEach(autoVar => {
         state.values[autoVar.code] = calculateAuto(autoVar);
         const autoInput = document.getElementById(`field-${autoVar.code}`);
         if (autoInput) setFieldInputValue(autoInput, state.values[autoVar.code]);
       });
+      const autoFilledCount = recalculateFieldRules(flow, variables);
       if (!applyVariableRoute(flow)) {
         refreshOutput(flow, variables);
         if (autoFilledCount) showToast(`已自動填入 ${autoFilledCount} 個變數`);

@@ -703,6 +703,13 @@
     return source.split(/\r?\n/).map(line => line.replace(/^(\s*)#{1,3}\s+/, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/^(\s*)[-*•]\s+/, "$1▪ ")).join("\n");
   }
 
+  function answerOperationHintText(value) {
+    const labels = new Map([...(data.fields || []), ...(data.variables || [])].map(item => [item.code, item.label || item.code]));
+    return plainHintText(value)
+      .replace(/\{\{([^{}]+)\}\}/g, (_, code) => `【${labels.get(code) || code}】`)
+      .replace(/\{([^{}\n]+)\}/g, (_, label) => `【${label}】`);
+  }
+
   function buildOutput(flow, variables) {
     const built = templatesFor(flow);
     const conditional = conditionalAnswerTexts();
@@ -742,7 +749,7 @@
     const sources = [...sourceMap.values()];
     const answerSources = sources.filter(source => String(source.note || "").trim());
     if (answerSources.length) {
-      const lines = answerSources.map(source => `${source.label}：\n${plainHintText(source.note)}`);
+      const lines = answerSources.map(source => `${source.label}：\n${answerOperationHintText(source.note)}`);
       text += `\n\n操作提示：\n${lines.join("\n\n")}`;
     }
     return { text, missing: built.missing.length > 0, sources };

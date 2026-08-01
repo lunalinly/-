@@ -1,6 +1,6 @@
 // 由 SOP 視覺化編輯室產生；操作畫面僅使用中文。
 window.SOP_DATA = {
-  "version": "2026/7/31",
+  "version": "2026/8/1",
   "sourceUrl": "https://docs.google.com/spreadsheets/d/1cDKewCq-QZ6ln3f8keneZ8p8N7NXTCGnYPAouxmyveI/edit?gid=101001#gid=101001",
   "questions": [
     {
@@ -285,7 +285,8 @@ window.SOP_DATA = {
             "蝦皮直營 _ 生活超市 - 最快當日到"
           ],
           "targetQuestion": "詢問商品資訊",
-          "targetBranch": "KAM表"
+          "targetBranch": "KAM表",
+          "assignments": []
         },
         {
           "sourceCode": "V003",
@@ -302,7 +303,8 @@ window.SOP_DATA = {
             "Apple產品旗艦館"
           ],
           "targetQuestion": "詢問商品資訊",
-          "targetBranch": "KAM表．SBS"
+          "targetBranch": "KAM表．SBS",
+          "assignments": []
         },
         {
           "sourceCode": "V006",
@@ -310,7 +312,8 @@ window.SOP_DATA = {
             "是"
           ],
           "targetQuestion": "詢問商品資訊",
-          "targetBranch": "廠直表"
+          "targetBranch": "廠直表",
+          "assignments": []
         }
       ],
       "answerParts": [
@@ -2244,7 +2247,7 @@ window.SOP_DATA = {
       "url": "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing"
     }
   ],
-  "updatedAt": "2026-07-31T11:40:46.686Z",
+  "updatedAt": "2026-08-01T03:17:09.828Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -3071,6 +3074,149 @@ window.SOP_DATA = {
       "autoDays": 0,
       "common": false,
       "multiline": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V025",
+      "label": "Sheet-ID＿廠直表",
+      "category": "廠直表",
+      "hint": "不用輸入",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "不用輸入",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V026",
+      "label": "Type_廠直表",
+      "category": "廠直表",
+      "hint": "order=訂單問題 ；return=退貨問題；sku=商品問題",
+      "type": "select",
+      "required": true,
+      "options": [
+        "order",
+        "return",
+        "sku"
+      ],
+      "defaultValue": "",
+      "fillRules": [
+        {
+          "values": [
+            "order"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V027",
+              "value": "SCM Order ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "return"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V027",
+              "value": "SCM Return Order ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        },
+        {
+          "values": [
+            "sku"
+          ],
+          "assignments": [
+            {
+              "action": "fill",
+              "targetCode": "V027",
+              "value": "MP SKU ID",
+              "answerText": "",
+              "answerPosition": "end",
+              "answerAnchor": "",
+              "answerFieldCode": ""
+            }
+          ]
+        }
+      ],
+      "sourceNote": "order=訂單問題\nreturn=退貨問題\nsku=商品問題",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V027",
+      "label": "ID-Type＿廠直表",
+      "category": "廠直表",
+      "hint": "會自動帶入",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "Type=order ，填入SCM Order ID \nType=return ，填入SCM Return Order ID \nType=sku ，填入MP SKU ID",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": ""
+    },
+    {
+      "code": "V028",
+      "label": "SCM Order ID_廠直表",
+      "category": "廠直表",
+      "hint": "DSS → 訂單查詢 → 輸入 {Order SN_OSN} → 搜尋 → 詳細資料 → SCM Order ID",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "1. 先取得訂單編號（Order SN）\n2. 開啟 Shopee Drop Shipping（DSS）。\n3. 點選 「訂單查詢」。\n4. 輸入訂單編號（Order SN）\n5. 點選 「搜尋」。\n6. 找到對應訂單後，點選 「詳細資料」。\n7. 在訂單詳細資料中找到並複製 【SCM Order ID】",
+      "sourceLinks": [
+        {
+          "title": "Shopee Drop Shipping（DSS）",
+          "url": "https://scm.internal.shopee.tw/homepage/backlogs"
+        }
+      ],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
+      "sourceUrl": "https://scm.internal.shopee.tw/homepage/backlogs"
+    },
+    {
+      "code": "V029",
+      "label": "SCM Return Order ID_廠直表",
+      "category": "廠直表",
+      "hint": "",
+      "type": "text",
+      "required": true,
+      "options": [],
+      "defaultValue": "",
+      "fillRules": [],
+      "sourceNote": "",
+      "sourceLinks": [],
+      "autoDays": 0,
+      "multiline": false,
+      "common": false,
       "sourceUrl": ""
     }
   ],

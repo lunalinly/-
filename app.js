@@ -735,7 +735,7 @@
     variables.forEach(variable => {
       const links = sourceLinksFor(variable);
       const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(state.values[variable.code] ?? "").trim();
-      if (!inactiveConditional && text.includes(`{{${variable.code}}}`) && String(variable.sourceNote || "").trim() && !sourceMap.has(variable.code)) {
+      if (!inactiveConditional && text.includes(`{{${variable.code}}}`) && plainHintText(variable.sourceNote).trim() && !sourceMap.has(variable.code)) {
         sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", links });
       }
     });

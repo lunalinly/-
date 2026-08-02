@@ -1304,6 +1304,7 @@
     jira: { title: "Shopee Jira - TW SBS", url: "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717" },
     kam: { title: "KAM 表", url: "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing" },
     vendor: { title: "廠商直送表", url: "https://docs.google.com/spreadsheets/d/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8/edit?gid=0#gid=0" },
+    jiraPublicForm: { title: "Jira Summary／Description 公版", url: "https://docs.google.com/spreadsheets/d/1etY_L3flRvMhknIem6nWVvJMVdDzKT-tDvlJQWhzYz8/edit?gid=1989276182#gid=1989276182" },
     inhouse: { title: "InHouse 聊聊", url: "https://cs.localshop.shopee.tw/portal/inhouse/chat/home" },
     csPortal: { title: "CS Portal", url: "https://dms.cs.shopee.tw/portal/info/search" }
   };
@@ -1341,7 +1342,7 @@
   upsertTemplate({
     q: "GLOBAL",
     branch: "新建工單",
-    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\n工單填寫重點：\n▪ 案件主旨：{{ticket_subject}}\n▪ Order SN / Buyer Username：{{ticket_customer_key}}\n▪ 商城名字：{{V003}}\n▪ 問題摘要：{{ticket_summary}}\n▪ 已確認資料：{{checked_info}}\n▪ 待追蹤事項：{{pending_note}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直表，必須先用商城名字判斷表別，再把工單號回填到該表。"
+    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM／Logistics 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\n工單欄位請條列填入：\n▪ Project：{{jira_project}}\n▪ Issue Type：{{jira_issue_type}}\n▪ Summary：{{jira_summary}}\n▪ Shop Name：{{V003}}\n▪ Username：{{buyer_username}}\n▪ Description：\n{{jira_description}}\n▪ Assignee：assign to me／分配給我\n▪ Attachment：{{proof_status}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直表，必須先用商城名字判斷表別，再把工單號回填到該表。"
   });
   upsertTemplate({
     q: "GLOBAL",
@@ -1350,10 +1351,12 @@
   });
 
   [
-    ["ticket_subject", "工單主旨", "例：商品瑕疵／退貨退款／廠商確認／物流異常", false, true, "text"],
-    ["ticket_customer_key", "Order SN / Buyer Username", "售後填 Order SN；售前可填 Buyer Username", false, true, "text"],
+    ["jira_project", "Project", "依工單/表單種類自動帶出；物流依公版 Project，其他依 Jira 頁面目前對應專案。", false, true, "text"],
+    ["jira_issue_type", "Issue Type", "固定填 Problem。", false, true, "text"],
+    ["jira_summary", "Summary / 工單主旨", "從公版標題或對應分支自動帶出，可依實際案件微調。", false, true, "text"],
     ["V003", "商城名字", "要判斷 KAM 表或廠直表前必填", false, true, "text"],
-    ["ticket_summary", "問題摘要", "簡述客人問題與目前卡點", true, true, "text"],
+    ["buyer_username", "Buyer Username（買家帳號）", "Jira Username 欄位填買家的 Buyer Username。", false, true, "text"],
+    ["jira_description", "Description / 工單內容", "依公版自動帶出，貼到 Description 後補齊空白資料與附件。", true, true, "text"],
     ["checked_info", "已確認資料", "已查商品頁、訂單、照片、貨態、是否申退等", true, false, "text"],
     ["pending_note", "待追蹤事項／未結案備註", "例：KAM 未回，已再次詢問，待追蹤", true, true, "text"],
     ["work_order", "工單號", "建立後填入，例如 SPTWSBS-XXXXX", false, true, "text"]
@@ -1371,6 +1374,7 @@
     sourceUrl: code === "work_order" ? ticketLinks.jira.url : "",
     sourceNote: code === "V003" ? "商城名字是判斷要上 KAM 表、KAM 表．SBS 或廠直表的必要資訊；沒有商城名字時不要直接判斷表別。" : ""
   }));
+  removeVariables("GLOBAL", ["ticket_subject", "ticket_customer_key", "ticket_summary"]);
 
   [
     ["work_order", "工單號", "貼上工單號", false, true, "text"],
@@ -1398,9 +1402,9 @@
     action: "新建工單",
     needed: true,
     note: "需要追蹤或跨窗口確認時建立",
-    sourceLinks: [ticketLinks.jira],
+    sourceLinks: [ticketLinks.jira, ticketLinks.jiraPublicForm],
     url: ticketLinks.jira.url,
-    sourceNote: "<div><b>建立工單時機</b></div><ul><li>需要後續追蹤、廠商／KAM／OPS／WH／VM 確認。</li><li>買家有退換貨意圖、商品瑕疵爭議、品質爭議、保固驗證或技術檢測。</li><li>廠直、線下申退、Offline RR、特殊高單、假貨爭議等需個案處理。</li></ul>"
+    sourceNote: "<div><b>建立工單時機</b></div><ul><li>需要後續追蹤、廠商／KAM／OPS／WH／VM／Logistics 確認。</li><li>買家有退換貨意圖、商品瑕疵爭議、品質爭議、保固驗證或技術檢測。</li><li>廠直、線下申退、Offline RR、特殊高單、假貨爭議、物流與金流公版情境等需個案處理。</li></ul><div><b>來源</b></div><ul><li>PPT Jira 新增案件欄位頁：Project、Issue Type、Summary、Shop Name、Username、Description。</li><li>Jira Summary／Description 公版試算表：標題/個案公版。</li></ul>"
   });
   upsertAction({
     q: "Q018",
@@ -1677,13 +1681,177 @@
     "訂單備註",
     "補償折扣碼-返還原折扣碼",
     "補償折扣碼-返還損失折扣",
-    "補償折扣碼-其餘個案補碼"
+    "補償折扣碼-其餘個案補碼",
+    "金流-已轉帳系統未跳轉",
+    "金流-已刷卡系統未跳轉",
+    "金流-線下付款查帳",
+    "金流-補匯款"
   ];
+  const logisticsTicketOptions = [
+    "宅配-修改地址",
+    "宅配-已出貨要退回",
+    "宅配-查詢簽收單",
+    "逆物流宅配-貨損",
+    "逆物流宅配-超材轉派車",
+    "逆物流宅配-取消派車/改收件資訊",
+    "逆物流宅配-D+3未收件成功",
+    "物流店到店-調閱監視器/商品異常",
+    "物流店到店-自助機找零有誤",
+    "物流店到店-繳費成功貨態未更新",
+    "物流店到店-機台金額不符",
+    "物流店到店-機台包裹數量有誤",
+    "物流店到店-已配達貨態未更新/無法領取",
+    "物流店到店-COD金額有誤",
+    "物流店到店-取貨後無法完成訂單",
+    "物流店到店-無面單缺件",
+    "店到家-包裹異常未配送成功",
+    "店到家-取件成功但買家未收到"
+  ];
+  const logisticsTemplateByKind = {
+    "宅配-修改地址": {
+      project: "TW - Logistics 24h",
+      summary: "改收件資訊-({{shipping_tracking_no}})",
+      queue: "",
+      description: "Shipping Tracing No：{{shipping_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n客欲修改聯絡資訊如下，煩請協助處理，謝謝。\n\n收件資訊：\n{{recipient_info}}"
+    },
+    "宅配-已出貨要退回": {
+      project: "TW - Logistics 24h",
+      summary: "攔單-({{shipping_tracking_no}})",
+      queue: "",
+      description: "Shipping Tracing No：{{shipping_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n客取消訂單，煩請協助退回貨件，謝謝。"
+    },
+    "宅配-查詢簽收單": {
+      project: "TW - Logistics 24h",
+      summary: "調閱簽收單-({{shipping_tracking_no}})",
+      queue: "",
+      description: "Shipping Tracing No：{{shipping_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n此單貨態顯示已配達，請協助查調簽收單據。"
+    },
+    "逆物流宅配-貨損": {
+      project: "TW - Logistics 宅配通",
+      summary: "貨損-({{order_sn}})",
+      queue: "",
+      description: "正物流單號：{{shipping_tracking_no}}\n逆物流單號：{{reverse_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n買家反應收到商品就有破損情形，提供照片如附件，煩請協助與物流端確認配送狀況。\n另因買家已自行申請退貨，再麻煩同步聯繫宅配通取消取件，謝謝。"
+    },
+    "逆物流宅配-超材轉派車": {
+      project: "TW - Logistics 24h",
+      summary: "個案派件-({{order_sn}})",
+      queue: "",
+      description: "Order SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\nReturn ID：{{return_id}}\n\n買家申請退貨，查詢訂單明細判斷商品超過取件材積，請協助派車【嘉里快遞】收件。\n\n買家收件資訊：\n{{recipient_info}}\n退貨商品材積長寬高：{{package_size}}"
+    },
+    "逆物流宅配-取消派車/改收件資訊": {
+      project: "TW - Logistics 宅配通",
+      summary: "不需派車-({{order_sn}})",
+      queue: "",
+      description: "已產生逆物流單號：{{reverse_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n此筆訂單因用戶（要改收件資訊／要取消退貨），故需取消該件個案派車，謝謝。"
+    },
+    "逆物流宅配-D+3未收件成功": {
+      project: "TW - Logistics 宅配通",
+      summary: "個案派件-({{order_sn}})",
+      queue: "",
+      description: "逆物流單號：{{reverse_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n用戶收退件資料：\n{{recipient_info}}\n\n該案件派車取件已超過三日仍未收到包裹，請協助確認包裹收件狀況，謝謝。"
+    },
+    "物流店到店-調閱監視器/商品異常": {
+      project: "TW - Logistics SPX B2C",
+      summary: "調閱監視器畫面-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 異常件",
+      description: "Shipping Tracing No：{{shipping_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n買家取件時間：{{pickup_time}}\n\n買家反映收到商品【缺少／破損／錯誤】，需協助調閱監視器畫面確認，謝謝。"
+    },
+    "物流店到店-自助機找零有誤": {
+      project: "TW - Logistics SPX B2C",
+      summary: "找零有誤-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 智取店及機台",
+      description: "Order SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n取件蝦皮店到店門市名稱：{{pickup_store_info}}\n取件日期與時間：{{pickup_time}}\n取件包裹單號／數量：{{parcel_id}}\n繳費收據：{{proof_status}}\n狀況簡述（應找零$oo/實找零$xx）：{{customer_question}}\n\n買家反映自助繳費機台繳費金額有誤，煩請協助確認，謝謝。"
+    },
+    "物流店到店-繳費成功貨態未更新": {
+      project: "TW - Logistics SPX B2C",
+      summary: "貨態未更新-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 智取店及機台",
+      description: "Order SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n取件蝦皮店到店門市名稱：{{pickup_store_info}}\n取件日期與時間：{{pickup_time}}\n取件包裹單號／數量：{{parcel_id}}\n繳費收據照片：{{proof_status}}\n異常畫面：{{related_link}}\n已取件包裹照片：{{proof_status}}\n狀況簡述：{{customer_question}}\n\n買家反映自助繳費機台繳費成功，但貨態未跳轉，煩請協助確認，謝謝。"
+    },
+    "物流店到店-機台金額不符": {
+      project: "TW - Logistics SPX B2C",
+      summary: "機台顯示應繳金額不符-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 智取店及機台",
+      description: "Order SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n取件蝦皮店到店門市名稱：{{pickup_store_info}}\n取件日期與時間：{{pickup_time}}\n取件包裹單號／數量：{{parcel_id}}\n機台異常介面：{{related_link}}\n已取件包裹照片：{{proof_status}}\n未繳費包裹是否已返還門市人員：是／否\n狀況簡述：{{customer_question}}\n\n買家反映自助繳費機台顯示應繳金額不符，煩請協助確認，謝謝。"
+    },
+    "物流店到店-機台包裹數量有誤": {
+      project: "TW - Logistics SPX B2C",
+      summary: "機台顯示包裹數量有誤-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 智取店及機台",
+      description: "Order SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n取件蝦皮店到店門市名稱：{{pickup_store_info}}\n取件日期與時間：{{pickup_time}}\n機台異常介面：{{related_link}}\n已取件包裹照片：{{proof_status}}\n未繳費包裹是否已返還門市人員：是／否\n狀況簡述：{{customer_question}}\n\n買家反映自助繳費機台顯示包裹數量有誤，煩請協助確認，謝謝。"
+    },
+    "物流店到店-已配達貨態未更新/無法領取": {
+      project: "TW - Logistics SPX B2C",
+      summary: "貨態未更新-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 取不到件",
+      description: "買家帳號：{{buyer_username}}\n賣家帳號：{{seller_username}}\nOrder SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n取貨人末三碼：{{recipient_phone_last3}}\n貨態最後更新狀態：{{shipping_status}}\n包裹抵達門市店號：{{pickup_store_info}}\n門市中是否有此包裹送達：{{store_parcel_status}}\n\n商品已配達門市，但貨態未更新，煩請協助確認，謝謝。"
+    },
+    "物流店到店-COD金額有誤": {
+      project: "TW - Logistics SPX B2C",
+      summary: "機台顯示應繳金額不符-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 智取店及機台",
+      description: "買家帳號：{{buyer_username}}\n賣家帳號：{{seller_username}}\nOrder SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n買家頁面顯示金額及實際貨到付款金額：{{payment_amount_note}}\n\n買家至門市取件時 COD 付款金額有誤，煩請協助確認，謝謝。"
+    },
+    "物流店到店-取貨後無法完成訂單": {
+      project: "TW - Logistics SPX B2C",
+      summary: "完成訂單-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 貨態相關",
+      description: "Shipping Tracing No：{{shipping_tracking_no}}\nOrder SN：{{order_sn}}\nOrder ID：{{logistics_order_id}}\n\n買家取件後無法點選【完成訂單】按鈕，煩請協助確認，謝謝。"
+    },
+    "物流店到店-無面單缺件": {
+      project: "TW - Logistics SPX B2C",
+      summary: "超商找不到商品-({{order_sn}})",
+      queue: "TW - SPX 異常件",
+      description: "OSN：{{order_sn}}\n包裹編號：{{parcel_id}}\n未取數量：{{missing_quantity}}\n\n狀況簡述：客反饋購買 X 件，未取到上述商品，請協助確認是否遺落於門市，謝謝。"
+    },
+    "店到家-包裹異常未配送成功": {
+      project: "TW－Logistics SPX 店到家宅配",
+      summary: "SBS配送相關-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 店到家配送收件問題",
+      description: "Shipping Tracing No：{{shipping_tracking_no}}\nOrder SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n\n貨態顯示包裹異常不配送原因：{{shipping_status}}\n買家狀況簡述：{{customer_question}}\n\n請協助確認異常情形，謝謝。"
+    },
+    "店到家-取件成功但買家未收到": {
+      project: "TW－Logistics SPX 店到家宅配",
+      summary: "SBS配送相關-({{last_mile_tracking_number}})",
+      queue: "TW - SPX 店到家配送收件問題",
+      description: "Shop ID：{{shop_id}}\nOrder SN：{{order_sn}}\nLast Mile Tracking Number：{{last_mile_tracking_number}}\n\n貨態顯示取件成功，買家反應未收到包裹，請協助確認實際狀況並提供簽收單，謝謝。"
+    }
+  };
+  const logisticsTicketRules = Object.entries(logisticsTemplateByKind).map(([kind, item]) => ({
+    values: ["物流工單"],
+    conditions: [{ code: "logistics_ticket_kind", values: [kind] }],
+    assignments: [
+      { targetCode: "jira_project", value: item.project },
+      { targetCode: "jira_issue_type", value: "Problem" },
+      { targetCode: "jira_summary", value: item.summary },
+      { targetCode: "spx_queue", value: item.queue || "非 SPX 佇列" },
+      { targetCode: "jira_description", value: item.description }
+    ]
+  }));
+  const paymentTicketRules = [
+    ["金流-已轉帳系統未跳轉", "已轉帳系統未跳轉-({{payment_order_id}})", "User Name：{{buyer_username}}\nOrder SN：{{order_sn}}\nOrder ID：{{payment_order_id}}\n轉帳日期／時間：{{transfer_time}}\n帳號後五碼：{{bank_last5}}\n匯款金額：{{transfer_amount}}\n\n買家已轉帳但系統未跳轉，請協助確認款項狀態，謝謝。"],
+    ["金流-已刷卡系統未跳轉", "已刷卡系統未跳轉-({{payment_order_id}})", "Order SN：{{order_sn}}\nOrder ID：{{payment_order_id}}\nUser Name：{{buyer_username}}\nUser ID：{{user_id}}\n授權碼：{{auth_code}}\n授權日期／時間：{{auth_time}}\n問題描述：{{customer_question}}\n附件：{{proof_status}}"],
+    ["金流-線下付款查帳", "線下付款查帳-({{payment_order_id}})", "User Name：{{buyer_username}}\nOrder SN：{{order_sn}}\nOrder ID：{{payment_order_id}}\n轉帳日期／時間：{{transfer_time}}\n帳號後五碼：{{bank_last5}}\n匯款金額：{{transfer_amount}}\n問題描述：{{customer_question}}"],
+    ["金流-補匯款", "補匯款-({{payment_order_id}})", "User Name：{{buyer_username}}\nOrder SN：{{order_sn}}\nOrder ID：{{payment_order_id}}\n轉帳日期／時間：{{transfer_time}}\n帳號後五碼：{{bank_last5}}\n匯款金額：{{transfer_amount}}\n補匯款原因：{{customer_question}}"]
+  ].map(([category, summary, description]) => ({
+    values: ["金流工單"],
+    conditions: [{ code: "ticket_issue_category", values: [category] }],
+    assignments: [
+      { targetCode: "jira_project", value: "依 Jira 頁面目前對應金流 Project" },
+      { targetCode: "jira_issue_type", value: "Problem" },
+      { targetCode: "jira_summary", value: summary },
+      { targetCode: "jira_description", value: description }
+    ]
+  }));
   const ticketFormatRules = [
+    ...logisticsTicketRules,
+    ...paymentTicketRules,
     {
       values: ["一般 KAM 商品問題"],
       conditions: [{ code: "ticket_issue_category", values: ["售前-商品規格", "售前-商品使用", "售前-配件/贈品", "售前-保固相關", "售前-品質諮詢"] }],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應商品問題 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "jira_summary", value: "售前商品問題｜{{V003}}｜{{ticket_issue_category}}｜{{product_id}}" },
         { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：售前商品問題｜{{V003}}｜{{ticket_issue_category}}｜{{product_id}}\nShop Name：{{V003}}\nUsername：{{buyer_username}}\nDescription：請貼上 KAM 表的 CS 詢問用格式，並補上客文截圖或商品頁連結。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
         { targetCode: "sheet_question_format", value: "#{{sheet_row_no}}\nHI,{{kam_owner}}\n【問題分類】{{ticket_issue_category}}\n【商品名稱】{{V008}}\n【商品規格】{{V010}}\n【廠商】{{supplier_name}}\n【Product ID】{{product_id}}\n【Order/User】{{order_sn}} / {{buyer_username}}\n【商品問題】\n{{customer_question}}\n【已確認資訊】\n{{checked_info}}\n【工單號】{{work_order}}" }
@@ -1693,6 +1861,8 @@
       values: ["一般 KAM 商品問題"],
       conditions: [{ code: "ticket_issue_category", values: ["售後-退換貨", "售後-商品異常", "售後-保固/檢測"] }],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應商品問題 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "jira_summary", value: "售後商品問題｜{{V003}}｜{{ticket_issue_category}}｜{{order_sn}}" },
         { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：售後商品問題｜{{V003}}｜{{ticket_issue_category}}｜{{order_sn}}\nShop Name：{{V003}}\nUsername：{{buyer_username}}\nDescription：請貼上 KAM 表的 CS 詢問用格式，並說明是否已有退貨/退款意圖、十五天鑑賞期判斷、商品狀態與佐證。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
         { targetCode: "sheet_question_format", value: "#{{sheet_row_no}}\nHI,{{kam_owner}}\n【問題分類】{{ticket_issue_category}}\n【商品名稱】{{V008}}\n【商品規格】{{V010}}\n【廠商】{{supplier_name}}\n【Product ID】{{product_id}}\n【Order/User】{{order_sn}} / {{buyer_username}}\n【商品問題】\n{{customer_question}}\n【退貨/保固/異常確認】\n{{checked_info}}\n【工單號】{{work_order}}" }
@@ -1701,6 +1871,8 @@
     {
       values: ["SBS KAM 商品問題"],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應 SBS 商品問題 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "jira_summary", value: "SBS商品問題｜{{V003}}｜{{ticket_issue_category}}｜{{product_id}}" },
         { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：SBS商品問題｜{{V003}}｜{{ticket_issue_category}}｜{{product_id}}\nShop Name：{{V003}}\nUsername：{{buyer_username}}\nDescription：請貼上 SBS 商品問題表的 CS 詢問自動公式，並補上客文/商品頁/訂單佐證。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
         { targetCode: "sheet_question_format", value: "#{{sheet_row_no}}\n【分館】{{V003}}\n【問題分類】{{ticket_issue_category}}\n【商品名稱】{{V008}}\n【商品規格】{{V010}}\n【Product ID】{{product_id}}\n【Order SN/User】{{order_sn}} / {{buyer_username}}\n【問題訴求】\n{{customer_question}}\n【備註】{{checked_info}}\n【工單號】{{work_order}}" }
@@ -1710,6 +1882,8 @@
       values: ["補償折扣碼"],
       conditions: [{ code: "ticket_issue_category", values: ["補償折扣碼-返還原折扣碼", "補償折扣碼-返還損失折扣", "補償折扣碼-其餘個案補碼"] }],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應補償折扣碼 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "jira_summary", value: "補償折扣碼申請｜{{ticket_issue_category}}｜{{order_sn}}" },
         { targetCode: "jira_description", value: "Order SN：{{order_sn}}\nOrder ID：{{order_id}}\nUser ID：{{user_id}}\nBuyer Username：{{buyer_username}}\n簡述訴求：{{customer_question}}\n申請類別：{{ticket_issue_category}}\n原 Voucher Code：{{voucher_code}}\n申請包裹(Parcel)：{{parcel_id}}\n折扣碼綁定資訊：{{voucher_binding}}\nA. 折扣金額(蝦皮＋賣家)：{{discount_amount}}\nB. 商品價差(現價－Subtotal)：{{price_difference}}\n最終發碼規格：滿 ${{voucher_threshold}} 折 ${{voucher_amount}}\n自我檢查：{{checked_info}}" },
         { targetCode: "sheet_question_format", value: "個案補碼追蹤表：\nOrder SN：{{order_sn}}\nUser ID：{{user_id}}\nBuyer Username：{{buyer_username}}\n申請類別：{{ticket_issue_category}}\n補碼金額：{{voucher_amount}}\n工單號：{{work_order}}\n備註：{{pending_note}}" }
@@ -1719,6 +1893,8 @@
       values: ["廠直表"],
       conditions: [{ code: "vendor_table_type", values: ["order"] }],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應廠直 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "vendor_required_id_hint", value: "Type 填 order；ID 填 SCM Order ID。請先確認商城名字，再填前台訂單/SCM Order ID 與工單號。" },
         { targetCode: "jira_summary", value: "廠直轉詢｜訂單問題｜{{V003}}｜{{order_sn}}" },
         { targetCode: "sheet_question_format", value: "Type：order\nID：{{scm_order_id}}\nPriority：{{vendor_priority}}\n填表人：{{case_owner}}\n前台訂單：{{order_sn}}\n工單號：{{work_order}}\n問題分類：{{ticket_issue_category}}\nCS內部備註/買家帳號：{{buyer_username}}\n\nQuestion(公式)：\nSheet ID：{{sheet_row_no}}\n*Ordersn：{{order_sn}}\n*簡述問題(相關連結)：\n{{customer_question}}\n{{related_link}}" }
@@ -1728,6 +1904,8 @@
       values: ["廠直表"],
       conditions: [{ code: "vendor_table_type", values: ["return"] }],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應廠直 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "vendor_required_id_hint", value: "Type 填 return；ID 填 SCM Return Order ID。請先確認商城名字，再填退貨單資訊與工單號。" },
         { targetCode: "jira_summary", value: "廠直轉詢｜退貨問題｜{{V003}}｜{{return_id}}" },
         { targetCode: "sheet_question_format", value: "Type：return\nID：{{scm_return_id}}\nPriority：{{vendor_priority}}\n填表人：{{case_owner}}\n前台訂單：{{order_sn}}\n工單號：{{work_order}}\n問題分類：{{ticket_issue_category}}\nCS內部備註/買家帳號：{{buyer_username}}\n\nQuestion(公式)：\nSheet ID：{{sheet_row_no}}\n*Return ID：{{return_id}}\n*簡述問題(相關連結)：\n{{customer_question}}\n{{related_link}}" }
@@ -1737,6 +1915,8 @@
       values: ["廠直表"],
       conditions: [{ code: "vendor_table_type", values: ["sku"] }],
       assignments: [
+        { targetCode: "jira_project", value: "依 Jira 頁面目前對應廠直 Project" },
+        { targetCode: "jira_issue_type", value: "Problem" },
         { targetCode: "vendor_required_id_hint", value: "Type 填 sku；ID 填 MP SKU ID。MP SKU ID 需要到 DSS/SCM 查，不要直接用 PID_0。" },
         { targetCode: "jira_summary", value: "廠直轉詢｜商品問題｜{{V003}}｜{{V030}}" },
         { targetCode: "sheet_question_format", value: "Type：sku\nID：{{V030}}\nPriority：{{vendor_priority}}\n填表人：{{case_owner}}\nMP SKU：{{V030}}\n工單號：{{work_order}}\n問題分類：{{ticket_issue_category}}\nCS內部備註/買家帳號：{{buyer_username}}\n\nQuestion(公式)：\nSheet ID：{{sheet_row_no}}\n*MP SKU ID：{{V030}}\n*Ordersn：{{order_sn}}\n*簡述問題(相關連結)：\n{{customer_question}}\n{{related_link}}" }
@@ -1750,21 +1930,30 @@
     item.text = `${item.text}\n\n${marker}\n${text}`;
   }
 
-  appendTemplateSection("GLOBAL", "新建工單", "【工單/上表格式自動整理】", "依下方欄位選擇工單/表單種類與問題分類後，系統會依多層條件帶出：\n▪ Jira 主旨：{{jira_summary}}\n▪ Jira Description：\n{{jira_description}}\n\n若同時需要上表，請貼入：\n{{sheet_question_format}}\n\n廠直表 ID 判斷：{{vendor_required_id_hint}}");
+  appendTemplateSection("GLOBAL", "新建工單", "【工單/上表格式自動整理】", "依下方欄位選擇工單/表單種類、問題分類或物流工單情境後，系統會依多層條件帶出：\n▪ Project：{{jira_project}}\n▪ Issue Type：{{jira_issue_type}}\n▪ Summary：{{jira_summary}}\n▪ Shop Name：{{V003}}\n▪ Username：{{buyer_username}}\n▪ Description：\n{{jira_description}}\n▪ SPX 佇列：{{spx_queue}}\n\n若同時需要上表，請貼入：\n{{sheet_question_format}}\n\n廠直表 ID 判斷：{{vendor_required_id_hint}}\n工單號：{{work_order}}");
   ["KAM表", "KAM表．SBS"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【KAM 表填寫格式】", "依商城名字判斷表別後，選擇問題分類；系統會帶出 CS 詢問用格式：\n{{sheet_question_format}}\n\n建立 Jira 時可使用：\n▪ Summary：{{jira_summary}}\n▪ Description：\n{{jira_description}}"));
   ["廠直表"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【廠直表填寫格式】", "先確認商城名字，再選 Type：order / return / sku。\n{{vendor_required_id_hint}}\n\n請貼入轉單詢問表：\n{{sheet_question_format}}\n\n建立 Jira 時可用主旨：{{jira_summary}}"));
 
   ticketFormatBranches.forEach(branch => {
     [
-      ["ticket_case_kind", "工單/表單種類", "先判斷要走哪一種共用流程；KAM 表或廠直表一定要先有商城名字才能判斷。", false, true, "select", ["一般 KAM 商品問題", "SBS KAM 商品問題", "廠直表", "補償折扣碼", "InHouse Case／轉單任務"], ticketFormatRules],
-      ["ticket_issue_category", "問題分類", "依客人實際詢問內容選擇。若是上 KAM 表，請對應表格中的問題分類；若是補碼，請選補償折扣碼分類。", false, true, "select", ticketCategoryOptions, []],
+      ["ticket_case_kind", "工單/表單種類", "先判斷要走哪一種共用流程；KAM 表或廠直表一定要先有商城名字才能判斷。", false, true, "select", ["一般 KAM 商品問題", "SBS KAM 商品問題", "廠直表", "補償折扣碼", "金流工單", "物流工單", "InHouse Case／轉單任務"], ticketFormatRules],
+      ["ticket_issue_category", "問題分類", "依客人實際詢問內容選擇。若是上 KAM 表，請對應表格中的問題分類；若是補碼或金流，請選對應公版標題分類。", false, true, "select", ticketCategoryOptions, []],
+      ["logistics_ticket_kind", "物流工單情境", "只有走物流工單時選；會依 PPT/公版自動帶出 Project、Summary、Description 與 SPX 佇列。", false, false, "select", logisticsTicketOptions, []],
       ["vendor_table_type", "廠直表 Type", "只有走廠直表時需要。order=訂單問題；return=退貨問題；sku=商品問題。", false, false, "select", ["order", "return", "sku"], []],
       ["vendor_required_id_hint", "廠直表 ID 判斷", "選擇 Type 後自動帶出要填哪一種 ID。", true, false, "text", [], []],
+      ["jira_project", "Project", "Jira Project 欄位；物流會依公版帶入，其他工單依 Jira 頁面目前對應專案。", false, false, "text", [], []],
+      ["jira_issue_type", "Issue Type", "Jira Issue Type 固定填 Problem。", false, false, "text", [], []],
       ["jira_summary", "工單主旨", "依工單/表單種類 + 問題分類自動帶入，可再依實際案件微調。", false, false, "text", [], []],
       ["jira_description", "Jira Description / 案件內容", "依多層條件自動整理；貼到 Jira Description 後補齊截圖、連結或附件。", true, false, "text", [], []],
       ["sheet_question_format", "上表/詢問格式", "依 KAM 表、SBS 表、廠直表或補碼追蹤表的欄位整理。", true, false, "text", [], []],
+      ["spx_queue", "SPX 佇列", "物流店到店或店到家案件若需進 SPX 佇列，依工單情境自動帶出。", false, false, "text", [], []],
       ["buyer_username", "Buyer Username（買家帳號）", "查詢買家、補碼、廠直表 CS 內部備註或 Jira Username 欄位會用到。", false, false, "text", [], []],
       ["order_sn", "Order SN（訂單編號）", "訂單、退貨、補碼、廠直表常用參數。", false, false, "text", [], []],
+      ["payment_order_id", "Order ID（金流用）", "金流／Payments 需要的 Order ID，與 Order SN 不同。", false, false, "text", [], []],
+      ["logistics_order_id", "Order ID（物流用）", "物流公版中的 Order ID；若沒有可留空或依系統查詢結果補上。", false, false, "text", [], []],
+      ["shipping_tracking_no", "Shipping Tracing No", "正物流單號。", false, false, "text", [], []],
+      ["last_mile_tracking_number", "Last Mile Tracking Number", "店到店／店到家最後一哩物流單號。", false, false, "text", [], []],
+      ["reverse_tracking_no", "逆物流單號", "逆物流宅配案件使用。", false, false, "text", [], []],
       ["scm_order_id", "SCM Order ID", "廠直表 Type=order 時填入 ID 欄。", false, false, "text", [], []],
       ["scm_return_id", "SCM Return Order ID", "廠直表 Type=return 時填入 ID 欄。", false, false, "text", [], []],
       ["return_id", "Return ID（退貨單號）", "退貨問題或 Type=return 時使用。", false, false, "text", [], []],
@@ -1773,9 +1962,25 @@
       ["supplier_name", "廠商名稱", "KAM 表廠商欄位或廠直表供應商資訊。", false, false, "text", [], []],
       ["customer_question", "客人問題/訴求", "以客人實際問什麼為主，整理成可讓 KAM/廠商判斷的一段文字。", true, true, "text", [], []],
       ["related_link", "相關連結", "商品頁、訂單頁、客文截圖、影片或內部查詢頁連結。", true, false, "text", [], []],
+      ["recipient_info", "收件／退件資訊", "姓名、電話、地址或需修改的收件資訊。", true, false, "text", [], []],
+      ["package_size", "商品材積", "退貨商品材積長寬高；只有超材派車時需要。", false, false, "text", [], []],
+      ["pickup_time", "取件日期與時間", "店到店或店到家需要確認取件時間時填入。", false, false, "text", [], []],
+      ["pickup_store_info", "取件門市資訊", "門市名稱、店號或包裹抵達門市店號。", false, false, "text", [], []],
+      ["seller_username", "Seller Username（賣家帳號）", "店到店公版需要賣家帳號時填入。", false, false, "text", [], []],
+      ["recipient_phone_last3", "取貨人末三碼", "店到店公版需要取貨人手機末三碼時填入。", false, false, "text", [], []],
+      ["shipping_status", "貨態/異常原因", "最後貨態、異常不配送原因或目前查詢結果。", true, false, "text", [], []],
+      ["store_parcel_status", "門市包裹確認結果", "門市是否有此包裹送達。", false, false, "text", [], []],
+      ["payment_amount_note", "付款金額差異", "頁面顯示金額與實際貨到付款金額。", false, false, "text", [], []],
+      ["missing_quantity", "未取數量", "無面單缺件時填未取到的數量。", false, false, "text", [], []],
+      ["shop_id", "Shop ID", "店到家公版需要 Shop ID 時填入。", false, false, "text", [], []],
       ["case_owner", "個案擁有者/填表人", "填你的名字或當班負責人。", false, false, "text", [], []],
       ["vendor_priority", "Priority（廠直表）", "廠直表代碼：0=High、1=Medium、2=Low。", false, false, "select", ["0", "1", "2"], []],
       ["user_id", "User ID", "補償折扣碼或 Jira Description 需要時填入。", false, false, "text", [], []],
+      ["auth_code", "授權碼", "信用卡授權或已刷卡未跳轉時填入。", false, false, "text", [], []],
+      ["auth_time", "授權日期／時間", "信用卡授權或已刷卡未跳轉時填入。", false, false, "date", [], []],
+      ["transfer_time", "轉帳日期／時間", "轉帳或補匯款日期；若有時間可一併寫在備註。", false, false, "date", [], []],
+      ["bank_last5", "轉出帳號後五碼", "轉帳查帳時填入。", false, false, "text", [], []],
+      ["transfer_amount", "轉帳／匯款金額", "金額欄位用單行文字，格式例如 100。", false, false, "text", [], []],
       ["voucher_code", "原 Voucher Code", "返還原折扣碼時填原始折扣碼。", false, false, "text", [], []],
       ["parcel_id", "Parcel（包裹）", "補碼申請包裹資訊。", false, false, "text", [], []],
       ["voucher_binding", "折扣碼綁定資訊", "例如指定店家或指定商品。", false, false, "text", [], []],
@@ -1795,9 +2000,9 @@
       options,
       fillRules,
       category: "工單/上表",
-      sourceLinks: [ticketLinks.jira, ticketLinks.kam, ticketLinks.vendor].filter(Boolean),
+      sourceLinks: [ticketLinks.jira, ticketLinks.jiraPublicForm, ticketLinks.kam, ticketLinks.vendor].filter(Boolean),
       sourceUrl: ticketLinks.jira?.url || "",
-      sourceNote: "PPT 對應：第 136-138 頁 Jira 欄位；第 179 頁補償折扣碼 Jira 格式；KAMS/PMS×CS×Listing 的「商品問題 / SBS商品問題」可帶 CS 詢問用格式；廠商直送 For Supplier - NEW 的「轉單詢問」可帶 Question(公式)。"
+      sourceNote: "PPT 對應：Jira 新增案件欄位頁；第 179 頁補償折扣碼 Jira 格式；物流 Summary／Description 依「標題/個案公版」試算表；KAMS/PMS×CS×Listing 的「商品問題 / SBS商品問題」可帶 CS 詢問用格式；廠商直送 For Supplier - NEW 的「轉單詢問」可帶 Question(公式)。"
     }));
   });
 

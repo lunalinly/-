@@ -2015,12 +2015,29 @@
 
   createToolBranch(
     "工具：Order Admin｜訂單資訊查詢",
-    "Order Admin｜訂單資訊查詢：\n▪ Order SN：{{order_id}}\n▪ 查詢分頁：Orders / Order Information\n▪ 查詢結果：{{order_admin_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 在 Orders / Order Information 用 Order SN 搜尋。\n3. 確認訂單狀態、付款狀態、取消狀態、完成時間與訂單備註。\n4. 若問題涉及退款或退貨，繼續疊對應 Order Admin 分頁。\n\nPPT 出處：第 20-21、221-237 頁",
+    "Order Admin｜訂單資訊查詢：\n▪ Order SN：{{order_id}}\n▪ Product ID：{{product_id}}\n▪ Model ID：{{model_id}}\n▪ 查詢分頁：Orders / Order Information\n▪ 查詢結果：{{order_admin_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 在 Orders / Order Information 用 Order SN 搜尋。\n3. 進入訂單詳細資料，確認訂單狀態、付款狀態、取消狀態、完成時間與訂單備註。\n4. 若需要商品層級資料，到商品資訊區找到買家詢問的商品名稱與規格，同一列可取得 Product ID 與 Model ID。\n5. 若問題涉及退款或退貨，繼續疊對應 Order Admin 分頁。\n\nPPT 出處：第 20-21、221-237 頁",
     [
       toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("product_id", "Product ID", "有訂單時可從 Order Admin 商品資訊區同時取得 Product ID。"),
+      toolVar("model_id", "Model ID", "有訂單時可從 Order Admin 商品資訊區同一個商品規格列取得 Model ID。"),
       toolVar("order_admin_result", "Order Admin 訂單查詢結果", "貼上訂單狀態、付款狀態、取消狀態或備註。", true, true)
     ],
     "PPT 第 20-21、221-237 頁",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：Order Admin｜查 Product ID / Model ID",
+    "Order Admin｜查 Product ID / Model ID：\n▪ Order SN：{{order_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n▪ Product ID：{{product_id}}\n▪ Model ID：{{model_id}}\n▪ 組合後 MP SKU ID：{{V030}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 進入 Orders / Order Information。\n3. 輸入 Order SN 搜尋並進入訂單詳細資料。\n4. 到商品資訊區，找到買家詢問的商品名稱與商品規格。\n5. 在同一筆商品規格資料中取得 Product ID 與 Model ID。\n6. 若後續要填 MP SKU ID，將兩個 ID 用底線組合為 Product ID_Model ID。\n\n提醒：商品只有單一規格時，也不要自行填 Product ID_0；仍需確認實際 Model ID。\n\nPPT 出處：第 20-21、73、128、221-237 頁",
+    [
+      toolVar("order_id", "Order SN", "已有售後訂單時，用 Order SN 到 Order Admin 查詢。", false, true),
+      toolVar("V008", "商品名稱", "用來對照訂單商品資訊區的商品。"),
+      toolVar("V010", "商品規格", "用來對照同一列商品規格；買家有指定規格時必填。"),
+      toolVar("product_id", "Product ID", "從 Order Admin 商品資訊區取得。", false, true),
+      toolVar("model_id", "Model ID", "從 Order Admin 商品資訊區同一列取得。", false, true),
+      toolVar("V030", "MP SKU ID", "需要填 MP SKU ID 時，用 Product ID_Model ID 組合。")
+    ],
+    "PPT 第 20-21、73、128、221-237 頁",
     [exactLinks.orderAdmin]
   );
 
@@ -2075,10 +2092,11 @@
 
   createToolBranch(
     "工具：DSS｜查 MP SKU ID",
-    "DSS｜查 MP SKU ID：\n▪ 商城名字：{{V003}}\n▪ Product ID：{{product_id}}\n▪ 查詢分頁：供應商管理 / 商品\n▪ MP SKU ID：{{V030}}\n▪ 查詢結果：{{dss_lookup_result}}\n\n步驟：\n1. 開啟 DSS。\n2. 進入供應商管理 / 商品。\n3. 用 Product ID 查詢正確 MP SKU ID。\n4. 不要直接使用 PID_0；MP SKU ID 錯誤會導致找不到正確供應商。\n\nPPT 出處：第 73、128 頁",
+    "DSS｜查 MP SKU ID：\n▪ 商城名字：{{V003}}\n▪ Product ID：{{product_id}}\n▪ Model ID：{{model_id}}\n▪ 查詢分頁：供應商管理 / 商品\n▪ MP SKU ID：{{V030}}\n▪ 查詢結果：{{dss_lookup_result}}\n\n步驟：\n1. 開啟 DSS。\n2. 進入供應商管理 / 商品。\n3. 用 Product ID 搜尋商品。\n4. 搜尋結果會列出不同規格；依買家詢問的商品規格找到正確 Model ID。\n5. 複製系統顯示的 MP SKU ID。\n6. 不要直接使用 PID_0；MP SKU ID 或 Model ID 錯誤會導致找不到正確供應商。\n\nPPT 出處：第 73、128 頁",
     [
       toolVar("V003", "商城名字", "判斷廠直表與 DSS 查詢前必填。", false, true),
       toolVar("product_id", "Product ID", "貼上商品頁 Product ID。", false, true),
+      toolVar("model_id", "Model ID", "DSS 商品搜尋結果會列出各規格的 Model ID；需依買家詢問規格確認。"),
       toolVar("V030", "MP SKU ID", "DSS 查到的正確 MP SKU ID。", false, true),
       toolVar("dss_lookup_result", "DSS MP SKU 查詢結果", "貼上供應商或商品查詢結果。", true)
     ],
@@ -2575,6 +2593,7 @@
     "InHouse 轉單任務": "153-159",
     "工具：CS Portal 查詢": "5、116、185-186、264、266",
     "工具：Order Admin 查詢": "5、20-21、195、221-237、244-245",
+    "工具：Order Admin｜查 Product ID / Model ID": "20-21、73、128、221-237",
     "工具：Promotion Admin 查詢": "171-179",
     "工具：商品效期 Inventory Expiration Date": "52-56",
     "工具：商品進貨日 Inventory Inbound Date": "61-66",
@@ -2722,6 +2741,7 @@
     ["Buyer Username", "買家帳號"],
     ["Order SN", "訂單編號"],
     ["Product ID", "商品 ID"],
+    ["Model ID", "規格 ID"],
     ["Voucher Code", "優惠券代碼"],
     ["Return ID", "退貨退款案件編號"],
     ["User ID", "使用者 ID"],

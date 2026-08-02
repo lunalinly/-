@@ -2042,6 +2042,20 @@
   );
 
   createToolBranch(
+    "工具：取得訂單編號 Order SN",
+    "取得訂單編號 Order SN：\n▪ Buyer Username：{{V018}}\n▪ 已知資訊：{{known_lookup_info}}\n▪ 查詢工具／位置：{{order_sn_lookup_tool}}\n▪ Order SN：{{order_id}}\n▪ 查詢結果：{{order_sn_lookup_result}}\n\n步驟：\n1. 若客文沒有提供訂單編號，先確認客人是否有提供 Buyer Username、商品名稱、截圖或付款/物流資訊。\n2. 開啟 CS Portal，以 Buyer Username 搜尋買家。\n3. 進入買家訂單列表或訂單詳情，依客人詢問的商品、時間、金額或貨態找出對應 Order SN。\n4. 若已知付款、退款或退貨線索，也可到 Order Admin 用相關條件交叉確認。\n5. 找到後把 Order SN 填入後續需要查訂單、退款、物流、補碼或工單的分支。\n\n提醒：同一買家可能有多筆訂單，需用商品名稱、規格、下單時間、付款金額或物流狀態交叉確認，不要只憑最近一筆判斷。\n\nPPT 出處：第 5、20-21、116、185-186、221-237 頁",
+    [
+      toolVar("V018", "Buyer Username（買家帳號）", "客人沒有提供 Order SN 時，優先用 Buyer Username 到 CS Portal 找訂單。"),
+      toolVar("known_lookup_info", "已知查詢資訊", "例如商品名稱、規格、下單時間、付款金額、物流狀態或截圖。", true),
+      toolVar("order_sn_lookup_tool", "查詢工具／位置", "選擇實際查詢位置。", false, true, "select", ["CS Portal / 買家訂單列表", "CS Portal / 訂單詳情", "Order Admin / Orders", "Order Admin / Payment or Refund", "Order Admin / Return & Refund Requests"]),
+      toolVar("order_id", "Order SN（訂單編號）", "查到後填入 Order SN。", false, true),
+      toolVar("order_sn_lookup_result", "Order SN 查詢結果", "貼上如何判斷這筆訂單是客人詢問的訂單。", true, true)
+    ],
+    "PPT 第 5、20-21、116、185-186、221-237 頁",
+    [exactLinks.csPortal, exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
     "工具：Order Admin｜退貨退款查詢",
     "Order Admin｜退貨退款查詢：\n▪ Return ID：{{return_id}}\n▪ Order SN：{{order_id}}\n▪ 查詢分頁：Return / Return & Refund Requests\n▪ 查詢結果：{{order_return_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 進入 Return / Return & Refund Requests。\n3. 用 Return ID 或 Order SN 搜尋。\n4. 確認退貨原因、退款狀態、申退時間、審核狀態與逆物流資訊。\n\nPPT 出處：第 241、244-245、250-251 頁",
     [
@@ -2051,6 +2065,20 @@
     ],
     "PPT 第 241、244-245、250-251 頁",
     [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：取得 Return ID",
+    "取得 Return ID：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 查詢工具／位置：{{return_id_lookup_tool}}\n▪ Return ID：{{return_id}}\n▪ 查詢結果：{{return_id_lookup_result}}\n\n步驟：\n1. 若客文沒有提供 Return ID，先取得 Order SN。\n2. 開啟 CS Portal 或 Order Admin。\n3. CS Portal：用 Order SN 進入訂單/退貨退款詳情，確認是否有 RR / Offline RR 案件。\n4. Order Admin：進入 Return / Return & Refund Requests，用 Order SN 搜尋退貨退款案件。\n5. 進入案件後複製 Return ID，並確認退貨原因、狀態、申請時間與是否仍需追蹤。\n\n提醒：同一張訂單可能有不同退款/退貨節點，請確認 Return ID 對應的是客人正在詢問的那一筆案件。\n\nPPT 出處：第 241、244-245、250-251、260、263-265 頁",
+    [
+      toolVar("order_id", "Order SN", "先用訂單編號查退貨退款案件。", false, true),
+      toolVar("V018", "Buyer Username（買家帳號）", "需要回查買家案件時使用。"),
+      toolVar("return_id_lookup_tool", "查詢工具／位置", "選擇實際查詢位置。", false, true, "select", ["CS Portal / 退貨退款詳情", "CS Portal / Offline RR", "Order Admin / Return & Refund Requests"]),
+      toolVar("return_id", "Return ID（退貨退款案件編號）", "查到後填入 Return ID。", false, true),
+      toolVar("return_id_lookup_result", "Return ID 查詢結果", "貼上確認到的 RR 狀態、原因、時間或備註。", true, true)
+    ],
+    "PPT 第 241、244-245、250-251、260、263-265 頁",
+    [exactLinks.csPortal, exactLinks.orderAdmin]
   );
 
   createToolBranch(
@@ -2226,6 +2254,52 @@
   }));
   replaceCommonToolParts("Q025", "廠直退貨／未取回商品", {
     "工具：DSS 商品／訂單查詢": ["工具：DSS｜查 MP SKU ID"]
+  });
+
+  function flowUsesCode(questionId, flow, code) {
+    const ownVariables = data.variables.filter(variable => variable.q === questionId && variable.branch === flow.branch);
+    if (ownVariables.some(variable => variable.code === code)) return true;
+    const parts = flow.answerParts || [];
+    return parts.some(part => {
+      const q = part.question === "共用" ? "GLOBAL" : questionId;
+      return data.variables.some(variable => variable.q === q && variable.branch === part.branch && variable.code === code)
+        || String(template(q, part.branch)?.text || "").includes(`{{${code}}}`);
+    });
+  }
+
+  function insertCommonToolBeforeOtherTools(questionId, flow, commonBranch) {
+    const question = questionById(questionId);
+    if (!question || ["Q001", "Q002", "Q003", "Q004"].includes(questionId)) return;
+    flow.answerParts ||= [{ question: flow.question, branch: flow.branch, beforeText: "" }];
+    if (flow.answerParts.some(part => part.question === "共用" && part.branch === commonBranch)) return;
+    const firstToolIndex = flow.answerParts.findIndex(part => part.question === "共用" && String(part.branch || "").startsWith("工具："));
+    const insertIndex = firstToolIndex >= 0 ? firstToolIndex : flow.answerParts.length;
+    flow.answerParts.splice(insertIndex, 0, { question: "共用", branch: commonBranch, beforeText: "" });
+    flow.answerBranches = flow.answerParts.map(part => part.branch);
+  }
+
+  data.questions
+    .filter(question => !["Q001", "Q002", "Q003", "Q004"].includes(question.id))
+    .forEach(question => {
+      data.flows
+        .filter(flow => flow.question === question.name)
+        .forEach(flow => {
+          const needsReturnId = flowUsesCode(question.id, flow, "return_id");
+          if (flowUsesCode(question.id, flow, "order_id") || needsReturnId) insertCommonToolBeforeOtherTools(question.id, flow, "工具：取得訂單編號 Order SN");
+          if (needsReturnId) insertCommonToolBeforeOtherTools(question.id, flow, "工具：取得 Return ID");
+        });
+    });
+
+  data.flows.forEach(flow => {
+    if (!flow.answerParts) return;
+    const orderIndex = flow.answerParts.findIndex(part => part.question === "共用" && part.branch === "工具：取得訂單編號 Order SN");
+    const returnIndex = flow.answerParts.findIndex(part => part.question === "共用" && part.branch === "工具：取得 Return ID");
+    if (orderIndex >= 0 && returnIndex >= 0 && returnIndex < orderIndex) {
+      const [orderPart] = flow.answerParts.splice(orderIndex, 1);
+      const newReturnIndex = flow.answerParts.findIndex(part => part.question === "共用" && part.branch === "工具：取得 Return ID");
+      flow.answerParts.splice(newReturnIndex, 0, orderPart);
+      flow.answerBranches = flow.answerParts.map(part => part.branch);
+    }
   });
 
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "新建工單", "此類特殊商品／管制區／高單若需跨窗口確認，先建立工單：");
@@ -2664,6 +2738,8 @@
     "InHouse 轉單任務": "153-159",
     "工具：CS Portal 查詢": "5、116、185-186、264、266",
     "工具：Order Admin 查詢": "5、20-21、195、221-237、244-245",
+    "工具：取得訂單編號 Order SN": "5、20-21、116、185-186、221-237",
+    "工具：取得 Return ID": "241、244-245、250-251、260、263-265",
     "工具：Order Admin｜查 Product ID / Model ID": "20-21、73、128、221-237",
     "工具：Promotion Admin 查詢": "171-179",
     "工具：商品效期 Inventory Expiration Date": "52-56",

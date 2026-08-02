@@ -2216,6 +2216,50 @@
 
   [...data.variables, ...data.actions, ...(data.fields || [])].forEach(annotateSourceItem);
 
+  const inlineSourceLinks = [
+    ["Inventory Expiration Date", exactLinks.inventoryExpiration.url],
+    ["Inventory Inbound Date", exactLinks.inventoryInbound.url],
+    ["AOD-Main", exactLinks.aodMain.url],
+    ["[DB] Add-on / Gift / Bundle", exactLinks.addonDbSub.url],
+    ["Add-on_Sub", exactLinks.addonDbSub.url],
+    ["Add-on_Main", exactLinks.addonDbMain.url],
+    ["個案補碼追蹤表", exactLinks.voucherTracking.url],
+    ["延遲補償工具", exactLinks.delayDashboard.url],
+    ["2025 查詢表4 / HighRisk Buyer 查詢表", exactLinks.highRiskBuyer.url],
+    ["HighRisk Buyer 查詢表", exactLinks.highRiskBuyer.url],
+    ["Order Admin Portal", exactLinks.orderAdmin.url],
+    ["Order Admin", exactLinks.orderAdmin.url],
+    ["Promotion Admin", exactLinks.promotionAdmin.url],
+    ["CS Portal", exactLinks.csPortal.url],
+    ["CsP", exactLinks.csPortal.url],
+    ["SCI", "https://sci.twtc.shopee.tw/shopee24-hub/search"],
+    ["Shopee Drop Shipping（DSS）", "https://scm.internal.shopee.tw/homepage/backlogs"],
+    ["DSS", "https://scm.internal.shopee.tw/homepage/backlogs"],
+    ["Shopee Jira", ticketLinks.jira.url],
+    ["Jira Summary／Description 公版", ticketLinks.jiraPublicForm.url]
+  ].sort((a, b) => b[0].length - a[0].length);
+
+  function anchorText(label, url) {
+    return `<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
+  }
+
+  function linkifySourceNote(text) {
+    if (!text) return text;
+    let result = String(text);
+    inlineSourceLinks.forEach(([label, url]) => {
+      result = result.split(/(<a\b[^>]*>.*?<\/a>)/gis).map(piece => {
+        if (/^<a\b/i.test(piece)) return piece;
+        return piece.split(label).join(anchorText(label, url));
+      }).join("");
+    });
+    return result;
+  }
+
+  [...data.variables, ...data.actions, ...(data.fields || [])].forEach(item => {
+    if (!item?.sourceNote) return;
+    item.sourceNote = linkifySourceNote(item.sourceNote);
+  });
+
   function stripTemplateSourceNoise(text) {
     return String(text || "")
       .replace(/\n{1,2}PPT 出處：第[^\n]+頁/g, "")
@@ -2267,16 +2311,23 @@
   }
 
   function addGlossary(text) {
-    let result = String(text || "");
-    glossaryTerms.forEach(([term, explanation]) => {
-      const pattern = new RegExp(`(^|[^A-Za-z0-9_])(${escapeRegExp(term)})(?![A-Za-z0-9_]*[（(])`, "g");
-      let applied = false;
-      result = result.replace(pattern, (match, prefix, value) => {
-        if (applied) return match;
-        applied = true;
-        return `${prefix}${value}（${explanation}）`;
+    const applyPlainGlossary = value => {
+      let result = String(value || "");
+      glossaryTerms.forEach(([term, explanation]) => {
+        const pattern = new RegExp(`(^|[^A-Za-z0-9_])(${escapeRegExp(term)})(?![A-Za-z0-9_]*[（(])`, "g");
+        let applied = false;
+        result = result.replace(pattern, (match, prefix, value) => {
+          if (applied) return match;
+          applied = true;
+          return `${prefix}${value}（${explanation}）`;
+        });
       });
-    });
+      return result;
+    };
+    let result = String(text || "").split(/(<a\b[^>]*>.*?<\/a>)/gis).map(piece => {
+      if (/^<a\b/i.test(piece)) return piece;
+      return applyPlainGlossary(piece);
+    }).join("");
     return result
       .replace(/OOS（Out of Stock，缺貨）\s*缺貨/g, "OOS（Out of Stock，缺貨）")
       .replace(/COD（Cash on Delivery，貨到付款）\s*付款/g, "COD（Cash on Delivery，貨到付款）");

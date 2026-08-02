@@ -765,11 +765,11 @@
         variables: [
           field("order_sn", "Order SN", "訂單編號"),
           field("return_id", "Return ID", "退貨退款編號"),
-          field("shop_name", "商店名字／店鋪名稱", "判斷廠直／產值表必填"),
+          field("shop_name", "商店名字／店鋪名稱", "判斷廠直表必填"),
           field("vendor_reply", "廠商回覆／派車狀態", "DSS 或表單回覆", { multiline: true }),
           field("case_summary", "案件摘要", "整理給廠商／OPS 的內容", { multiline: true })
         ],
-        actions: [{ action: "到 DSS 通知廠商或接廠直／產值表", needed: true, note: "PPT 第 256 頁" }]
+        actions: [{ action: "到 DSS 通知廠商或接廠直表", needed: true, note: "PPT 第 256 頁" }]
       },
       {
         name: "遊戲點數／SP_GAME",
@@ -1311,8 +1311,8 @@
   const q018 = questionById("Q018");
   if (q018) {
     q018.enabled = true;
-    q018.description = "判斷是否需新建工單、填 KAM 表、填廠直／產值表，以及後續 1-2 個工作天追蹤。要判斷 KAM 表或廠直／產值表前，一定先確認商店名字。";
-    q018.answerText = "先確認客人問題是否只是單純資訊提供；若涉及退換貨意圖、後續追蹤、廠商處理、資訊不齊、商品異常或需跨窗口確認，就要建立工單或上對應表單。判斷要上 KAM 表或廠直／產值表時，一定要先取得商店名字／店鋪名稱，才能判斷該走 KAM 表、KAM 表．SBS 或廠直表。";
+    q018.description = "判斷是否需新建工單、填 KAM 表、填廠直表，以及後續 1-2 個工作天追蹤。要判斷 KAM 表或廠直表前，一定先確認商店名字。";
+    q018.answerText = "先確認客人問題是否只是單純資訊提供；若涉及退換貨意圖、後續追蹤、廠商處理、資訊不齊、商品異常或需跨窗口確認，就要建立工單或上對應表單。判斷要上 KAM 表或廠直表時，一定要先取得商店名字／店鋪名稱，才能判斷該走 KAM 表、KAM 表．SBS 或廠直表。";
   }
 
   const sharedFlow = (branch, next = "填完欄位後產生共用處理內容") => {
@@ -1341,7 +1341,7 @@
   upsertTemplate({
     q: "GLOBAL",
     branch: "新建工單",
-    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\nJira 工單填寫重點：\n▪ 案件主旨：{{ticket_subject}}\n▪ Order SN / Buyer Username：{{ticket_customer_key}}\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 問題摘要：{{ticket_summary}}\n▪ 已確認資料：{{checked_info}}\n▪ 待追蹤事項：{{pending_note}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直／產值表，必須先用商店名字判斷表別，再把工單號回填到該表。"
+    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\nJira 工單填寫重點：\n▪ 案件主旨：{{ticket_subject}}\n▪ Order SN / Buyer Username：{{ticket_customer_key}}\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 問題摘要：{{ticket_summary}}\n▪ 已確認資料：{{checked_info}}\n▪ 待追蹤事項：{{pending_note}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直表，必須先用商店名字判斷表別，再把工單號回填到該表。"
   });
   upsertTemplate({
     q: "GLOBAL",
@@ -1352,7 +1352,7 @@
   [
     ["ticket_subject", "工單主旨", "例：商品瑕疵／退貨退款／廠商確認／物流異常", false, true, "text"],
     ["ticket_customer_key", "Order SN / Buyer Username", "售後填 Order SN；售前可填 Buyer Username", false, true, "text"],
-    ["shop_name", "商店名字／店鋪名稱", "要判斷 KAM 表或廠直／產值表前必填", false, true, "text"],
+    ["shop_name", "商店名字／店鋪名稱", "要判斷 KAM 表或廠直表前必填", false, true, "text"],
     ["ticket_summary", "問題摘要", "簡述客人問題與目前卡點", true, true, "text"],
     ["checked_info", "已確認資料", "已查商品頁、訂單、照片、貨態、是否申退等", true, false, "text"],
     ["pending_note", "待追蹤事項／未結案備註", "例：KAM 未回，已再次詢問，待追蹤", true, true, "text"],
@@ -1369,7 +1369,7 @@
     category: "工單",
     sourceLinks: code === "work_order" ? [ticketLinks.jira] : [],
     sourceUrl: code === "work_order" ? ticketLinks.jira.url : "",
-    sourceNote: code === "shop_name" ? "商店名字是判斷要上 KAM 表、KAM 表．SBS 或廠直／產值表的必要資訊；沒有店名時不要直接判斷表別。" : ""
+    sourceNote: code === "shop_name" ? "商店名字是判斷要上 KAM 表、KAM 表．SBS 或廠直表的必要資訊；沒有店名時不要直接判斷表別。" : ""
   }));
 
   [
@@ -1417,7 +1417,7 @@
     branch: "廠直問題需轉廠商",
     action: "PPT 廠直／DSS 商談情境索引",
     needed: true,
-    note: "依商店名字判斷廠直／產值表，必要時到 DSS 商談問廠商",
+    note: "依商店名字判斷廠直表，必要時到 DSS 商談問廠商",
     sourceLinks: [ticketLinks.vendor, { title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }],
     url: "https://scm.internal.shopee.tw/homepage/backlogs",
     sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 73、128 頁：MP SKU ID 必須查正確，錯誤會導致找不到正確供應商，無法催促 KAM／PM 回覆。</li><li>第 132 頁：DSS 商談更新回覆時，需移除 KAM 表廠商回覆；商談結案時，KAM 表也同步結案。</li><li>第 194 頁：廠商直送物流配送流程，商品問題、OOS、改址、簽收單等依情境填廠直 KAM 表、通知 OPS 或 Jira 工單＋填表。</li><li>第 195 頁：廠直退換貨補寄，請務必確認資訊後才上表；換貨／補寄與退貨皆需 Jira 工單＋填廠直 KAM 表。</li><li>第 196 頁：買家反映瑕疵／破損／缺件，需先確認照片、是否組裝使用、買家訴求；上表格式要清楚，避免二次來回詢問。</li></ul>"
@@ -1432,18 +1432,18 @@
     url: ticketLinks.jira.url
   });
 
-  const tableReminder = "<div><b>表別判斷前必填：商店名字／店鋪名稱。</b></div><div>要上 KAM 表、KAM 表．SBS 或廠直／產值表時，先用商店名字判斷出貨來源與對應表單；沒有商店名字時，不要直接判斷表別。</div>";
+  const tableReminder = "<div><b>表別判斷前必填：商店名字／店鋪名稱。</b></div><div>要上 KAM 表、KAM 表．SBS 或廠直表時，先用商店名字判斷出貨來源與對應表單；沒有商店名字時，不要直接判斷表別。</div>";
   ["KAM表", "KAM表．SBS", "廠直表"].forEach(branch => {
     const tpl = template("GLOBAL", branch);
     if (tpl && !tpl.text.includes("商店名字／店鋪名稱")) {
-      tpl.text = `表別判斷前先確認：\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 依店名判斷要上 KAM 表、KAM 表．SBS 或廠直／產值表。\n\n${tpl.text}`;
+      tpl.text = `表別判斷前先確認：\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 依店名判斷要上 KAM 表、KAM 表．SBS 或廠直表。\n\n${tpl.text}`;
     }
     upsertVariable({
       q: "GLOBAL",
       branch,
       code: "shop_name",
       label: "商店名字／店鋪名稱",
-      hint: "要判斷 KAM 表或廠直／產值表前必填",
+      hint: "要判斷 KAM 表或廠直表前必填",
       required: true,
       multiline: false,
       type: "text",
@@ -1470,7 +1470,7 @@
   setFlowParts("詢問工單／KAM 表是否要建立", "廠直問題需轉廠商", [
     { question: "詢問工單／KAM 表是否要建立", branch: "廠直問題需轉廠商", beforeText: "" },
     { question: "共用", branch: "新建工單", beforeText: "需先建立工單：" },
-    { question: "共用", branch: "廠直表", beforeText: "再依商店名字判斷並填廠直／產值表：" },
+    { question: "共用", branch: "廠直表", beforeText: "再依商店名字判斷並填廠直表：" },
     { question: "共用", branch: "工單追蹤／未回覆安撫", beforeText: "若 1-2 個工作天仍未回覆，使用追蹤話術與未結案備註：" }
   ]);
   setFlowParts("詢問工單／KAM 表是否要建立", "平日／假日追蹤話術", [
@@ -1499,7 +1499,7 @@
     text: "DSS 商談詢問廠商前先確認：\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ Order SN：{{order_id}}\n▪ Product ID：{{product_id}}\n▪ MP SKU ID：{{V030}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 買家訴求：{{vendor_question}}\n\n操作方式：\n1. 開啟 Shopee Drop Shipping（DSS）。\n2. 進入對應訂單或供應商管理資料，確認 MP SKU ID 正確；不要直接使用系統預設的 PID_0。\n3. 進入商談，將 Question／商談內容整理成廠商看得懂的問題。\n4. 若是換貨／補寄，需一次問完：買家訴求、補寄規格、是否同原訂單資訊、是否需更改地址或收件資訊。\n5. 送出後記錄商談狀態與待回覆事項。\n\n商談內容建議：\n{{vendor_question}}\n\n廠商回覆：{{vendor_reply}}\n\n提醒：商談更新回覆時，要同步移除 KAM 表／廠直表中的待回覆註記；商談結案時，KAM 表／廠直表也要同步結案。"
   });
   [
-    ["shop_name", "商店名字／店鋪名稱", "判斷廠直／產值表與 DSS 商談前必填", false, true, "text", []],
+    ["shop_name", "商店名字／店鋪名稱", "判斷廠直表與 DSS 商談前必填", false, true, "text", []],
     ["order_id", "Order SN", "貼上訂單編號", false, true, "text", []],
     ["product_id", "Product ID", "貼上商品頁 Product ID", false, true, "text", []],
     ["V008", "商品名稱", "貼上產品頁完整標題", false, true, "text", []],
@@ -1526,7 +1526,7 @@
     sourceUrl: ["V030", "dss_chat_status"].includes(code) ? "https://scm.internal.shopee.tw/homepage/backlogs" : "",
     sourceNote: code === "V030"
       ? "PPT 第 73、128 頁提醒：MP SKU ID 必須查正確，資料不能包含空白、分行或多餘符號；若系統預設 PID_0，仍須查詢正確 SKU，否則可能找不到正確供應商，也無法催促 KAM／PM 回覆。"
-      : (code === "shop_name" ? "商店名字是判斷是否走廠直／產值表與 DSS 商談的必要資訊；沒有店名不要直接判斷。" : "")
+      : (code === "shop_name" ? "商店名字是判斷是否走廠直表與 DSS 商談的必要資訊；沒有店名不要直接判斷。" : "")
   }));
   upsertAction({
     q: "GLOBAL",
@@ -1608,9 +1608,6 @@
       .forEach(action => upsertAction({ ...action, branch: aliasBranch }));
   }
 
-  cloneSharedBranch("KAM表", "CAM表", "此共用分支對應 KAM/CAM 表；要判斷前一定先確認商店名字／店鋪名稱。");
-  cloneSharedBranch("廠直表", "廠直／產值表", "此共用分支對應廠直／產值表；要判斷前一定先確認商店名字／店鋪名稱。");
-
   function ensureCommonPart(questionId, branchName, commonBranch, beforeText = "") {
     const question = questionById(questionId);
     if (!question) return;
@@ -1626,11 +1623,11 @@
   }
 
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "新建工單", "此類特殊商品／管制區／高單若需跨窗口確認，先建立工單：");
-  ensureCommonPart("Q013", "管制區／高單／特殊商品", "KAM表", "再依商店名字判斷並填 KAM/CAM 表：");
+  ensureCommonPart("Q013", "管制區／高單／特殊商品", "KAM表", "再依商店名字判斷並填 KAM 表：");
   ensureCommonPart("Q014", "小額折扣碼", "新建工單", "若提供小額折扣碼後仍有訂單問題要追蹤，需另建工單：");
-  ensureCommonPart("Q014", "小額折扣碼", "KAM表", "若商品／出貨問題仍需回報，依商店名字判斷是否填 KAM/CAM 表：");
+  ensureCommonPart("Q014", "小額折扣碼", "KAM表", "若商品／出貨問題仍需回報，依商店名字判斷是否填 KAM 表：");
   ensureCommonPart("Q016", "可發起 Agent AOC", "新建工單", "若屬 Offline RR 或需專員代處理並追蹤，需建立工單：");
-  ensureCommonPart("Q016", "可發起 Agent AOC", "KAM表", "若需確認是否可退／個案處理，依商店名字判斷並填 KAM/CAM 表：");
+  ensureCommonPart("Q016", "可發起 Agent AOC", "KAM表", "若需確認是否可退／個案處理，依商店名字判斷並填 KAM 表：");
   ["信用卡無法付款", "信用卡活動折扣券無法使用", "銀行轉帳已匯款但未待出貨", "已退款但未入帳／確認退款金額", "補匯款／整新費查帳"].forEach(branch => {
     ensureCommonPart("Q021", branch, "InHouse 轉單任務", "需要 Payments／MKT 或外部門確認時，使用共用 InHouse 轉單任務：");
   });
@@ -1641,15 +1638,15 @@
     ensureCommonPart("Q024", branch, "工單追蹤／未回覆安撫", "若需等待外部門回覆，建立追蹤：");
   });
   ensureCommonPart("Q025", "一般店到店貨損", "新建工單", "貨損需 VM／OPS 確認時，先建立工單：");
-  ensureCommonPart("Q025", "一般店到店貨損", "KAM表", "若商品問題需回報，依商店名字判斷是否填 KAM/CAM 表：");
+  ensureCommonPart("Q025", "一般店到店貨損", "KAM表", "若商品問題需回報，依商店名字判斷是否填 KAM 表：");
   ensureCommonPart("Q025", "大材積商品退貨", "新建工單", "大材積退貨需跨 VM／OPS／Logistics 追蹤時，先建立工單：");
   ensureCommonPart("Q025", "Apple 館／官方通路保固", "新建工單", "Apple／保固／送檢需要追蹤時，先建立工單：");
-  ensureCommonPart("Q025", "Apple 館／官方通路保固", "KAM表", "若需 KAM/CAM 或供應商確認，依商店名字判斷上表：");
+  ensureCommonPart("Q025", "Apple 館／官方通路保固", "KAM表", "若需 KAM 或供應商確認，依商店名字判斷上表：");
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "DSS 商談詢問廠商", "需通知廠商派車或確認取回時，使用 DSS 商談共用分支：");
-  ensureCommonPart("Q025", "廠直退貨／未取回商品", "廠直／產值表", "若需上廠直／產值表，先確認商店名字再填表：");
+  ensureCommonPart("Q025", "廠直退貨／未取回商品", "廠直表", "若需上廠直表，先確認商店名字再填表：");
   ensureCommonPart("Q025", "遊戲點數／SP_GAME", "新建工單", "遊戲點數／SP_GAME 需新建工單並轉職代確認：");
 
-  const ticketFormatBranches = ["新建工單", "KAM表", "KAM表．SBS", "廠直表", "CAM表", "廠直／產值表"];
+  const ticketFormatBranches = ["新建工單", "KAM表", "KAM表．SBS", "廠直表"];
   const ticketCategoryOptions = [
     "售前-商品規格",
     "售前-商品使用",
@@ -1668,25 +1665,25 @@
   ];
   const ticketFormatRules = [
     {
-      values: ["一般 KAM/CAM 商品問題"],
+      values: ["一般 KAM 商品問題"],
       conditions: [{ code: "ticket_issue_category", values: ["售前-商品規格", "售前-商品使用", "售前-配件/贈品", "售前-保固相關", "售前-品質諮詢"] }],
       assignments: [
         { targetCode: "jira_summary", value: "售前商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{product_id}}" },
-        { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：售前商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{product_id}}\nShop Name：{{shop_name}}\nUsername：{{buyer_username}}\nDescription：請貼上 KAM/CAM 表的 CS 詢問用格式，並補上客文截圖或商品頁連結。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
+        { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：售前商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{product_id}}\nShop Name：{{shop_name}}\nUsername：{{buyer_username}}\nDescription：請貼上 KAM 表的 CS 詢問用格式，並補上客文截圖或商品頁連結。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
         { targetCode: "sheet_question_format", value: "#{{sheet_row_no}}\nHI,{{kam_owner}}\n【問題分類】{{ticket_issue_category}}\n【商品名稱】{{V008}}\n【商品規格】{{V010}}\n【廠商】{{supplier_name}}\n【Product ID】{{product_id}}\n【Order/User】{{order_sn}} / {{buyer_username}}\n【商品問題】\n{{customer_question}}\n【已確認資訊】\n{{checked_info}}\n【工單號】{{work_order}}" }
       ]
     },
     {
-      values: ["一般 KAM/CAM 商品問題"],
+      values: ["一般 KAM 商品問題"],
       conditions: [{ code: "ticket_issue_category", values: ["售後-退換貨", "售後-商品異常", "售後-保固/檢測"] }],
       assignments: [
         { targetCode: "jira_summary", value: "售後商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{order_sn}}" },
-        { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：售後商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{order_sn}}\nShop Name：{{shop_name}}\nUsername：{{buyer_username}}\nDescription：請貼上 KAM/CAM 表的 CS 詢問用格式，並說明是否已有退貨/退款意圖、十五天鑑賞期判斷、商品狀態與佐證。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
+        { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：售後商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{order_sn}}\nShop Name：{{shop_name}}\nUsername：{{buyer_username}}\nDescription：請貼上 KAM 表的 CS 詢問用格式，並說明是否已有退貨/退款意圖、十五天鑑賞期判斷、商品狀態與佐證。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
         { targetCode: "sheet_question_format", value: "#{{sheet_row_no}}\nHI,{{kam_owner}}\n【問題分類】{{ticket_issue_category}}\n【商品名稱】{{V008}}\n【商品規格】{{V010}}\n【廠商】{{supplier_name}}\n【Product ID】{{product_id}}\n【Order/User】{{order_sn}} / {{buyer_username}}\n【商品問題】\n{{customer_question}}\n【退貨/保固/異常確認】\n{{checked_info}}\n【工單號】{{work_order}}" }
       ]
     },
     {
-      values: ["SBS KAM/CAM 商品問題"],
+      values: ["SBS KAM 商品問題"],
       assignments: [
         { targetCode: "jira_summary", value: "SBS商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{product_id}}" },
         { targetCode: "jira_description", value: "Project：不變\nIssues Type：Problem\nSummary：SBS商品問題｜{{shop_name}}｜{{ticket_issue_category}}｜{{product_id}}\nShop Name：{{shop_name}}\nUsername：{{buyer_username}}\nDescription：請貼上 SBS 商品問題表的 CS 詢問自動公式，並補上客文/商品頁/訂單佐證。\nIssue Links：{{related_link}}\nAssignee：assign to me\nAttachment：{{proof_status}}" },
@@ -1703,7 +1700,7 @@
       ]
     },
     {
-      values: ["廠直／產值表"],
+      values: ["廠直表"],
       conditions: [{ code: "vendor_table_type", values: ["order"] }],
       assignments: [
         { targetCode: "vendor_required_id_hint", value: "Type 填 order；ID 填 SCM Order ID。請先確認商店名字，再填前台訂單/SCM Order ID 與工單號。" },
@@ -1712,7 +1709,7 @@
       ]
     },
     {
-      values: ["廠直／產值表"],
+      values: ["廠直表"],
       conditions: [{ code: "vendor_table_type", values: ["return"] }],
       assignments: [
         { targetCode: "vendor_required_id_hint", value: "Type 填 return；ID 填 SCM Return Order ID。請先確認商店名字，再填退貨單資訊與工單號。" },
@@ -1721,7 +1718,7 @@
       ]
     },
     {
-      values: ["廠直／產值表"],
+      values: ["廠直表"],
       conditions: [{ code: "vendor_table_type", values: ["sku"] }],
       assignments: [
         { targetCode: "vendor_required_id_hint", value: "Type 填 sku；ID 填 MP SKU ID。MP SKU ID 需要到 DSS/SCM 查，不要直接用 PID_0。" },
@@ -1737,27 +1734,27 @@
     item.text = `${item.text}\n\n${marker}\n${text}`;
   }
 
-  appendTemplateSection("GLOBAL", "新建工單", "【工單/上表格式自動整理】", "依下方欄位選擇工單/表單種類與問題分類後，系統會依多層條件帶出：\n▪ Jira 主旨：{{jira_summary}}\n▪ Jira Description：\n{{jira_description}}\n\n若同時需要上表，請貼入：\n{{sheet_question_format}}\n\n廠直/產值表 ID 判斷：{{vendor_required_id_hint}}");
-  ["KAM表", "KAM表．SBS", "CAM表"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【KAM/CAM 表填寫格式】", "依商店名字判斷表別後，選擇問題分類；系統會帶出 CS 詢問用格式：\n{{sheet_question_format}}\n\n建立 Jira 時可使用：\n▪ Summary：{{jira_summary}}\n▪ Description：\n{{jira_description}}"));
-  ["廠直表", "廠直／產值表"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【廠直/產值表填寫格式】", "先確認商店名字，再選 Type：order / return / sku。\n{{vendor_required_id_hint}}\n\n請貼入轉單詢問表：\n{{sheet_question_format}}\n\n建立 Jira 時可用主旨：{{jira_summary}}"));
+  appendTemplateSection("GLOBAL", "新建工單", "【工單/上表格式自動整理】", "依下方欄位選擇工單/表單種類與問題分類後，系統會依多層條件帶出：\n▪ Jira 主旨：{{jira_summary}}\n▪ Jira Description：\n{{jira_description}}\n\n若同時需要上表，請貼入：\n{{sheet_question_format}}\n\n廠直表 ID 判斷：{{vendor_required_id_hint}}");
+  ["KAM表", "KAM表．SBS"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【KAM 表填寫格式】", "依商店名字判斷表別後，選擇問題分類；系統會帶出 CS 詢問用格式：\n{{sheet_question_format}}\n\n建立 Jira 時可使用：\n▪ Summary：{{jira_summary}}\n▪ Description：\n{{jira_description}}"));
+  ["廠直表"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【廠直表填寫格式】", "先確認商店名字，再選 Type：order / return / sku。\n{{vendor_required_id_hint}}\n\n請貼入轉單詢問表：\n{{sheet_question_format}}\n\n建立 Jira 時可用主旨：{{jira_summary}}"));
 
   ticketFormatBranches.forEach(branch => {
     [
-      ["ticket_case_kind", "工單/表單種類", "先判斷要走哪一種共用流程；KAM/CAM 或廠直/產值表一定要先有商店名字才能判斷。", false, true, "select", ["一般 KAM/CAM 商品問題", "SBS KAM/CAM 商品問題", "廠直／產值表", "補償折扣碼", "InHouse Case／轉單任務"], ticketFormatRules],
-      ["ticket_issue_category", "問題分類", "依客人實際詢問內容選擇。若是上 KAM/CAM 表，請對應表格中的問題分類；若是補碼，請選補償折扣碼分類。", false, true, "select", ticketCategoryOptions, []],
-      ["vendor_table_type", "廠直/產值表 Type", "只有走廠直/產值表時需要。order=訂單問題；return=退貨問題；sku=商品問題。", false, false, "select", ["order", "return", "sku"], []],
-      ["vendor_required_id_hint", "廠直/產值表 ID 判斷", "選擇 Type 後自動帶出要填哪一種 ID。", true, false, "text", [], []],
+      ["ticket_case_kind", "工單/表單種類", "先判斷要走哪一種共用流程；KAM 表或廠直表一定要先有商店名字才能判斷。", false, true, "select", ["一般 KAM 商品問題", "SBS KAM 商品問題", "廠直表", "補償折扣碼", "InHouse Case／轉單任務"], ticketFormatRules],
+      ["ticket_issue_category", "問題分類", "依客人實際詢問內容選擇。若是上 KAM 表，請對應表格中的問題分類；若是補碼，請選補償折扣碼分類。", false, true, "select", ticketCategoryOptions, []],
+      ["vendor_table_type", "廠直表 Type", "只有走廠直表時需要。order=訂單問題；return=退貨問題；sku=商品問題。", false, false, "select", ["order", "return", "sku"], []],
+      ["vendor_required_id_hint", "廠直表 ID 判斷", "選擇 Type 後自動帶出要填哪一種 ID。", true, false, "text", [], []],
       ["jira_summary", "Jira 工單主旨", "依工單/表單種類 + 問題分類自動帶入，可再依實際案件微調。", false, false, "text", [], []],
       ["jira_description", "Jira Description / 案件內容", "依多層條件自動整理；貼到 Jira Description 後補齊截圖、連結或附件。", true, false, "text", [], []],
-      ["sheet_question_format", "上表/詢問格式", "依 KAM 表、SBS 表、廠直/產值表或補碼追蹤表的欄位整理。", true, false, "text", [], []],
-      ["buyer_username", "Buyer Username（買家帳號）", "查詢買家、補碼、廠直/產值表 CS 內部備註或 Jira Username 欄位會用到。", false, false, "text", [], []],
-      ["order_sn", "Order SN（訂單編號）", "訂單、退貨、補碼、廠直/產值表常用參數。", false, false, "text", [], []],
-      ["scm_order_id", "SCM Order ID", "廠直/產值表 Type=order 時填入 ID 欄。", false, false, "text", [], []],
-      ["scm_return_id", "SCM Return Order ID", "廠直/產值表 Type=return 時填入 ID 欄。", false, false, "text", [], []],
+      ["sheet_question_format", "上表/詢問格式", "依 KAM 表、SBS 表、廠直表或補碼追蹤表的欄位整理。", true, false, "text", [], []],
+      ["buyer_username", "Buyer Username（買家帳號）", "查詢買家、補碼、廠直表 CS 內部備註或 Jira Username 欄位會用到。", false, false, "text", [], []],
+      ["order_sn", "Order SN（訂單編號）", "訂單、退貨、補碼、廠直表常用參數。", false, false, "text", [], []],
+      ["scm_order_id", "SCM Order ID", "廠直表 Type=order 時填入 ID 欄。", false, false, "text", [], []],
+      ["scm_return_id", "SCM Return Order ID", "廠直表 Type=return 時填入 ID 欄。", false, false, "text", [], []],
       ["return_id", "Return ID（退貨單號）", "退貨問題或 Type=return 時使用。", false, false, "text", [], []],
       ["sheet_row_no", "表格列號 / Sheet ID", "KAM/SBS 表的列號或廠直表 Sheet ID；若尚未建立可先留空。", false, false, "text", [], []],
-      ["kam_owner", "KAM/CAM 收件窗口", "若表格公式已有帶出窗口，可貼上；沒有就依店鋪對應窗口填。", false, false, "text", [], []],
-      ["supplier_name", "廠商名稱", "KAM/CAM 表廠商欄位或廠直表供應商資訊。", false, false, "text", [], []],
+      ["kam_owner", "KAM 收件窗口", "若表格公式已有帶出窗口，可貼上；沒有就依店鋪對應窗口填。", false, false, "text", [], []],
+      ["supplier_name", "廠商名稱", "KAM 表廠商欄位或廠直表供應商資訊。", false, false, "text", [], []],
       ["customer_question", "客人問題/訴求", "以客人實際問什麼為主，整理成可讓 KAM/廠商判斷的一段文字。", true, true, "text", [], []],
       ["related_link", "相關連結", "商品頁、訂單頁、客文截圖、影片或內部查詢頁連結。", true, false, "text", [], []],
       ["case_owner", "個案擁有者/填表人", "填你的名字或當班負責人。", false, false, "text", [], []],
@@ -1831,10 +1828,8 @@
     "新建工單": "68、136-138、315",
     "工單追蹤／未回覆安撫": "318-321",
     "KAM表": "67-70、315",
-    "CAM表": "67-70、315",
     "KAM表．SBS": "67-70、315",
     "廠直表": "67、70、73、128、132、194-196",
-    "廠直／產值表": "67、70、73、128、132、194-196",
     "DSS 商談詢問廠商": "73、128、132、194-196",
     "InHouse 轉單任務": "153-159"
   };
@@ -1908,6 +1903,34 @@
   }
 
   [...data.variables, ...data.actions, ...(data.fields || [])].forEach(annotateSourceItem);
+
+  function addQuestionKeywordAliases(questionId, aliases) {
+    const question = questionById(questionId);
+    if (!question) return;
+    const current = String(question.keywords || "")
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
+    aliases.forEach(alias => {
+      if (!current.includes(alias)) current.push(alias);
+    });
+    question.keywords = current.join(",");
+  }
+
+  const voiceAliasKeywords = [
+    "產值表",
+    "場值表",
+    "廠值表",
+    "厂值表",
+    "廠直產值表",
+    "廠直／產值表",
+    "CAM表",
+    "CAM 表",
+    "KAM/CAM",
+    "康表"
+  ];
+  addQuestionKeywordAliases("Q018", voiceAliasKeywords);
+  addQuestionKeywordAliases("Q025", voiceAliasKeywords);
 
   const glossaryTerms = [
     ["Buyer Username", "買家帳號"],

@@ -521,4 +521,142 @@
     ]
   });
 
+  const hideQuestionCard = id => {
+    const question = questionById(id);
+    if (question) question.enabled = false;
+  };
+
+  const replaceTemplateTokens = (q, branch, replacements) => {
+    const item = template(q, branch);
+    if (!item) return;
+    Object.entries(replacements).forEach(([from, to]) => {
+      item.text = item.text.split(`{{${from}}}`).join(`{{${to}}}`);
+      item.text = item.text.split(`{${from}}`).join(`{{${to}}}`);
+    });
+  };
+
+  const removeVariables = (q, codes) => {
+    data.variables = data.variables.filter(variable => !(variable.q === q && codes.includes(variable.code)));
+  };
+
+  const cloneCanonicalVariable = (q, branch, code, overrides = {}) => {
+    const source = data.variables.find(variable => variable.q === "GLOBAL" && variable.code === code)
+      || data.fields?.find(field => field.code === code)
+      || data.variables.find(variable => variable.code === code)
+      || { code, label: code, type: "text", required: true };
+    upsertVariable({ ...source, q, branch, ...overrides });
+  };
+
+  const prependTemplateLine = (q, branch, line) => {
+    const item = template(q, branch);
+    if (item && !item.text.includes(line)) item.text = `${line}\n${item.text}`;
+  };
+
+  const ensureAnswerPart = (questionName, branch, part) => {
+    data.flows
+      .filter(flow => flow.question === questionName && flow.branch === branch)
+      .forEach(flow => {
+        flow.answerParts ||= [{ question: questionName, branch, beforeText: "" }];
+        if (!flow.answerParts.some(existing => existing.question === part.question && existing.branch === part.branch)) {
+          flow.answerParts.push({ beforeText: "", ...part });
+        }
+      });
+  };
+
+  hideQuestionCard("Q018");
+  hideQuestionCard("Q019");
+  removeVariables("Q018", ["order_sn", "ticket_id"]);
+  removeVariables("Q019", ["ticket_id"]);
+
+  const availableVoucher = template("Q006", "查詢買家目前可用優惠券");
+  if (availableVoucher) {
+    availableVoucher.text = "查詢方式：\n▪ 到 CS Portal 搜尋 Buyer Username：{{V018}}\n▪ 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n\n查詢結果：\n▪ Buyer Username：{{V018}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}";
+  }
+  cloneCanonicalVariable("Q006", "查詢買家目前可用優惠券", "V018", {
+    required: true,
+    category: "常用"
+  });
+
+  const flashSaleQuestion = questionById("Q005");
+  if (flashSaleQuestion && !flashSaleQuestion.answerText.includes("Product ID：{{product_id}}")) {
+    flashSaleQuestion.answerText = `確認商品：\n▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n\n${flashSaleQuestion.answerText}`;
+  }
+  ["product_id", "V008", "V010"].forEach(code => cloneCanonicalVariable("Q005", "共用", code));
+
+  ["查商品效期", "查商品進貨日"].forEach(branch => {
+    replaceTemplateTokens("Q010", branch, { product_name: "V008", product_spec: "V010" });
+    cloneCanonicalVariable("Q010", branch, "product_id");
+    cloneCanonicalVariable("Q010", branch, "V008");
+  });
+  cloneCanonicalVariable("Q010", "查商品效期", "V010");
+  removeVariables("Q010", ["product_name", "product_spec"]);
+
+  ["尚未進入 WMS", "WMS 已出貨但延遲", "OMS／WMS 顯示 OOS 缺貨"].forEach(branch => {
+    replaceTemplateTokens("Q011", branch, { order_sn: "order_id" });
+    cloneCanonicalVariable("Q011", branch, "order_id");
+  });
+  removeVariables("Q011", ["order_sn"]);
+
+  ["包裹延遲未配達", "配達門市超過 10 天未取消", "貨態已配達但買家未收到", "貨態配送中但買家已取件"].forEach(branch => {
+    replaceTemplateTokens("Q012", branch, { order_sn: "order_id" });
+    cloneCanonicalVariable("Q012", branch, "order_id");
+  });
+  removeVariables("Q012", ["order_sn"]);
+
+  ["低單 200 元以下且有照片", "SCS 貨損有照片", "管制區／高單／特殊商品"].forEach(branch => {
+    replaceTemplateTokens("Q013", branch, { product_name: "V008" });
+    prependTemplateLine("Q013", branch, "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}");
+    cloneCanonicalVariable("Q013", branch, "product_id");
+    cloneCanonicalVariable("Q013", branch, "V008");
+    cloneCanonicalVariable("Q013", branch, "V010");
+  });
+  removeVariables("Q013", ["product_name"]);
+  ensureAnswerPart("詢問商品異常／貨損申退", "管制區／高單／特殊商品", { question: "共用", branch: "KAM表" });
+
+  ["返還原折扣碼", "返還損失折扣／價差", "小額折扣碼"].forEach(branch => {
+    replaceTemplateTokens("Q014", branch, { order_sn: "order_id", ticket_id: "work_order" });
+    cloneCanonicalVariable("Q014", branch, "order_id");
+    cloneCanonicalVariable("Q014", branch, "work_order");
+  });
+  prependTemplateLine("Q014", "小額折扣碼", "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}");
+  ["product_id", "V008", "V010"].forEach(code => cloneCanonicalVariable("Q014", "小額折扣碼", code));
+  removeVariables("Q014", ["order_sn", "ticket_id"]);
+
+  ["包裹未送達進蝦皮審核"].forEach(branch => {
+    replaceTemplateTokens("Q015", branch, { order_sn: "order_id" });
+    cloneCanonicalVariable("Q015", branch, "order_id");
+  });
+  ["缺件僅退款進蝦皮審核", "其他原因一般退貨"].forEach(branch => {
+    prependTemplateLine("Q015", branch, "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}");
+    ["product_id", "V008", "V010"].forEach(code => cloneCanonicalVariable("Q015", branch, code));
+  });
+  removeVariables("Q015", ["order_sn"]);
+
+  const giftQuestion = questionById("Q009");
+  if (giftQuestion && !giftQuestion.answerText.includes("Product ID：{{product_id}}")) {
+    giftQuestion.answerText = `確認商品：\n▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n\n${giftQuestion.answerText}`;
+  }
+  ["商品卡沒有顯示滿額贈", "購物車有自動加入贈品", "購物車沒有自動加入贈品"].forEach(branch => {
+    ["product_id", "V008", "V010"].forEach(code => cloneCanonicalVariable("Q009", branch, code));
+  });
+
+  ["鑑賞期內優先引導買家自行 AOC"].forEach(branch => {
+    replaceTemplateTokens("Q016", branch, { order_sn: "order_id" });
+    cloneCanonicalVariable("Q016", branch, "order_id");
+  });
+  removeVariables("Q016", ["order_sn"]);
+
+  ["訂單可申請取消配送中", "申請處理中"].forEach(branch => {
+    replaceTemplateTokens("Q017", branch, { order_sn: "order_id" });
+    cloneCanonicalVariable("Q017", branch, "order_id");
+  });
+  removeVariables("Q017", ["order_sn"]);
+
+  ["物流渠道適用延遲補償", "黑名單或不符合補償", "符合補發延遲補償"].forEach(branch => {
+    replaceTemplateTokens("Q020", branch, { order_sn: "order_id" });
+    cloneCanonicalVariable("Q020", branch, "order_id", { required: branch !== "黑名單或不符合補償" });
+    cloneCanonicalVariable("Q020", branch, "V018", { required: false, category: "常用" });
+  });
+  removeVariables("Q020", ["order_sn"]);
+
 })();

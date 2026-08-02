@@ -1002,4 +1002,81 @@
     ])
   });
 
+  const glossaryTerms = [
+    ["Buyer Username", "買家帳號"],
+    ["Order SN", "訂單編號"],
+    ["Product ID", "商品 ID"],
+    ["Voucher Code", "優惠券代碼"],
+    ["Return ID", "退貨退款案件編號"],
+    ["User ID", "使用者 ID"],
+    ["add_on_deal_id", "加價購活動 ID"],
+    ["AOC", "After Order Completed，訂單完成後退貨退款"],
+    ["AOD", "Add-on Deal，加價購活動"],
+    ["BAU", "Business as Usual，日常營運支援窗口"],
+    ["COD", "Cash on Delivery，貨到付款"],
+    ["CsP", "CS Portal，客服查詢系統"],
+    ["CP", "Customer Portal，客服系統"],
+    ["DB", "Database，資料表"],
+    ["DSS", "Data Suite / 內部查詢系統"],
+    ["KAM", "Key Account Manager，品牌或賣場窗口"],
+    ["NDD", "Next Day Delivery，隔日到貨"],
+    ["NRR", "Normal Return/Refund，一般退貨退款"],
+    ["OMS", "Order Management System，訂單管理系統"],
+    ["OOS", "Out of Stock，缺貨"],
+    ["OPS", "Operations，營運窗口"],
+    ["OSN", "Order SN，訂單編號"],
+    ["PID", "Product ID，商品 ID"],
+    ["QA", "Quality Assurance，品質或話術協助窗口"],
+    ["RR", "Return/Refund，退貨退款案件"],
+    ["SCS", "Shopee Mall / 商城相關流程"],
+    ["SPX", "Shopee Xpress，蝦皮物流"],
+    ["UID", "User ID，使用者 ID"],
+    ["WH", "Warehouse，倉庫"],
+    ["WMS", "Warehouse Management System，倉儲管理系統"]
+  ].sort((a, b) => b[0].length - a[0].length);
+
+  function escapeRegExp(text) {
+    return String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function addGlossary(text) {
+    let result = String(text || "");
+    glossaryTerms.forEach(([term, explanation]) => {
+      const pattern = new RegExp(`(^|[^A-Za-z0-9_])(${escapeRegExp(term)})(?![A-Za-z0-9_]*[（(])`, "g");
+      let applied = false;
+      result = result.replace(pattern, (match, prefix, value) => {
+        if (applied) return match;
+        applied = true;
+        return `${prefix}${value}（${explanation}）`;
+      });
+    });
+    return result
+      .replace(/OOS（Out of Stock，缺貨）\s*缺貨/g, "OOS（Out of Stock，缺貨）")
+      .replace(/COD（Cash on Delivery，貨到付款）\s*付款/g, "COD（Cash on Delivery，貨到付款）");
+  }
+
+  function shouldGlossaryQuestionId(qid) {
+    const match = String(qid || "").match(/^Q(\d+)$/);
+    return match && Number(match[1]) >= 5;
+  }
+
+  data.questions.forEach(question => {
+    if (!shouldGlossaryQuestionId(question.id)) return;
+    question.description = addGlossary(question.description);
+    question.answerText = addGlossary(question.answerText);
+  });
+  data.templates.forEach(templateItem => {
+    if (shouldGlossaryQuestionId(templateItem.q)) templateItem.text = addGlossary(templateItem.text);
+  });
+  data.variables.forEach(variable => {
+    if (!shouldGlossaryQuestionId(variable.q)) return;
+    variable.hint = addGlossary(variable.hint);
+    variable.sourceNote = addGlossary(variable.sourceNote);
+  });
+  data.actions.forEach(action => {
+    if (!shouldGlossaryQuestionId(action.q)) return;
+    action.note = addGlossary(action.note);
+    action.sourceNote = addGlossary(action.sourceNote);
+  });
+
 })();

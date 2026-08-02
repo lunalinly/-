@@ -1965,24 +1965,132 @@
     [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }, ticketLinks.vendor]
   );
 
-  upsert("questions", "id", {
-    id: "Q026",
-    name: "DSS 商談詢問廠商",
-    keywords: "DSS,廠商,商談,詢問廠商,廠直,MP SKU ID,供應商",
-    description: "獨立使用 DSS 商談詢問廠商工具分支\nPPT 出處：第 73、128、132、194-196 頁",
-    enabled: true,
-    answerText: "需要到 DSS 跟廠商確認時，先整理商城名字、Product ID、MP SKU ID、訂單資訊與買家訴求，再建立商談詢問廠商。"
-  });
-  data.flows = data.flows.filter(flow => !(flow.question === "DSS 商談詢問廠商" && flow.branch === "共用"));
-  data.flows.push({
-    question: "DSS 商談詢問廠商",
-    steps: [],
-    branch: "共用",
-    next: "填完欄位後產生 DSS 商談內容",
-    routes: [],
-    answerBranches: ["工具：DSS 商談詢問廠商"],
-    answerParts: [{ question: "共用", branch: "工具：DSS 商談詢問廠商", beforeText: "" }]
-  });
+  createToolBranch(
+    "工具：CS Portal｜優惠代碼錢包",
+    "CS Portal｜優惠代碼錢包查詢：\n▪ Buyer Username：{{V018}}\n▪ 查詢分頁：詳細資訊（買家）→ 優惠代碼錢包\n▪ 查詢結果：\n{{available_voucher_codes}}\n\n步驟：\n1. 開啟 CS Portal。\n2. 搜尋買家 Buyer Username。\n3. 進入「詳細資訊（買家）」後點選「優惠代碼錢包」。\n4. 將目前可用、已使用或失效的優惠代碼依客人問題整理。\n\nPPT 出處：第 171-179、185-186 頁",
+    [
+      toolVar("V018", "Buyer Username（買家帳號）", "用買家的 Buyer Username 搜尋。", false, true),
+      toolVar("available_voucher_codes", "優惠代碼錢包查詢結果", "貼上 CS Portal 顯示的優惠代碼；多筆請一行一個。", true, true)
+    ],
+    "PPT 第 171-179、185-186 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：CS Portal｜訂單詳情查詢",
+    "CS Portal｜訂單詳情查詢：\n▪ Order SN：{{order_id}}\n▪ Buyer Username：{{V018}}\n▪ 查詢分頁：訂單詳情／買家訂單列表\n▪ 訂單狀態／貨態結果：{{cs_order_result}}\n\n步驟：\n1. 開啟 CS Portal。\n2. 以 Order SN 查詢；若沒有 Order SN，先用 Buyer Username 找買家訂單。\n3. 進入訂單詳情，確認訂單狀態、物流狀態、是否取消、是否完成與相關備註。\n4. 若要繼續查物流細節，再疊 Order Admin 或 SCI 對應工具分頁。\n\nPPT 出處：第 5、116、185-186、266 頁",
+    [
+      toolVar("order_id", "Order SN", "優先用訂單編號查詢。", false, true),
+      toolVar("V018", "Buyer Username（買家帳號）", "沒有 Order SN 或需查買家訂單列表時使用。"),
+      toolVar("cs_order_result", "CS Portal 訂單查詢結果", "貼上訂單狀態、貨態或相關備註。", true, true)
+    ],
+    "PPT 第 5、116、185-186、266 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：CS Portal｜退貨退款查詢",
+    "CS Portal｜退貨退款查詢：\n▪ Return ID：{{return_id}}\n▪ Order SN：{{order_id}}\n▪ 查詢分頁：退貨退款詳情／Offline RR\n▪ 查詢結果：{{cs_return_result}}\n\n步驟：\n1. 開啟 CS Portal。\n2. 以 Return ID 或 Order SN 查詢退貨退款案件。\n3. 確認案件狀態、申退原因、是否可 AOC（Agent Order Cancellation／專員代申退）或是否需改走其他流程。\n4. 若需要判別 Offline RR，再疊 AOC_OPS_V2 判別工具分頁。\n\nPPT 出處：第 241、250-251、260、263-265 頁",
+    [
+      toolVar("return_id", "Return ID", "退貨退款案件編號。", false, true),
+      toolVar("order_id", "Order SN", "可用訂單編號輔助查詢。"),
+      toolVar("cs_return_result", "CS Portal 退貨退款查詢結果", "貼上 RR 狀態、原因、可否處理或需追蹤事項。", true, true)
+    ],
+    "PPT 第 241、250-251、260、263-265 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：CS Portal｜蝦幣交易紀錄",
+    "CS Portal｜蝦幣交易紀錄查詢：\n▪ Buyer Username：{{V018}}\n▪ User ID：{{user_id}}\n▪ 查詢區間：{{coin_period}}\n▪ 查詢分頁：蝦幣交易紀錄\n▪ 查詢結果：{{coin_result}}\n\n步驟：\n1. 開啟 CS Portal。\n2. 以 Buyer Username 搜尋買家，必要時確認 User ID。\n3. 進入蝦幣交易紀錄，依客人詢問區間查詢收入、扣回、到期或活動發放紀錄。\n4. 整理交易時間、異動原因與蝦幣數量。\n\nPPT 出處：第 93-94 頁",
+    [
+      toolVar("V018", "Buyer Username（買家帳號）", "用買家帳號查詢。", false, true),
+      toolVar("user_id", "User ID", "需要確認帳號唯一性時填入。"),
+      toolVar("coin_period", "查詢區間", "填客人詢問的日期區間。"),
+      toolVar("coin_result", "蝦幣交易紀錄查詢結果", "貼上蝦幣異動時間、原因與數量。", true, true)
+    ],
+    "PPT 第 93-94 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：Order Admin｜訂單資訊查詢",
+    "Order Admin｜訂單資訊查詢：\n▪ Order SN：{{order_id}}\n▪ 查詢分頁：Orders / Order Information\n▪ 查詢結果：{{order_admin_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 在 Orders / Order Information 用 Order SN 搜尋。\n3. 確認訂單狀態、付款狀態、取消狀態、完成時間與訂單備註。\n4. 若問題涉及退款或退貨，繼續疊對應 Order Admin 分頁。\n\nPPT 出處：第 20-21、221-237 頁",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("order_admin_result", "Order Admin 訂單查詢結果", "貼上訂單狀態、付款狀態、取消狀態或備註。", true, true)
+    ],
+    "PPT 第 20-21、221-237 頁",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：Order Admin｜退貨退款查詢",
+    "Order Admin｜退貨退款查詢：\n▪ Return ID：{{return_id}}\n▪ Order SN：{{order_id}}\n▪ 查詢分頁：Return / Return & Refund Requests\n▪ 查詢結果：{{order_return_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 進入 Return / Return & Refund Requests。\n3. 用 Return ID 或 Order SN 搜尋。\n4. 確認退貨原因、退款狀態、申退時間、審核狀態與逆物流資訊。\n\nPPT 出處：第 241、244-245、250-251 頁",
+    [
+      toolVar("return_id", "Return ID", "退貨退款案件編號。"),
+      toolVar("order_id", "Order SN", "可用訂單編號搜尋退貨退款案件。", false, true),
+      toolVar("order_return_result", "Order Admin 退貨退款查詢結果", "貼上退貨退款狀態、原因、退款或逆物流資訊。", true, true)
+    ],
+    "PPT 第 241、244-245、250-251 頁",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：Order Admin｜退款付款查詢",
+    "Order Admin｜退款付款查詢：\n▪ Order SN：{{order_id}}\n▪ Payment Order ID：{{payment_order_id}}\n▪ 查詢分頁：Payment / Refund\n▪ 查詢結果：{{payment_refund_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 用 Order SN 查訂單後進入 Payment / Refund 相關資訊。\n3. 確認付款方式、退款狀態、退款金額與退款時間。\n4. 若仍需 Payments 確認，再疊 InHouse 轉單任務或 Jira 金流公版。\n\nPPT 出處：第 202-205、208-213、221-237 頁",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("payment_order_id", "Payment Order ID", "金流查帳需要時填入。"),
+      toolVar("payment_refund_result", "付款／退款查詢結果", "貼上付款、退款、金額與時間。", true, true)
+    ],
+    "PPT 第 202-205、208-213、221-237 頁",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：Order Admin｜物流／逆物流查詢",
+    "Order Admin｜物流／逆物流查詢：\n▪ Order SN：{{order_id}}\n▪ Return ID：{{return_id}}\n▪ 正物流單號：{{shipping_tracking_no}}\n▪ 逆物流單號：{{reverse_tracking_no}}\n▪ 查詢分頁：Shipping / Tracking 或 Return / Return & Refund Requests\n▪ 查詢結果：{{reverse_timeline}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 正物流用 Order SN 查 Shipping / Tracking；逆物流進 Return / Return & Refund Requests。\n3. 確認正物流、逆物流單號、收退件地址、派車狀態與貨態歷程。\n4. 若 1-2 工作天無貨態或無逆物流歷程，再疊 InHouse 轉單任務。\n\nPPT 出處：第 244-245 頁",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("return_id", "Return ID", "退貨案件需要時填。"),
+      toolVar("shipping_tracking_no", "正物流單號", "正物流查詢或工單需要時填。"),
+      toolVar("reverse_tracking_no", "逆物流單號", "逆物流查詢結果。"),
+      toolVar("reverse_timeline", "物流／逆物流歷程", "貼上物流時間序、派車狀態或異常結果。", true, true)
+    ],
+    "PPT 第 244-245 頁",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：Promotion Admin｜優惠券查詢",
+    "Promotion Admin｜優惠券查詢：\n▪ Voucher Code：{{voucher_code}}\n▪ 查詢分頁：Voucher / Voucher Code 或 Voucher Usage\n▪ 查詢結果：{{promotion_admin_result}}\n\n步驟：\n1. 開啟 Promotion Admin。\n2. 用 Voucher Code 查詢優惠券。\n3. 確認券狀態、有效期間、低消門檻、折抵金額、使用限制與是否已失效。\n4. 若要補碼，再疊補碼小工具與個案補碼追蹤表。\n\nPPT 出處：第 171-179 頁",
+    [
+      toolVar("voucher_code", "Voucher Code（優惠券代碼）", "貼上原優惠券代碼。", false, true),
+      toolVar("promotion_admin_result", "Promotion Admin 優惠券查詢結果", "貼上券狀態、期限、門檻與可否返還。", true, true)
+    ],
+    "PPT 第 171-179 頁",
+    [exactLinks.promotionAdmin]
+  );
+
+  createToolBranch(
+    "工具：DSS｜查 MP SKU ID",
+    "DSS｜查 MP SKU ID：\n▪ 商城名字：{{V003}}\n▪ Product ID：{{product_id}}\n▪ 查詢分頁：供應商管理 / 商品\n▪ MP SKU ID：{{V030}}\n▪ 查詢結果：{{dss_lookup_result}}\n\n步驟：\n1. 開啟 DSS。\n2. 進入供應商管理 / 商品。\n3. 用 Product ID 查詢正確 MP SKU ID。\n4. 不要直接使用 PID_0；MP SKU ID 錯誤會導致找不到正確供應商。\n\nPPT 出處：第 73、128 頁",
+    [
+      toolVar("V003", "商城名字", "判斷廠直表與 DSS 查詢前必填。", false, true),
+      toolVar("product_id", "Product ID", "貼上商品頁 Product ID。", false, true),
+      toolVar("V030", "MP SKU ID", "DSS 查到的正確 MP SKU ID。", false, true),
+      toolVar("dss_lookup_result", "DSS MP SKU 查詢結果", "貼上供應商或商品查詢結果。", true)
+    ],
+    "PPT 第 73、128 頁",
+    [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }]
+  );
+
+  data.questions = data.questions.filter(question => question.id !== "Q026" && question.name !== "DSS 商談詢問廠商");
+  data.flows = data.flows.filter(flow => flow.question !== "DSS 商談詢問廠商");
+  data.templates = data.templates.filter(item => item.q !== "Q026");
+  data.variables = data.variables.filter(item => item.q !== "Q026");
+  data.actions = data.actions.filter(item => item.q !== "Q026");
 
   ensureCommonPart("Q006", "查詢買家目前可用優惠券", "工具：CS Portal 查詢");
   ["可以返還／可以再次使用", "不能返還／不能再次使用", "取消訂單後優惠券是否返還"].forEach(branch => {
@@ -2443,8 +2551,7 @@
     Q022: "93-94",
     Q023: "125、247-249",
     Q024: "244-245",
-    Q025: "252-258",
-    Q026: "73、128、132、194-196"
+    Q025: "252-258"
   };
 
   Object.entries(pptQuestionPages).forEach(([id, pages]) => {

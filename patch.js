@@ -158,7 +158,7 @@
 
   const addonReverse = template("Q008", "加價購商品要搭配哪件主商品");
   if (addonReverse) {
-    addonReverse.text = "確認方式：\n1. 複製加價購商品的 Product ID：{{product_id}}。\n2. 到 [DB] Add-on / Gift / Bundle 表單的 [Add-on_Sub] 分頁，搜尋此 PID 對應的 add_on_deal_id。\n3. 複製 add_on_deal_id：{{addon_campaign_id}}。\n4. 到 [Add-on_Main] 分頁搜尋同一組 add_on_deal_id，確認該檔期可搭配的主商品清單。\n\n查詢結果：\n▪ 加價購商品 Product ID：{{product_id}}\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}\n\n提醒：若表單查無資料，先確認 PID 是否複製正確、是否有選到正確分頁與檔期，再回覆以表單目前查詢結果為主。";
+    addonReverse.text = "先確認加價購商品頁的 Product ID：{{product_id}}。\n\n查詢結果：\n▪ 加價購商品 Product ID：{{product_id}}\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}\n\n提醒：若表單查無資料，先確認 PID 是否複製正確、是否有選到正確分頁與檔期，再回覆以表單目前查詢結果為主。";
   }
 
   addQuestion({
@@ -172,7 +172,7 @@
     branches: [
       {
         name: "查商品效期",
-        text: "確認方式：\n1. 請先取得商品頁 Product ID：{{product_id}}。\n2. 到商品效期 Inventory Expiration Date 小工具輸入 PID 查詢。\n3. 若客人有指定規格，對照指定規格的效期；若未指定規格，可整理小工具顯示的各規格效期。\n\n回覆重點：\n▪ 商品：{{product_name}}\n▪ 規格：{{product_spec}}\n▪ 小工具目前查詢到的效期：{{expiration_result}}\n▪ 商品效期會依實際出貨批次變動，仍以倉庫實際出貨商品標示為主。",
+        text: "先確認商品頁 Product ID：{{product_id}}。\n\n回覆重點：\n▪ 商品：{{product_name}}\n▪ 規格：{{product_spec}}\n▪ 小工具目前查詢到的效期：{{expiration_result}}\n▪ 商品效期會依實際出貨批次變動，仍以倉庫實際出貨商品標示為主。",
         variables: [
           field("product_id", "Product ID", "商品頁網址最後一串數字"),
           field("product_name", "商品名稱", "可簡填"),
@@ -183,7 +183,7 @@
       },
       {
         name: "查商品進貨日",
-        text: "確認方式：\n1. 請先取得商品頁 Product ID：{{product_id}}。\n2. 到商品進貨日小工具輸入 PID 查詢。\n3. 依小工具目前顯示整理給客人，避免自行承諾一定補貨時間。\n\n回覆重點：\n▪ 商品：{{product_name}}\n▪ 小工具目前顯示的進貨／補貨資訊：{{inbound_result}}\n▪ 進貨時間可能受供應與倉庫作業影響，請以商品頁後續實際上架狀態為主。",
+        text: "先確認商品頁 Product ID：{{product_id}}。\n\n回覆重點：\n▪ 商品：{{product_name}}\n▪ 小工具目前顯示的進貨／補貨資訊：{{inbound_result}}\n▪ 進貨時間可能受供應與倉庫作業影響，請以商品頁後續實際上架狀態為主。",
         variables: [
           field("product_id", "Product ID", "商品頁網址最後一串數字"),
           field("product_name", "商品名稱", "可簡填"),
@@ -489,7 +489,7 @@
     branches: [
       {
         name: "物流渠道適用延遲補償",
-        text: "確認方式：\n▪ 訂單：{{order_sn}}\n▪ 物流渠道：{{logistics_channel}}\n▪ 延遲補償適用於指定配送方式，例如蝦皮店到店、蝦皮店到店隔日到貨、店到家宅配、店取最快當日到、宅配最快隔日到等。\n\n下一步：\n確認付款時間、預計配達時間與實際到貨時間，再判斷是否超過補償門檻。",
+        text: "判斷結果：\n▪ 訂單：{{order_sn}}\n▪ 物流渠道：{{logistics_channel}}\n▪ 延遲補償適用於指定配送方式，例如蝦皮店到店、蝦皮店到店隔日到貨、店到家宅配、店取最快當日到、宅配最快隔日到等。\n\n下一步：\n依付款時間、預計配達時間與實際到貨時間，判斷是否超過補償門檻。",
         variables: [
           field("order_sn", "Order SN", "OSN"),
           field("logistics_channel", "物流渠道", "店到店／宅配等"),
@@ -790,7 +790,6 @@
     if (item && !String(item.text || "").includes(marker)) item.text = `${item.text}\n\n${marker}\n${text}`;
   };
 
-  appendToTemplate("Q010", "查商品效期", "【WMS 舊查詢備用流程】", "若小工具無法查詢或需要交叉確認，可參考 WMS 舊流程：到 WMS 查 MTSKU ITEM ID 與 Model ID，組成對應 ID 後查看在倉庫存報表。此為備用方式，仍優先使用商品效期小工具。\nPPT 出處：第 41-45 頁");
   appendToTemplate("Q014", "小額折扣碼", "【小額折扣碼判斷點補充】", "可提供小額折扣碼的常見判斷點：破包、破碎／破裂、漏液、過期、長蟲、特殊食安疑慮、缺件、商品出錯、重複出貨。皆務必請用戶提供照片佐證，或有表單／OPS／KAM 主動通知。折扣碼提供後，訂單問題仍需依流程跟進，該開工單或上表仍要處理。\nPPT 出處：第 216-219 頁");
   appendToTemplate("Q017", "申請處理中", "【取消配送中後續結果補充】", "申請後可能有不同結果：取消成功、攔截失敗、買家撤回、系統仍在審核或退款處理中。請依 RR 詳情、Remark 與 Order Admin 時序判斷，不要只看單一前台狀態。\nPPT 出處：第 276-278 頁");
 
@@ -1210,13 +1209,31 @@
     return `<div><b>${title}</b></div><ol>${steps}</ol>${extra}`;
   };
 
+  function appendVarSourceNote(questionId, code, title, items, links = [], branchIncludes = null) {
+    data.variables.forEach(variable => {
+      const branchMatched = !branchIncludes || branchIncludes.some(text => variable.branch.includes(text));
+      if ((variable.questionId === questionId || variable.q === questionId) && variable.code === code && branchMatched) {
+        const note = sourceBlock(title, items);
+        variable.sourceNote = String(variable.sourceNote || "").includes(title)
+          ? variable.sourceNote
+          : `${variable.sourceNote || ""}${variable.sourceNote ? "\n\n" : ""}${note}`;
+        if (links.length) {
+          const existing = new Set((variable.sourceLinks || []).map(link => link.url));
+          variable.sourceLinks = [...(variable.sourceLinks || []), ...links.filter(link => !existing.has(link.url))];
+          variable.sourceUrl = variable.sourceUrl || links[0]?.url || "";
+        }
+      }
+    });
+  }
+
   setVarByCode("Q010", "expiration_result", {
     sourceLinks: [exactLinks.inventoryExpiration],
     sourceUrl: exactLinks.inventoryExpiration.url,
     sourceNote: sourceBlock("商品效期查詢", [
       "到 SCS CS Tool 的 Inventory Expiration Date。",
       "以 Product ID 查詢；若客人提供規格，需確認對應 variation / spec。",
-      "回覆前提醒商品實際效期仍以包裝標示為準。"
+      "回覆前提醒商品實際效期仍以包裝標示為準。",
+      "若小工具無法查詢或需要交叉確認，可參考 WMS 舊流程：到 WMS 查 MTSKU ITEM ID 與 Model ID，組成對應 ID 後查看在倉庫存報表。"
     ])
   });
   setVarByCode("Q010", "inbound_result", {
@@ -1228,6 +1245,21 @@
       "把查到的進貨日轉成客人看得懂的說法，不直接貼內部欄位名稱。"
     ])
   });
+  appendVarSourceNote("Q010", "product_id", "商品頁 Product ID 確認", [
+    "先開商品頁確認 Product ID；若買家有指定規格，需同步確認規格或 variation。",
+    "Product ID 用於商品效期與商品進貨日小工具查詢。",
+    "商品頁本身的查看提醒可保留在答案中；這裡只放實際填欄位會用到的查詢說明。"
+  ], [exactLinks.inventoryExpiration, exactLinks.inventoryInbound], ["查商品效期", "查商品進貨日"]);
+  appendVarSourceNote("Q010", "V008", "商品頁資訊確認", [
+    "從商品頁複製商品名稱，避免只填買家口語描述。",
+    "若同時查商品效期或商品進貨日，需和 Product ID 對應同一個商品。",
+    "產品頁查看提醒可保留在答案中；此欄位提示只用來協助填入商品名稱。"
+  ], [], ["查商品效期", "查商品進貨日"]);
+  appendVarSourceNote("Q010", "V010", "商品規格確認", [
+    "買家有指定規格時，從商品頁或商品規格選項確認實際 variation / spec。",
+    "查商品效期時需對照同一規格；若買家未指定規格，可填未指定。",
+    "若工具回傳多規格結果，回覆時需整理對應規格的效期。"
+  ], [exactLinks.inventoryExpiration], ["查商品效期"]);
 
   ["addon_campaign_id", "addon_main_product"].forEach(code => {
     setVarByCode("Q008", code, {
@@ -1241,6 +1273,16 @@
       ])
     });
   });
+  appendVarSourceNote("Q006", "V018", "優惠券查詢欄位", [
+    "到 CS Portal 搜尋 Buyer Username。",
+    "進入「詳細資訊（買家）」後查看「優惠代碼錢包」。",
+    "把買家帳號填在此欄，查詢結果填到買家目前可使用的優惠代碼欄位。"
+  ], [exactLinks.csPortal], ["查詢買家目前可用優惠券"]);
+  appendVarSourceNote("Q006", "available_voucher_codes", "可用優惠券查詢結果", [
+    "把 CS Portal 優惠代碼錢包中目前可用的優惠代碼整理貼上。",
+    "多筆優惠券請一行一筆；若沒有可用優惠券，寫明查無可用優惠代碼。",
+    "答案只帶查詢結果，查詢步驟會顯示在這個欄位的操作提示。"
+  ], [exactLinks.csPortal], ["查詢買家目前可用優惠券"]);
 
   ["voucher_code", "voucher_invalid", "better_voucher_check", "discount_amount", "price_difference", "min_spend", "voucher_amount", "proof_status"].forEach(code => {
     setVarByCode("Q014", code, {
@@ -1289,6 +1331,45 @@
       "符合才執行補發，並告知買家留意通知與優惠券錢包。",
       "回覆文字需帶入補發結果或預計可查看的位置。"
     ])
+  });
+  appendVarSourceNote("Q020", "logistics_channel", "延遲補償物流渠道確認", [
+    "先用延遲補償工具確認訂單物流渠道是否屬於適用渠道。",
+    "再比對付款完成時間、預計配達時間與實際配達時間。",
+    "若渠道不適用或工具無延遲，不要承諾補償。"
+  ], [exactLinks.delayDashboard, exactLinks.delayHelp], ["物流渠道適用延遲補償"]);
+  appendVarSourceNote("Q020", "blacklist_result", "HighRisk Buyer 查詢結果", [
+    "到 2025 查詢表4 / HighRisk Buyer 查詢表。",
+    "以 Buyer ID、Buyer Username 或 OSN 查詢是否為高風險或排除補償名單。",
+    "把查詢結果整理成可判斷是否補發的文字。"
+  ], [exactLinks.highRiskBuyer], ["黑名單或不符合補償"]);
+
+  appendVarSourceNote("Q022", "V018", "蝦幣交易紀錄查詢", [
+    "到 CS Portal 搜尋 Buyer Username 或 User ID。",
+    "進入蝦幣交易紀錄後，依 Order SN、日期或交易類型比對。",
+    "若客人只問期間內紀錄，請填查詢期間並整理該區間結果。"
+  ], [exactLinks.csPortal], ["查蝦幣交易紀錄"]);
+  ["user_id", "order_id", "coin_period", "coin_result"].forEach(code => {
+    appendVarSourceNote("Q022", code, "蝦幣交易紀錄查詢", [
+      "到 CS Portal 搜尋 Buyer Username 或 User ID。",
+      "進入蝦幣交易紀錄後，依 Order SN、日期或交易類型比對。",
+      "把查詢到的入帳、扣抵、退還或查無紀錄整理到結果欄。"
+    ], [exactLinks.csPortal], ["查蝦幣交易紀錄"]);
+  });
+
+  ["tracking_summary", "received_parcels", "missing_parcels", "parcel_reply"].forEach(code => {
+    appendVarSourceNote("Q023", code, "分箱物流查詢", [
+      "到 SCI 或 CS Portal 查看此 Order SN 的箱數與每箱物流單號。",
+      "比對已配達、配送中、取消或異常的包裹。",
+      "把每箱狀態整理後，再回覆買家目前哪幾箱已到、哪幾箱仍需等待或追蹤。"
+    ], [exactLinks.csPortal], ["多包裹尚未全部收到"]);
+  });
+
+  ["order_id", "return_id", "reverse_tracking_no", "return_pickup_info", "reverse_timeline"].forEach(code => {
+    appendVarSourceNote("Q024", code, "逆物流資訊查詢", [
+      "開啟 Order Admin Portal，進入 Return → Return & Refund Requests。",
+      "用 Order SN 或 Return ID 搜尋退貨退款案件。",
+      "查看退貨原因、退貨地址、逆物流單號與逆物流歷程，再填入對應欄位。"
+    ], [exactLinks.orderAdmin], ["查詢逆物流資訊"]);
   });
 
   setVarByCode("Q016", "proof_status", {

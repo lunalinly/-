@@ -424,20 +424,11 @@ footer a:hover { color: var(--accent-dark); }
   font-size: 13px;
   cursor: pointer;
 }
-.editor-block-collapsed > :not(.editor-section-title):not(.subrecord-head):not(.step-card-head):not(.editor-field-collapse-label) {
+.editor-block-collapsed > :not(.editor-section-title):not(.subrecord-head):not(.step-card-head) {
   display: none !important;
 }
-.editor-block-collapsed:not(.studio-field) {
+.editor-block-collapsed {
   padding-bottom: 12px !important;
-}
-.editor-field-collapse-label {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-.editor-field-collapsible.editor-block-collapsed {
-  min-height: 0;
 }
 
 .result-layout > .panel:first-child { padding: 28px; }

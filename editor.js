@@ -437,7 +437,7 @@
 
   function setEditorBlockCollapsed(block, collapsed) {
     block.classList.toggle("editor-block-collapsed", collapsed);
-    const button = block.querySelector(":scope > .editor-section-title > [data-collapse-block], :scope > .subrecord-head > [data-collapse-block], :scope > .step-card-head > [data-collapse-block], :scope > .editor-field-collapse-label > [data-collapse-block]");
+    const button = block.querySelector(":scope > .editor-section-title > [data-collapse-block], :scope > .subrecord-head > [data-collapse-block], :scope > .step-card-head > [data-collapse-block]");
     if (button) {
       button.textContent = collapsed ? "恢復" : "縮小";
       button.setAttribute("aria-expanded", String(!collapsed));
@@ -458,24 +458,10 @@
       });
       header.append(button);
     });
-    $("#studioForm").querySelectorAll(".studio-field").forEach(fieldBlock => {
-      const label = fieldBlock.querySelector(":scope > span");
-      if (!label || label.querySelector("[data-collapse-block]")) return;
-      fieldBlock.classList.add("editor-field-collapsible");
-      label.classList.add("editor-field-collapse-label");
-      const button = document.createElement("button");
-      button.type = "button"; button.dataset.collapseBlock = ""; button.className = "editor-collapse-button";
-      button.textContent = "縮小"; button.setAttribute("aria-expanded", "true");
-      button.addEventListener("click", event => {
-        event.preventDefault(); event.stopPropagation();
-        setEditorBlockCollapsed(fieldBlock, !fieldBlock.classList.contains("editor-block-collapsed"));
-      });
-      label.append(button);
-    });
   }
 
   function setAllEditorBlocksCollapsed(collapsed) {
-    $("#studioForm").querySelectorAll(".editor-section, .subrecord-card, .step-card, .studio-field").forEach(block => setEditorBlockCollapsed(block, collapsed));
+    $("#studioForm").querySelectorAll(".editor-section, .subrecord-card, .step-card").forEach(block => setEditorBlockCollapsed(block, collapsed));
   }
 
   function questionForm(q) {

@@ -1254,6 +1254,52 @@
     }
   }
 
+  // Q18 is not a standalone customer question. Keep its logic as reusable common branches.
+  const q18Standalone = questionById("Q018");
+  if (q18Standalone) q18Standalone.enabled = false;
+
+  function cloneSharedBranch(sourceBranch, aliasBranch, introLine) {
+    sharedFlow(aliasBranch);
+    const sourceTemplate = template("GLOBAL", sourceBranch);
+    if (sourceTemplate) {
+      upsertTemplate({
+        q: "GLOBAL",
+        branch: aliasBranch,
+        text: `${introLine}\n\n${sourceTemplate.text}`
+      });
+    }
+    data.variables
+      .filter(variable => variable.q === "GLOBAL" && variable.branch === sourceBranch)
+      .forEach(variable => upsertVariable({ ...variable, branch: aliasBranch }));
+    data.actions
+      .filter(action => action.q === "GLOBAL" && action.branch === sourceBranch)
+      .forEach(action => upsertAction({ ...action, branch: aliasBranch }));
+  }
+
+  cloneSharedBranch("KAM表", "CAM表", "此共用分支對應 KAM/CAM 表；要判斷前一定先確認商店名字／店鋪名稱。");
+  cloneSharedBranch("廠直表", "廠直／產值表", "此共用分支對應廠直／產值表；要判斷前一定先確認商店名字／店鋪名稱。");
+
+  function ensureCommonPart(questionId, branchName, commonBranch, beforeText = "") {
+    const question = questionById(questionId);
+    if (!question) return;
+    data.flows
+      .filter(flow => flow.question === question.name && flow.branch === branchName)
+      .forEach(flow => {
+        flow.answerParts ||= [{ question: flow.question, branch: flow.branch, beforeText: "" }];
+        if (!flow.answerParts.some(part => part.question === "共用" && part.branch === commonBranch)) {
+          flow.answerParts.push({ question: "共用", branch: commonBranch, beforeText });
+          flow.answerBranches = flow.answerParts.map(part => part.branch);
+        }
+      });
+  }
+
+  ensureCommonPart("Q013", "管制區／高單／特殊商品", "新建工單", "此類特殊商品／管制區／高單若需跨窗口確認，先建立工單：");
+  ensureCommonPart("Q013", "管制區／高單／特殊商品", "KAM表", "再依商店名字判斷並填 KAM/CAM 表：");
+  ensureCommonPart("Q014", "小額折扣碼", "新建工單", "若提供小額折扣碼後仍有訂單問題要追蹤，需另建工單：");
+  ensureCommonPart("Q014", "小額折扣碼", "KAM表", "若商品／出貨問題仍需回報，依商店名字判斷是否填 KAM/CAM 表：");
+  ensureCommonPart("Q016", "可發起 Agent AOC", "新建工單", "若屬 Offline RR 或需專員代處理並追蹤，需建立工單：");
+  ensureCommonPart("Q016", "可發起 Agent AOC", "KAM表", "若需確認是否可退／個案處理，依商店名字判斷並填 KAM/CAM 表：");
+
   const glossaryTerms = [
     ["Buyer Username", "買家帳號"],
     ["Order SN", "訂單編號"],

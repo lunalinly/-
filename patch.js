@@ -615,7 +615,7 @@
     branches: [
       {
         name: "查蝦幣交易紀錄",
-        text: "確認資料：\n▪ Buyer Username：{{buyer_username}}\n▪ User ID：{{user_id}}\n▪ Order SN：{{order_sn}}\n▪ 查詢期間：{{coin_period}}\n\n操作方式：\n1. 到 CS Portal 搜尋 Buyer Username 或 User ID。\n2. 進入蝦幣交易紀錄。\n3. 依 Order SN、日期或交易類型比對。\n4. 將查詢結果整理給客人。\n\n查詢結果：\n{{coin_result}}",
+        text: "確認資料：\n▪ Buyer Username：{{buyer_username}}\n▪ User ID：{{user_id}}\n▪ Order SN：{{order_sn}}\n▪ 查詢期間：{{coin_period}}\n\n查詢結果：\n{{coin_result}}",
         variables: [
           field("buyer_username", "Buyer Username", "買家帳號"),
           field("user_id", "User ID", "買家 UID", { required: false }),
@@ -675,7 +675,7 @@
     branches: [
       {
         name: "查詢逆物流資訊",
-        text: "操作方式：\n1. 開啟 Order Admin Portal。\n2. 進入 Return → Return & Refund Requests。\n3. 搜尋 Order SN／Return ID。\n4. 查看退貨原因、退貨地址、逆物流單號與逆物流歷程。\n\n查詢結果：\n▪ Order SN：{{order_sn}}\n▪ Return ID：{{return_id}}\n▪ 逆物流單號：{{reverse_tracking_no}}\n▪ 退貨地址／取件資訊：{{return_pickup_info}}\n▪ 歷程：{{reverse_timeline}}",
+        text: "查詢結果：\n▪ Order SN：{{order_sn}}\n▪ Return ID：{{return_id}}\n▪ 逆物流單號：{{reverse_tracking_no}}\n▪ 退貨地址／取件資訊：{{return_pickup_info}}\n▪ 歷程：{{reverse_timeline}}",
         variables: [
           field("order_sn", "Order SN", "訂單編號"),
           field("return_id", "Return ID", "退貨退款編號"),
@@ -867,7 +867,7 @@
 
   const availableVoucher = template("Q006", "查詢買家目前可用優惠券");
   if (availableVoucher) {
-    availableVoucher.text = "查詢方式：\n▪ 到 CS Portal 搜尋 Buyer Username：{{V018}}\n▪ 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n\n查詢結果：\n▪ Buyer Username：{{V018}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}";
+    availableVoucher.text = "查詢結果：\n▪ Buyer Username：{{V018}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}";
   }
   cloneCanonicalVariable("Q006", "查詢買家目前可用優惠券", "V018", {
     required: true,
@@ -1515,7 +1515,7 @@
   upsertTemplate({
     q: "GLOBAL",
     branch: "DSS 商談詢問廠商",
-    text: "DSS 商談詢問廠商前先確認：\n▪ 商城名字：{{V003}}\n▪ Order SN：{{order_id}}\n▪ Product ID：{{product_id}}\n▪ MP SKU ID：{{V030}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 買家訴求：{{vendor_question}}\n\n操作方式：\n1. 開啟 Shopee Drop Shipping（DSS）。\n2. 進入對應訂單或供應商管理資料，確認 MP SKU ID 正確；不要直接使用系統預設的 PID_0。\n3. 進入商談，將 Question／商談內容整理成廠商看得懂的問題。\n4. 若是換貨／補寄，需一次問完：買家訴求、補寄規格、是否同原訂單資訊、是否需更改地址或收件資訊。\n5. 送出後記錄商談狀態與待回覆事項。\n\n商談內容建議：\n{{vendor_question}}\n\n廠商回覆：{{vendor_reply}}\n\n提醒：商談更新回覆時，要同步移除 KAM 表／廠直表中的待回覆註記；商談結案時，KAM 表／廠直表也要同步結案。"
+    text: "DSS 商談詢問廠商前先確認：\n▪ 商城名字：{{V003}}\n▪ Order SN：{{order_id}}\n▪ Product ID：{{product_id}}\n▪ MP SKU ID：{{V030}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 買家訴求：{{vendor_question}}\n\n商談內容建議：\n{{vendor_question}}\n\n廠商回覆：{{vendor_reply}}\n\n提醒：商談更新回覆時，要同步移除 KAM 表／廠直表中的待回覆註記；商談結案時，KAM 表／廠直表也要同步結案。"
   });
   [
     ["V003", "商城名字", "判斷廠直表與 DSS 商談前必填", false, true, "text", []],
@@ -2134,6 +2134,19 @@
   }
 
   [...data.variables, ...data.actions, ...(data.fields || [])].forEach(annotateSourceItem);
+
+  function stripTemplateSourceNoise(text) {
+    return String(text || "")
+      .replace(/\n{1,2}PPT 出處：第[^\n]+頁/g, "")
+      .replace(/\n{1,2}連結出處：PPT 第[^\n]+頁/g, "")
+      .trim();
+  }
+
+  data.templates.forEach(templateItem => {
+    const question = data.questions.find(item => item.id === templateItem.q);
+    if (["Q001", "Q002", "Q003", "Q004"].includes(question?.id || "")) return;
+    templateItem.text = stripTemplateSourceNoise(templateItem.text);
+  });
 
   const glossaryTerms = [
     ["Buyer Username", "買家帳號"],

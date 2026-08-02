@@ -123,10 +123,22 @@
     return String(value ?? "").split(/\r?\n|,|、|;/).map(item => item.trim()).filter(Boolean);
   }
 
+  function conditionMatches(condition) {
+    const code = condition?.code || condition?.sourceCode || condition?.fieldCode;
+    if (!code) return false;
+    const actual = splitRouteValues(state.values[code]);
+    const rawExpected = condition.values ?? condition.value;
+    const expected = (Array.isArray(rawExpected) ? rawExpected : [rawExpected]).map(value => String(value ?? "").trim()).filter(Boolean);
+    if (!expected.length) return actual.length > 0 || String(state.values[code] ?? "").trim() !== "";
+    return expected.some(value => actual.includes(value));
+  }
+
   function ruleMatches(definition, rule) {
     const actual = splitRouteValues(state.values[definition.code]);
     const expected = (rule.values || []).map(value => String(value ?? "").trim()).filter(Boolean);
-    return expected.some(value => actual.includes(value));
+    const conditions = Array.isArray(rule.conditions) ? rule.conditions : [];
+    const ownMatched = expected.length ? expected.some(value => actual.includes(value)) : conditions.length > 0;
+    return ownMatched && conditions.every(conditionMatches);
   }
 
   function revealTargetCodes() {
@@ -819,12 +831,16 @@
         sourceMap.set(variable.code, { code: variable.code, label: variable.label, note: variable.sourceNote || "", links });
       }
     });
-    variables.forEach(variable => {
-      const raw = state.values[variable.code] || "";
-      const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(raw).trim();
-      const value = displayValue(variable, raw) || (inactiveConditional ? "不用輸入" : `{請填：${variable.label}}`);
-      text = replaceVariableTokens(text, variable, value);
-    });
+    for (let pass = 0; pass < 3; pass += 1) {
+      const before = text;
+      variables.forEach(variable => {
+        const raw = state.values[variable.code] || "";
+        const inactiveConditional = !shouldShowConditionalField(variable, flow) && !String(raw).trim();
+        const value = displayValue(variable, raw) || (inactiveConditional ? "不用輸入" : `{請填：${variable.label}}`);
+        text = replaceVariableTokens(text, variable, value);
+      });
+      if (text === before) break;
+    }
     if (built.missing.length) text += `\n\n{尚未設定答案：${built.missing.join("、")}}`;
     const sources = [...sourceMap.values()];
     const answerSources = sources.filter(source => String(source.note || "").trim());

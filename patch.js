@@ -1439,6 +1439,121 @@
     }));
   });
 
+  const pptQuestionPages = {
+    Q001: "19、241、250-251、254、260",
+    Q002: "20-21",
+    Q003: "23-24",
+    Q004: "25-26、68",
+    Q005: "25",
+    Q006: "22、25、171-179",
+    Q007: "25、39-40、241、272",
+    Q008: "25、27、57-60、351-352",
+    Q009: "28、351-352",
+    Q010: "52-56、61-66",
+    Q011: "113-122、181、189、199-200",
+    Q012: "39-40、161-166、181、190、199-200、272",
+    Q013: "168、215、241、243、246、250-251、254、257、260",
+    Q014: "171-179、215",
+    Q015: "221-237、241、250-251",
+    Q016: "260-270、263-265",
+    Q017: "272-275",
+    Q018: "67-73、128、132、194-196、315、318-321",
+    Q019: "315、318-321",
+    Q020: "183-187"
+  };
+
+  Object.entries(pptQuestionPages).forEach(([id, pages]) => {
+    const question = questionById(id);
+    if (!question) return;
+    question.pptPages = pages;
+    const marker = `PPT 出處：第 ${pages} 頁`;
+    if (!String(question.description || "").includes("PPT 出處")) {
+      question.description = `${question.description || ""}\n${marker}`.trim();
+    }
+  });
+
+  const pptBranchPages = {
+    "鑑賞期": "19、241、250-251、254、260",
+    "新建工單": "68、136-138、315",
+    "工單追蹤／未回覆安撫": "318-321",
+    "KAM表": "67-70、315",
+    "CAM表": "67-70、315",
+    "KAM表．SBS": "67-70、315",
+    "廠直表": "67、70、73、128、132、194-196",
+    "廠直／產值表": "67、70、73、128、132、194-196",
+    "DSS 商談詢問廠商": "73、128、132、194-196"
+  };
+
+  Object.entries(pptBranchPages).forEach(([branch, pages]) => {
+    const tpl = template("GLOBAL", branch);
+    const marker = `PPT 出處：第 ${pages} 頁`;
+    if (tpl && !String(tpl.text || "").includes(marker)) tpl.text = `${tpl.text}\n\n${marker}`;
+    data.variables
+      .filter(variable => variable.q === "GLOBAL" && variable.branch === branch)
+      .forEach(variable => {
+        const note = String(variable.sourceNote || "");
+        if (!note.includes("PPT 出處")) variable.sourceNote = `${note}${note ? "\n\n" : ""}${marker}`;
+      });
+    data.actions
+      .filter(action => action.q === "GLOBAL" && action.branch === branch)
+      .forEach(action => {
+        const note = String(action.sourceNote || "");
+        if (!note.includes("PPT 出處")) action.sourceNote = `${note}${note ? "\n\n" : ""}${marker}`;
+      });
+  });
+
+  const pptLinkPageRules = [
+    [/Inventory-Expiration-Date/i, "53-56"],
+    [/AOD-Main/i, "57-60"],
+    [/Inventory-Inbound-Date/i, "61-66"],
+    [/sites\.google\.com\/shopee(?:mobile-external)?\.com\/scs-cs-tool\/home|SCS CS Tool/i, "52"],
+    [/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI|Add-on_Sub|Add-on_Main|Add-on \/ Gift \/ Bundle/i, "351-352"],
+    [/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc|個案補碼追蹤表/i, "175-176"],
+    [/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk|HighRisk|2025查詢表4/i, "185-187"],
+    [/1daef549-eeb1-475a-81b1-af4a599ad6c9|延遲補償/i, "184"],
+    [/AOC_OPS_V2|Offline RR.*小工具/i, "263-265"],
+    [/scm\.internal\.shopee\.tw|Shopee Drop Shipping|DSS/i, "73、128、132、194-196"],
+    [/jira\.shopee\.io|Shopee Jira|Jira/i, "68、136-138、315"],
+    [/dms\.cs\.shopee\.tw|CS Portal/i, "5、116、185-186、264、266"],
+    [/cs\.localshop\.shopee\.tw|InHouse/i, "5、79、283、347-348"],
+    [/order-admin\.shopee\.tw|Order Admin/i, "5、20-21、195、221-237"],
+    [/promotion-admin\.shopee\.tw|Promotion Admin/i, "171-179"],
+    [/admin\.user\.shopee\.io|User Portal/i, "5、185-187"],
+    [/sci\.twtc\.shopee\.tw|SCI/i, "5、134、161-166、181"],
+    [/shopee24-hub|Information Hub/i, "5、134"],
+    [/help\.shopee\.tw\/portal\/4\/article\/80178|七天鑑賞期|鑑賞期/i, "19"],
+    [/help\.shopee\.tw\/portal\/4\/article\/79943|help\.shopee\.tw\/portal\/4\/article\/79856|退貨申請|商品如何退回/i, "241、250-251"],
+    [/help\.shopee\.tw\/portal\/4\/article\/149656|延遲訂單補償規則/i, "183-187"],
+    [/help\.shopee\.tw\/portal\/4\/article\/186734|help\.shopee\.tw\/portal\/4\/article\/145979|最快隔日到|隔日到貨/i, "25、183"],
+    [/docs\.google\.com\/spreadsheets\/d\/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I|KAM表/i, "67-70、315"],
+    [/docs\.google\.com\/spreadsheets\/d\/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8|廠商直送/i, "67、70、194-196"]
+  ];
+
+  function pptPagesForLink(link) {
+    const haystack = `${link?.title || ""} ${link?.url || ""}`;
+    const found = pptLinkPageRules.find(([pattern]) => pattern.test(haystack));
+    return found ? found[1] : "";
+  }
+
+  function annotatePptLink(link) {
+    if (!link?.url) return link;
+    const pages = pptPagesForLink(link);
+    if (!pages || String(link.title || "").includes("PPT 第")) return link;
+    return { ...link, title: `${link.title || "來源連結"}（PPT 第 ${pages} 頁）` };
+  }
+
+  function annotateSourceItem(item) {
+    if (!item || !Array.isArray(item.sourceLinks)) return;
+    const pages = [...new Set(item.sourceLinks.map(pptPagesForLink).filter(Boolean))];
+    item.sourceLinks = item.sourceLinks.map(annotatePptLink);
+    item.sourceUrl = item.sourceLinks[0]?.url || item.sourceUrl || "";
+    if (pages.length && !String(item.sourceNote || "").includes("連結出處")) {
+      item.sourceNote = `${item.sourceNote || ""}${item.sourceNote ? "\n\n" : ""}連結出處：PPT 第 ${pages.join("、")} 頁`;
+    }
+  }
+
+  [...data.variables, ...data.actions, ...(data.fields || [])].forEach(annotateSourceItem);
+
   const glossaryTerms = [
     ["Buyer Username", "買家帳號"],
     ["Order SN", "訂單編號"],

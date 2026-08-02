@@ -782,4 +782,15 @@
     options: ["問運費", "問什麼時候到貨", "退貨步驟是什麼"]
   });
 
+  setVariableProps("Q007", "問運費", "shipping_fee_details", asSingleText);
+  setVariableProps("Q007", "問什麼時候到貨", "estimated_delivery_result", asDate);
+  setVariableProps("Q010", "查商品效期", "expiration_result", asDate);
+  setVariableProps("Q010", "查商品進貨日", "inbound_result", asDate);
+  setPropsAllBranches("Q014", "discount_amount", asSingleText);
+  setPropsAllBranches("Q014", "price_difference", asSingleText);
+  setPropsAllBranches("Q014", "min_spend", asSingleText);
+  setPropsAllBranches("Q014", "voucher_amount", asSingleText);
+  setPropsAllBranches("Q015", "refund_amount", asSingleText);
+  setPropsAllBranches("Q013", "item_amount", asSingleText);
+
 })();

@@ -724,4 +724,62 @@
   setVariableProps("Q020", "黑名單或不符合補償", "blacklist_result", asLongText);
   setVariableProps("Q020", "符合補發延遲補償", "voucher_note", asLongText);
 
+  const appreciationQuestion = questionById("Q001");
+  if (appreciationQuestion) {
+    appreciationQuestion.answerText = "";
+  }
+
+  const q001Template = template("Q001", "共用");
+  if (q001Template) {
+    upsertTemplate({
+      q: "GLOBAL",
+      branch: "鑑賞期",
+      text: q001Template.text
+    });
+  }
+
+  data.variables
+    .filter(variable => variable.q === "Q001" && variable.branch === "共用")
+    .forEach(variable => upsertVariable({
+      ...variable,
+      q: "GLOBAL",
+      branch: "鑑賞期",
+      category: variable.category || "鑑賞期"
+    }));
+
+  data.flows = data.flows.filter(flow => !(flow.question === "詢問鑑賞期"));
+  data.flows.push({
+    question: "詢問鑑賞期",
+    steps: [],
+    branch: "鑑賞期",
+    next: "填入取貨日期，套用共用鑑賞期判斷",
+    routes: [],
+    answerBranches: ["鑑賞期"],
+    answerParts: [{ question: "共用", branch: "鑑賞期", beforeText: "" }]
+  });
+
+  const returnStepParts = [
+    { question: "詢問運費／物流", branch: "退貨步驟是什麼", beforeText: "" },
+    { question: "共用", branch: "鑑賞期", beforeText: "先確認是否仍在 15 天鑑賞期內：" }
+  ];
+  const returnStepFlow = data.flows.find(flow => flow.question === "詢問運費／物流" && flow.branch === "退貨步驟是什麼");
+  if (returnStepFlow) {
+    returnStepFlow.answerParts = returnStepParts;
+    returnStepFlow.answerBranches = ["退貨步驟是什麼", "鑑賞期"];
+  } else {
+    data.flows.push({
+      question: "詢問運費／物流",
+      steps: [{ prompt: "客人問的是哪一種物流／退貨問題？", option: "退貨步驟是什麼" }],
+      branch: "退貨步驟是什麼",
+      next: "先說明退貨步驟，再確認是否仍在 15 天鑑賞期內",
+      routes: [],
+      answerBranches: ["退貨步驟是什麼", "鑑賞期"],
+      answerParts: returnStepParts
+    });
+  }
+  upsertDecision({
+    prompt: "客人問的是哪一種物流／退貨問題？",
+    options: ["問運費", "問什麼時候到貨", "退貨步驟是什麼"]
+  });
+
 })();

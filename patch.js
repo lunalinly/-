@@ -2157,6 +2157,77 @@
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "工具：DSS 商品／訂單查詢");
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "工具：DSS 商談詢問廠商");
 
+  function replaceCommonToolParts(questionId, branchName, replacements) {
+    const question = questionById(questionId);
+    if (!question) return;
+    data.flows
+      .filter(flow => flow.question === question.name && flow.branch === branchName)
+      .forEach(flow => {
+        flow.answerParts ||= [{ question: flow.question, branch: flow.branch, beforeText: "" }];
+        const nextParts = [];
+        flow.answerParts.forEach(part => {
+          const replacement = part.question === "共用" ? replacements[part.branch] : null;
+          if (!replacement) {
+            nextParts.push(part);
+            return;
+          }
+          replacement.forEach(branch => nextParts.push({ question: "共用", branch, beforeText: part.beforeText || "" }));
+        });
+        flow.answerParts = nextParts;
+        flow.answerBranches = flow.answerParts.map(part => part.branch);
+      });
+  }
+
+  replaceCommonToolParts("Q006", "查詢買家目前可用優惠券", {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜優惠代碼錢包"]
+  });
+  ["可以返還／可以再次使用", "不能返還／不能再次使用", "取消訂單後優惠券是否返還"].forEach(branch => replaceCommonToolParts("Q006", branch, {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜優惠代碼錢包"],
+    "工具：Order Admin 查詢": ["工具：Order Admin｜訂單資訊查詢"]
+  }));
+  replaceCommonToolParts("Q007", "問什麼時候到貨", {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜訂單詳情查詢"]
+  });
+  replaceCommonToolParts("Q007", "退貨步驟是什麼", {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜退貨退款查詢"]
+  });
+  ["尚未進入 WMS", "WMS 已出貨但延遲", "OMS／WMS 顯示 OOS 缺貨"].forEach(branch => replaceCommonToolParts("Q011", branch, {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜訂單詳情查詢"],
+    "工具：Order Admin 查詢": ["工具：Order Admin｜訂單資訊查詢"]
+  }));
+  ["包裹延遲未配達", "配達門市超過 10 天未取消", "貨態已配達但買家未收到", "貨態配送中但買家已取件"].forEach(branch => replaceCommonToolParts("Q012", branch, {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜訂單詳情查詢"],
+    "工具：Order Admin 查詢": ["工具：Order Admin｜物流／逆物流查詢"]
+  }));
+  replaceCommonToolParts("Q014", "返還原折扣碼", {
+    "工具：Promotion Admin 查詢": ["工具：Promotion Admin｜優惠券查詢"]
+  });
+  replaceCommonToolParts("Q014", "返還損失折扣／價差", {
+    "工具：Order Admin 查詢": ["工具：Order Admin｜訂單資訊查詢", "工具：Order Admin｜退款付款查詢"]
+  });
+  ["訂單可申請取消配送中", "申請處理中", "系統同意取消", "系統拒絕或買家撤回"].forEach(branch => replaceCommonToolParts("Q017", branch, {
+    "工具：Order Admin 查詢": ["工具：Order Admin｜訂單資訊查詢"]
+  }));
+  replaceCommonToolParts("Q022", "查蝦幣交易紀錄", {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜蝦幣交易紀錄"]
+  });
+  replaceCommonToolParts("Q023", "多包裹尚未全部收到", {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜訂單詳情查詢"]
+  });
+  replaceCommonToolParts("Q023", "子包裹取消但母訂單已完成", {
+    "工具：CS Portal 查詢": ["工具：CS Portal｜訂單詳情查詢"],
+    "工具：Order Admin 查詢": ["工具：Order Admin｜訂單資訊查詢", "工具：Order Admin｜退款付款查詢"]
+  });
+  replaceCommonToolParts("Q024", "查詢逆物流資訊", {
+    "工具：Order Admin 查詢": ["工具：Order Admin｜退貨退款查詢", "工具：Order Admin｜物流／逆物流查詢"]
+  });
+  ["有逆物流單號但 1-2 工作天無貨態", "無逆物流單號也無歷程"].forEach(branch => replaceCommonToolParts("Q024", branch, {
+    "工具：Order Admin 查詢": ["工具：Order Admin｜物流／逆物流查詢"]
+  }));
+  replaceCommonToolParts("Q025", "廠直退貨／未取回商品", {
+    "工具：DSS 商品／訂單查詢": ["工具：DSS｜查 MP SKU ID"]
+  });
+
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "新建工單", "此類特殊商品／管制區／高單若需跨窗口確認，先建立工單：");
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "KAM表", "再依商城名字判斷並填 KAM 表：");
   ensureCommonPart("Q014", "小額折扣碼", "新建工單", "若提供小額折扣碼後仍有訂單問題要追蹤，需另建工單：");

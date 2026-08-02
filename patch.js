@@ -521,6 +521,303 @@
     ]
   });
 
+  addQuestion({
+    id: "Q021",
+    name: "詢問付款異常／退款未入帳／補匯款",
+    category: "金流與付款",
+    keywords: "付款異常,信用卡無法付款,信用卡折扣券無法使用,銀行轉帳,已匯款未待出貨,退款未入帳,確認退款金額,補匯款,整新費,Payments,MKT",
+    description: "依客人反映的付款前、退款或補匯款情境判斷是否轉 Payments／MKT",
+    answerText: "先確認客人問的是付款前問題、退款未入帳／退款金額，還是補匯款／整新費查帳。這類不是單純付款方式說明，需要蒐集 Order SN、Order ID、User ID／Username、時間、金額或授權碼，再依情境轉 Payments／MKT。",
+    prompt: "客人反映的是哪一種金流問題？",
+    branches: [
+      {
+        name: "信用卡無法付款",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Order ID：{{order_id}}\n▪ User Name：{{buyer_username}}\n▪ User ID：{{user_id}}\n▪ 授權碼：{{auth_code}}\n▪ 授權日期／時間：{{auth_time}}\n▪ 無法付款截圖／錄影：{{proof_status}}\n\n處理方式：\n請先確認付款狀態與錯誤畫面；若屬信用卡授權或付款系統異常，整理上述資料轉 Payments 確認。\n\n轉詢範本：\nHi Payments,\nOrder SN：{{order_sn}}\nOrder ID：{{order_id}}\nUser Name：{{buyer_username}}\nUser ID：{{user_id}}\n授權碼：{{auth_code}}\n授權日期、時間：{{auth_time}}\n問題描述：{{payment_issue}}\n附件：{{proof_status}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("order_id", "Order ID", "Order Admin 或訂單網址可查"),
+          field("buyer_username", "Buyer Username", "買家帳號"),
+          field("user_id", "User ID", "買家 UID", { required: false }),
+          field("auth_code", "授權碼", "銀行／刷卡授權碼", { required: false }),
+          field("auth_time", "授權日期／時間", "YYYY/MM/DD HH:mm", { required: false }),
+          field("payment_issue", "問題描述", "客人遇到的付款錯誤", { multiline: true }),
+          field("proof_status", "截圖／錄影佐證", "是否已有錯誤畫面", { multiline: true })
+        ],
+        actions: [{ action: "整理資料轉 Payments", needed: true, note: "PPT 第 202-203 頁" }]
+      },
+      {
+        name: "信用卡活動折扣券無法使用",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ User ID：{{user_id}}\n▪ Shop ID：{{shop_id}}\n▪ 活動／折扣券名稱：{{campaign_name}}\n▪ 無法使用截圖／錄影：{{proof_status}}\n\n處理方式：\n若客人反映信用卡活動折扣券無法使用，需先確認活動條件、訂單與錯誤畫面；符合活動卻仍無法使用時，整理資料轉 MKT。\n\n轉詢範本：\nHi MKT,\nOrder SN：{{order_sn}}\nUser ID：{{user_id}}\nShop ID：{{shop_id}}\n活動／折扣券：{{campaign_name}}\n問題描述：{{payment_issue}}\n附件：{{proof_status}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("user_id", "User ID", "買家 UID"),
+          field("shop_id", "Shop ID", "賣場／館別 ID", { required: false }),
+          field("campaign_name", "活動／折扣券名稱", "信用卡活動或券名稱"),
+          field("payment_issue", "問題描述", "客人遇到的錯誤", { multiline: true }),
+          field("proof_status", "截圖／錄影佐證", "是否已有錯誤畫面", { multiline: true })
+        ],
+        actions: [{ action: "整理資料轉 MKT", needed: true, note: "PPT 第 202-203 頁" }]
+      },
+      {
+        name: "銀行轉帳已匯款但未待出貨",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Order ID：{{order_id}}\n▪ 轉帳日期／時間：{{transfer_time}}\n▪ 轉出帳號後五碼：{{bank_last5}}\n▪ 匯款金額：{{transfer_amount}}\n▪ 截圖佐證：{{proof_status}}\n\n處理方式：\n客人表示已完成銀行轉帳但訂單未顯示待出貨時，請蒐集轉帳時間、帳號後五碼與金額，整理後轉 Payments 查帳。\n\n轉詢範本：\nHi Payments,\nOrder SN：{{order_sn}}\nOrder ID：{{order_id}}\n轉帳日期／時間：{{transfer_time}}\n轉出帳號後五碼：{{bank_last5}}\n匯款金額：{{transfer_amount}}\n問題描述：{{payment_issue}}\n附件：{{proof_status}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("order_id", "Order ID", "Order Admin 或訂單網址可查"),
+          field("transfer_time", "轉帳日期／時間", "YYYY/MM/DD HH:mm"),
+          field("bank_last5", "轉出帳號後五碼", "帳號後五碼"),
+          field("transfer_amount", "匯款金額", "金額"),
+          field("payment_issue", "問題描述", "客人描述", { multiline: true }),
+          field("proof_status", "截圖佐證", "匯款證明或畫面", { multiline: true })
+        ],
+        actions: [{ action: "整理資料轉 Payments 查帳", needed: true, note: "PPT 第 202-203 頁" }]
+      },
+      {
+        name: "已退款但未入帳／確認退款金額",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Order ID：{{order_id}}\n▪ Buyer Username：{{buyer_username}}\n▪ 退款狀態／通知日期：{{refund_status}}\n▪ 客人主張未入帳或金額問題：{{refund_issue}}\n▪ 截圖佐證：{{proof_status}}\n\n處理方式：\n先確認訂單付款方式與系統退款狀態。若系統已顯示退款但客人未入帳，或客人要確認退款金額，整理資料轉 Payments。\n\n轉詢範本：\nHi Payments,\nOrder SN：{{order_sn}}\nOrder ID：{{order_id}}\n買家此單於 {{refund_status}} 通知會退款，目前反映：{{refund_issue}}\n再麻煩協助確認，謝謝。\n附件：{{proof_status}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("order_id", "Order ID", "Order Admin 或訂單網址可查"),
+          field("buyer_username", "Buyer Username", "買家帳號"),
+          field("refund_status", "退款狀態／通知日期", "系統顯示或通知時間"),
+          field("refund_issue", "退款問題", "未入帳、金額不符或需確認的內容", { multiline: true }),
+          field("proof_status", "截圖佐證", "客人提供的入帳／退款畫面", { multiline: true })
+        ],
+        actions: [{ action: "整理資料轉 Payments", needed: true, note: "PPT 第 204 頁" }]
+      },
+      {
+        name: "補匯款／整新費查帳",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Order ID：{{order_id}}\n▪ Supplier Name：{{supplier_name}}\n▪ Supplier ID：{{supplier_id}}\n▪ 轉帳日期：{{transfer_time}}\n▪ 轉帳金額：{{transfer_amount}}\n▪ 轉出帳號後五碼：{{bank_last5}}\n\n處理方式：\n若前台取消但商品已送達、或客人需補匯款／支付整新費，請依資料轉 Payments 查帳。廠直訂單才需填 Supplier ID；生活超市訂單不用填。\n\n轉詢範本：\nHi Payments,\n此單因 {{payment_issue}}，前台取消但商品已送達，買家已補匯款／支付整新費用，請協助查詢是否已入帳，感謝。\nUser Name：{{buyer_username}}\nOrder SN：{{order_sn}}\nOrder ID：{{order_id}}\n轉帳日期／時間：{{transfer_time}}\n帳號後五碼：{{bank_last5}}\n匯款金額：{{transfer_amount}}\nSupplier Name：{{supplier_name}}\nSupplier ID：{{supplier_id}}",
+        variables: [
+          field("buyer_username", "Buyer Username", "買家帳號"),
+          field("order_sn", "Order SN", "訂單編號"),
+          field("order_id", "Order ID", "Order Admin 或訂單網址可查"),
+          field("payment_issue", "補匯款原因", "取消後收貨、整新費等"),
+          field("transfer_time", "轉帳日期／時間", "YYYY/MM/DD HH:mm"),
+          field("bank_last5", "轉出帳號後五碼", "帳號後五碼"),
+          field("transfer_amount", "匯款金額", "金額"),
+          field("supplier_name", "Supplier Name", "供應商名稱", { required: false }),
+          field("supplier_id", "Supplier ID", "廠直訂單才需填", { required: false })
+        ],
+        actions: [{ action: "整理資料轉 Payments 查帳", needed: true, note: "PPT 第 205、208-213 頁" }]
+      }
+    ]
+  });
+
+  addQuestion({
+    id: "Q022",
+    name: "詢問蝦幣／蝦幣交易紀錄",
+    category: "金流與付款",
+    keywords: "蝦幣,Shopee Coins,蝦幣交易紀錄,蝦幣去哪,蝦幣沒有入帳",
+    description: "查詢 CS Portal 的蝦幣交易紀錄並整理結果",
+    answerText: "客人詢問蝦幣時，先確認是訂單使用、退還、入帳或交易紀錄問題，再到 CS Portal 查詢蝦幣交易紀錄。",
+    prompt: "客人詢問哪一種蝦幣問題？",
+    branches: [
+      {
+        name: "查蝦幣交易紀錄",
+        text: "確認資料：\n▪ Buyer Username：{{buyer_username}}\n▪ User ID：{{user_id}}\n▪ Order SN：{{order_sn}}\n▪ 查詢期間：{{coin_period}}\n\n操作方式：\n1. 到 CS Portal 搜尋 Buyer Username 或 User ID。\n2. 進入蝦幣交易紀錄。\n3. 依 Order SN、日期或交易類型比對。\n4. 將查詢結果整理給客人。\n\n查詢結果：\n{{coin_result}}",
+        variables: [
+          field("buyer_username", "Buyer Username", "買家帳號"),
+          field("user_id", "User ID", "買家 UID", { required: false }),
+          field("order_sn", "Order SN", "如與訂單相關請填", { required: false }),
+          field("coin_period", "查詢期間", "例如 2026/08/01-2026/08/02", { required: false }),
+          field("coin_result", "蝦幣查詢結果", "貼上 CS Portal 查詢到的交易紀錄與判斷", { multiline: true })
+        ],
+        actions: [{ action: "查 CS Portal 蝦幣交易紀錄", needed: true, note: "PPT 第 93-94 頁" }]
+      }
+    ]
+  });
+
+  addQuestion({
+    id: "Q023",
+    name: "詢問分箱／拆包裹訂單異常",
+    category: "物流與訂單",
+    keywords: "分箱,拆包裹,子訂單,母訂單,部分包裹取消,尚未收到所有包裹,包裹驗收失敗,系統完成訂單",
+    description: "處理多包裹／子訂單取消或母訂單完成造成的退款與收貨疑問",
+    answerText: "客人詢問多包裹、拆包裹或其中一箱取消時，先確認母訂單、子包裹狀態、取消時間與退款狀態，再判斷是否需要轉 OPS／工單追蹤。",
+    prompt: "分箱／拆包裹目前是哪一種狀況？",
+    branches: [
+      {
+        name: "多包裹尚未全部收到",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ 物流單號／箱數：{{tracking_summary}}\n▪ 已收到包裹：{{received_parcels}}\n▪ 未收到包裹：{{missing_parcels}}\n\n處理方式：\n大材積或多商品可能分箱出貨，需到 SCI／CS Portal 查看箱數與對應物流單號。若其中一箱仍配送中，先依物流貨態回覆；若異常停滯，再接包裹貨態異常或工單追蹤流程。\n\n回覆重點：\n{{parcel_reply}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("tracking_summary", "物流單號／箱數", "SCI 或 CS Portal 顯示內容", { multiline: true }),
+          field("received_parcels", "已收到包裹", "已配達／已取件包裹", { required: false, multiline: true }),
+          field("missing_parcels", "未收到包裹", "仍配送中或異常包裹", { required: false, multiline: true }),
+          field("parcel_reply", "回覆重點", "整理給客人的說明", { multiline: true })
+        ],
+        actions: [{ action: "查 SCI／CS Portal 分箱物流", needed: true, note: "PPT 第 125、247 頁" }]
+      },
+      {
+        name: "子包裹取消但母訂單已完成",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ 母訂單完成／退款時間：{{parent_order_time}}\n▪ 子包裹取消時間：{{child_cancel_time}}\n▪ 系統退款狀態：{{refund_status}}\n\n判斷方式：\n若子包裹在退貨發起／訂單完成後才取消，系統可能不會退款給買家；若子包裹在訂單完成前取消，通常會退款。請依 Order Admin 與 CS Portal 的時間序判斷。\n\n處理方式：\n若客人未退款或時間序不清楚，建立工單並轉 OPS／對應窗口確認。\n\n案件摘要：\n{{case_summary}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("parent_order_time", "母訂單完成／退款時間", "Order Admin 顯示時間"),
+          field("child_cancel_time", "子包裹取消時間", "包裹取消／驗收失敗時間"),
+          field("refund_status", "退款狀態", "是否已退款／未退款"),
+          field("case_summary", "案件摘要", "時間序與客人訴求", { multiline: true })
+        ],
+        actions: [{ action: "必要時建立工單轉 OPS", needed: true, note: "PPT 第 247-249 頁" }]
+      }
+    ]
+  });
+
+  addQuestion({
+    id: "Q024",
+    name: "詢問逆物流／退貨物流異常",
+    category: "退貨退款",
+    keywords: "逆物流,退貨物流,逆物流單號,退貨取件,退貨物流沒更新,無逆物單號,重新拋檔,個案派車,HM",
+    description: "查詢退貨物流資訊並判斷是否需轉 HM／OPS",
+    answerText: "客人詢問退貨物流或逆物流異常時，先到 Order Admin 的 Return & Refund Requests 查看退貨原因、退貨地址、逆物流單號與歷程，再依是否有單號、是否超過 1-2 個工作天無貨態判斷後續。",
+    prompt: "逆物流目前是哪一種狀況？",
+    branches: [
+      {
+        name: "查詢逆物流資訊",
+        text: "操作方式：\n1. 開啟 Order Admin Portal。\n2. 進入 Return → Return & Refund Requests。\n3. 搜尋 Order SN／Return ID。\n4. 查看退貨原因、退貨地址、逆物流單號與逆物流歷程。\n\n查詢結果：\n▪ Order SN：{{order_sn}}\n▪ Return ID：{{return_id}}\n▪ 逆物流單號：{{reverse_tracking_no}}\n▪ 退貨地址／取件資訊：{{return_pickup_info}}\n▪ 歷程：{{reverse_timeline}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("return_id", "Return ID", "退貨退款編號"),
+          field("reverse_tracking_no", "逆物流單號", "退貨物流單號", { required: false }),
+          field("return_pickup_info", "退貨地址／取件資訊", "退貨地址、取件方式", { required: false, multiline: true }),
+          field("reverse_timeline", "逆物流歷程", "貼上 Order Admin 時序", { multiline: true })
+        ],
+        actions: [{ action: "查 Order Admin 逆物流資訊", needed: true, note: "PPT 第 244 頁" }]
+      },
+      {
+        name: "有逆物流單號但 1-2 工作天無貨態",
+        text: "判斷結果：\n▪ Return ID：{{return_id}}\n▪ 逆物流單號：{{reverse_tracking_no}}\n▪ 申退時間：{{return_created_time}}\n▪ 目前貨態：{{reverse_timeline}}\n\n處理方式：\n若顯示逆物流單號但 1-2 個工作天仍無貨態，需建立轉單任務給 HM 確認狀況；HM 回覆後可能重新拋檔或個案派車。\n\n轉詢重點：\n{{case_summary}}",
+        variables: [
+          field("return_id", "Return ID", "退貨退款編號"),
+          field("reverse_tracking_no", "逆物流單號", "退貨物流單號"),
+          field("return_created_time", "申退時間", "買家提出退貨退款時間"),
+          field("reverse_timeline", "目前貨態", "是否無歷程或無更新", { multiline: true }),
+          field("case_summary", "轉詢重點", "整理給 HM／OPS 的內容", { multiline: true })
+        ],
+        actions: [{ action: "建立轉單任務給 HM", needed: true, note: "PPT 第 245 頁" }]
+      },
+      {
+        name: "無逆物流單號也無歷程",
+        text: "判斷結果：\n▪ Return ID：{{return_id}}\n▪ Order SN：{{order_sn}}\n▪ 前台／後台是否重新申退：{{reapply_status}}\n▪ 目前畫面：{{reverse_timeline}}\n\n處理方式：\n若完全空白、無逆物流單號也無歷程，請先確認前台／後台是否重新申退；若未重新申退也無單號，需與 OPS 確認是否大量異常或需通報。\n\n案件摘要：\n{{case_summary}}",
+        variables: [
+          field("return_id", "Return ID", "退貨退款編號"),
+          field("order_sn", "Order SN", "訂單編號"),
+          field("reapply_status", "是否重新申退", "前台／後台確認結果"),
+          field("reverse_timeline", "目前畫面", "無單號、無歷程截圖或描述", { multiline: true }),
+          field("case_summary", "案件摘要", "整理給 OPS 的內容", { multiline: true })
+        ],
+        actions: [{ action: "確認是否需通報 OPS", needed: true, note: "PPT 第 245 頁" }]
+      }
+    ]
+  });
+
+  addQuestion({
+    id: "Q025",
+    name: "詢問特殊退貨類型",
+    category: "退貨退款",
+    keywords: "一般店到店貨損,大材積商品,Apple館,APPLE,遊戲點數,SP_GAME,廠直退貨,特殊退貨,檢測單,官方通路保固",
+    description: "依特殊商品或特殊退貨類型判斷照片、工單、VM／OPS／職代與表單流程",
+    answerText: "先確認客人問的是一般店到店貨損、大材積、Apple 館、廠直退貨作業調整，還是遊戲點數／SP_GAME。這些不要直接套一般退貨流程，需依特殊分支處理。",
+    prompt: "客人遇到哪一種特殊退貨情境？",
+    branches: [
+      {
+        name: "一般店到店貨損",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ 包裹照片：{{parcel_photo_status}}\n▪ 貨損商品照片：{{damage_photo_status}}\n▪ 箱／袋上面單照片：{{label_photo_status}}\n\n處理方式：\n一般店到店貨損需請買家提供包裹照片、貨損商品照片、箱／袋上面單照片，缺一不可。後續建立工單任務轉 VM，避免自行判定賠款對象。\n\n案件摘要：\n{{case_summary}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("parcel_photo_status", "包裹照片", "是否已提供"),
+          field("damage_photo_status", "貨損商品照片", "是否已提供"),
+          field("label_photo_status", "箱／袋上面單照片", "是否已提供"),
+          field("case_summary", "案件摘要", "貨損情況與客人訴求", { multiline: true })
+        ],
+        actions: [{ action: "新建工單任務轉 VM", needed: true, note: "PPT 第 252 頁" }]
+      },
+      {
+        name: "大材積商品退貨",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Return ID：{{return_id}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 大材積／超材狀態：{{oversize_status}}\n\n處理方式：\n發現退貨商品超材或大材積時，依退貨報表與工單任務轉 VM；VM 提供取件單號後轉回 Logistics 24h，再依流程由 OPS 通知 WH。\n\n轉詢重點：\n{{case_summary}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("return_id", "Return ID", "退貨退款編號"),
+          field("V008", "商品名稱", "商品名稱"),
+          field("V010", "商品規格", "商品規格", { required: false }),
+          field("oversize_status", "大材積／超材狀態", "退貨報表或系統顯示"),
+          field("case_summary", "轉詢重點", "整理給 VM／Logistics／OPS", { multiline: true })
+        ],
+        actions: [{ action: "依大材積流程轉 VM／OPS", needed: true, note: "PPT 第 253 頁" }]
+      },
+      {
+        name: "Apple 館／官方通路保固",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 是否在鑑賞期內：{{appreciation_status}}\n▪ 保固／檢測需求：{{warranty_issue}}\n\n處理方式：\nApple 館或官方通路保固案件，需留意銷貨憑證、序號、檢測單與 OPS／倉庫送檢流程。鑑賞期內 Apple 可先以發票品名認列保固；若涉及檢測或送檢，需建工單追蹤。\n\n案件摘要：\n{{case_summary}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("V008", "商品名稱", "商品名稱"),
+          field("V010", "商品規格", "商品規格", { required: false }),
+          field("appreciation_status", "是否在鑑賞期內", "15 天鑑賞期判斷"),
+          field("warranty_issue", "保固／檢測需求", "客人詢問保固、憑證、序號或檢測", { multiline: true }),
+          field("case_summary", "案件摘要", "整理工單內容", { multiline: true })
+        ],
+        actions: [{ action: "必要時新建工單追蹤 Apple／OPS 流程", needed: true, note: "PPT 第 255 頁" }]
+      },
+      {
+        name: "廠直退貨／未取回商品",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Return ID：{{return_id}}\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 廠商回覆／派車狀態：{{vendor_reply}}\n\n處理方式：\n若廠直退貨訂單買家告知商品尚未被取走，且系統已自動退款，需透過 DSS 退貨訂單備註或商談友善通知廠商盡快派車。回覆買家時只說明會再次通知廠商，並請買家再保留一週；不要直接說商品可自行處理。\n\n廠商備註建議：\n您好，此筆退貨訂單收到買家告知商品尚未被取走，因先前未收到貴司回覆，故系統已自動退款，再請貴司評估是否有需要將商品回收，若有請盡快派車，謝謝。\n\n案件摘要：\n{{case_summary}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("return_id", "Return ID", "退貨退款編號"),
+          field("shop_name", "商店名字／店鋪名稱", "判斷廠直／產值表必填"),
+          field("vendor_reply", "廠商回覆／派車狀態", "DSS 或表單回覆", { multiline: true }),
+          field("case_summary", "案件摘要", "整理給廠商／OPS 的內容", { multiline: true })
+        ],
+        actions: [{ action: "到 DSS 通知廠商或接廠直／產值表", needed: true, note: "PPT 第 256 頁" }]
+      },
+      {
+        name: "遊戲點數／SP_GAME",
+        text: "確認資料：\n▪ Order SN：{{order_sn}}\n▪ Product ID：{{product_id}}\n▪ 問題類型：{{game_issue_type}}\n▪ 客人描述與佐證：{{case_summary}}\n\n處理方式：\nSP_GAME 若反映盜刷、多買、誤買或卡待出貨，需新建工單＋填寫點數館表，工單轉職代確認。不要直接套一般退貨退款流程。\n\n案件摘要：\n{{case_summary}}",
+        variables: [
+          field("order_sn", "Order SN", "訂單編號"),
+          field("product_id", "Product ID", "商品 ID", { required: false }),
+          field("game_issue_type", "問題類型", "盜刷／多買／誤買／卡待出貨"),
+          field("case_summary", "客人描述與佐證", "客人訴求、截圖、訂單狀態", { multiline: true })
+        ],
+        actions: [{ action: "新建工單＋填寫點數館表", needed: true, note: "PPT 第 258 頁" }]
+      }
+    ]
+  });
+
+  const appendToTemplate = (q, branch, marker, text) => {
+    const item = template(q, branch);
+    if (item && !String(item.text || "").includes(marker)) item.text = `${item.text}\n\n${marker}\n${text}`;
+  };
+
+  appendToTemplate("Q010", "查商品效期", "【WMS 舊查詢備用流程】", "若小工具無法查詢或需要交叉確認，可參考 WMS 舊流程：到 WMS 查 MTSKU ITEM ID 與 Model ID，組成對應 ID 後查看在倉庫存報表。此為備用方式，仍優先使用商品效期小工具。\nPPT 出處：第 41-45 頁");
+  appendToTemplate("Q014", "小額折扣碼", "【小額折扣碼判斷點補充】", "可提供小額折扣碼的常見判斷點：破包、破碎／破裂、漏液、過期、長蟲、特殊食安疑慮、缺件、商品出錯、重複出貨。皆務必請用戶提供照片佐證，或有表單／OPS／KAM 主動通知。折扣碼提供後，訂單問題仍需依流程跟進，該開工單或上表仍要處理。\nPPT 出處：第 216-219 頁");
+  appendToTemplate("Q017", "申請處理中", "【取消配送中後續結果補充】", "申請後可能有不同結果：取消成功、攔截失敗、買家撤回、系統仍在審核或退款處理中。請依 RR 詳情、Remark 與 Order Admin 時序判斷，不要只看單一前台狀態。\nPPT 出處：第 276-278 頁");
+
+  const replaceCodeInText = (text, from, to) => String(text || "")
+    .split(`{{${from}}}`).join(`{{${to}}}`)
+    .split(`{${from}}`).join(`{{${to}}}`);
+
+  const renameQuestionVariable = (questionId, from, to, overrides = {}) => {
+    data.templates
+      .filter(item => item.q === questionId)
+      .forEach(item => { item.text = replaceCodeInText(item.text, from, to); });
+    data.variables
+      .filter(variable => variable.q === questionId && variable.code === from)
+      .forEach(variable => {
+        variable.code = to;
+        Object.assign(variable, overrides);
+      });
+  };
+
+  // Reuse existing canonical field codes:
+  // order_id = 訂單編號 / Order SN, V018 = Buyer Username.
+  ["Q021", "Q022", "Q023", "Q024", "Q025"].forEach(questionId => {
+    if (questionId === "Q021") renameQuestionVariable(questionId, "order_id", "payment_order_id", { label: "Order ID（金流用）", hint: "金流／Payments 需要的 Order ID，與 Order SN 不同" });
+    renameQuestionVariable(questionId, "order_sn", "order_id", { label: "訂單編號_Order SN", hint: "訂單編號／OSN" });
+    renameQuestionVariable(questionId, "buyer_username", "V018", { label: "買家名字_Buyer Username", hint: "買家帳號／User Name" });
+  });
+
   const hideQuestionCard = id => {
     const question = questionById(id);
     if (question) question.enabled = false;
@@ -1254,6 +1551,41 @@
     }
   }
 
+  sharedFlow("InHouse 轉單任務");
+  upsertTemplate({
+    q: "GLOBAL",
+    branch: "InHouse 轉單任務",
+    text: "InHouse 轉單任務處理：\n▪ 先建立 Case 統單或確認已有 Case。\n▪ 建立轉單任務 Task，清楚說明需要 Payments／MKT／物流／金流或其他外部門協助的事項。\n▪ 截止時間依 PPT 建議可設定 10 天；若主 Case 超過 5 天需結案重開，轉單任務不受影響。\n▪ 若同時有 Jira 工單，需在 Jira 註記 INH 任務編號追蹤中。\n\n轉單任務內容：\n{{inh_task_summary}}\n\n任務編號：{{inh_task_id}}\n待回覆事項：{{pending_note}}\n\nPPT 出處：第 153-159 頁"
+  });
+  [
+    ["inh_task_summary", "InHouse 轉單任務內容", "要給外部門協助確認的內容；請包含 Order SN、User ID、金額、時間、截圖或附件。", true, true],
+    ["inh_task_id", "InHouse Task ID", "建立轉單任務後填入任務編號。", false, false],
+    ["pending_note", "待追蹤事項／未結案備註", "後續要追蹤的事項與預計回覆時間。", true, true]
+  ].forEach(([code, label, hint, multiline, required]) => upsertVariable({
+    q: "GLOBAL",
+    branch: "InHouse 轉單任務",
+    code,
+    label,
+    hint,
+    multiline,
+    required,
+    type: "text",
+    category: "轉單任務",
+    sourceLinks: [ticketLinks.inhouse],
+    sourceUrl: ticketLinks.inhouse.url,
+    sourceNote: "PPT 第 153-159 頁：InHouse 新增案件、建立轉單任務，以及 Jira + InHouse 情境運用。"
+  }));
+  upsertAction({
+    q: "GLOBAL",
+    branch: "InHouse 轉單任務",
+    action: "建立 InHouse 轉單任務",
+    needed: true,
+    note: "需跨 Payments／MKT／物流／金流等外部門確認時使用",
+    sourceLinks: [ticketLinks.inhouse],
+    url: ticketLinks.inhouse.url,
+    sourceNote: "PPT 第 153-159 頁：建立轉單任務前需有 Case；任務內容需清楚說明需要外部門協助事項。"
+  });
+
   // Q18 is not a standalone customer question. Keep its logic as reusable common branches.
   const q18Standalone = questionById("Q018");
   if (q18Standalone) q18Standalone.enabled = false;
@@ -1299,6 +1631,23 @@
   ensureCommonPart("Q014", "小額折扣碼", "KAM表", "若商品／出貨問題仍需回報，依商店名字判斷是否填 KAM/CAM 表：");
   ensureCommonPart("Q016", "可發起 Agent AOC", "新建工單", "若屬 Offline RR 或需專員代處理並追蹤，需建立工單：");
   ensureCommonPart("Q016", "可發起 Agent AOC", "KAM表", "若需確認是否可退／個案處理，依商店名字判斷並填 KAM/CAM 表：");
+  ["信用卡無法付款", "信用卡活動折扣券無法使用", "銀行轉帳已匯款但未待出貨", "已退款但未入帳／確認退款金額", "補匯款／整新費查帳"].forEach(branch => {
+    ensureCommonPart("Q021", branch, "InHouse 轉單任務", "需要 Payments／MKT 或外部門確認時，使用共用 InHouse 轉單任務：");
+  });
+  ensureCommonPart("Q023", "子包裹取消但母訂單已完成", "新建工單", "若退款時間序或子包裹狀態需 OPS 確認，先建立工單：");
+  ensureCommonPart("Q023", "子包裹取消但母訂單已完成", "工單追蹤／未回覆安撫", "建立後續追蹤與未結案備註：");
+  ["有逆物流單號但 1-2 工作天無貨態", "無逆物流單號也無歷程"].forEach(branch => {
+    ensureCommonPart("Q024", branch, "InHouse 轉單任務", "需要 HM／OPS 確認逆物流異常時，使用共用 InHouse 轉單任務：");
+    ensureCommonPart("Q024", branch, "工單追蹤／未回覆安撫", "若需等待外部門回覆，建立追蹤：");
+  });
+  ensureCommonPart("Q025", "一般店到店貨損", "新建工單", "貨損需 VM／OPS 確認時，先建立工單：");
+  ensureCommonPart("Q025", "一般店到店貨損", "KAM表", "若商品問題需回報，依商店名字判斷是否填 KAM/CAM 表：");
+  ensureCommonPart("Q025", "大材積商品退貨", "新建工單", "大材積退貨需跨 VM／OPS／Logistics 追蹤時，先建立工單：");
+  ensureCommonPart("Q025", "Apple 館／官方通路保固", "新建工單", "Apple／保固／送檢需要追蹤時，先建立工單：");
+  ensureCommonPart("Q025", "Apple 館／官方通路保固", "KAM表", "若需 KAM/CAM 或供應商確認，依商店名字判斷上表：");
+  ensureCommonPart("Q025", "廠直退貨／未取回商品", "DSS 商談詢問廠商", "需通知廠商派車或確認取回時，使用 DSS 商談共用分支：");
+  ensureCommonPart("Q025", "廠直退貨／未取回商品", "廠直／產值表", "若需上廠直／產值表，先確認商店名字再填表：");
+  ensureCommonPart("Q025", "遊戲點數／SP_GAME", "新建工單", "遊戲點數／SP_GAME 需新建工單並轉職代確認：");
 
   const ticketFormatBranches = ["新建工單", "KAM表", "KAM表．SBS", "廠直表", "CAM表", "廠直／產值表"];
   const ticketCategoryOptions = [
@@ -1459,7 +1808,12 @@
     Q017: "272-275",
     Q018: "67-73、128、132、194-196、315、318-321",
     Q019: "315、318-321",
-    Q020: "183-187"
+    Q020: "183-187",
+    Q021: "202-205、208-213、242",
+    Q022: "93-94",
+    Q023: "125、247-249",
+    Q024: "244-245",
+    Q025: "252-258"
   };
 
   Object.entries(pptQuestionPages).forEach(([id, pages]) => {
@@ -1481,7 +1835,8 @@
     "KAM表．SBS": "67-70、315",
     "廠直表": "67、70、73、128、132、194-196",
     "廠直／產值表": "67、70、73、128、132、194-196",
-    "DSS 商談詢問廠商": "73、128、132、194-196"
+    "DSS 商談詢問廠商": "73、128、132、194-196",
+    "InHouse 轉單任務": "153-159"
   };
 
   Object.entries(pptBranchPages).forEach(([branch, pages]) => {

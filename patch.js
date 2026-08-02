@@ -908,7 +908,7 @@
     cloneCanonicalVariable("Q013", branch, "V010");
   });
   removeVariables("Q013", ["product_name"]);
-  ensureAnswerPart("詢問商品異常／貨損申退", "管制區／高單／特殊商品", { question: "共用", branch: "KAM表" });
+  ensureAnswerPart("詢問商品異常／貨損申退", "管制區／高單／特殊商品", { question: "共用", branch: "KAM表", beforeText: "再依商店名字判斷並填 KAM 表：" });
 
   ["返還原折扣碼", "返還損失折扣／價差", "小額折扣碼"].forEach(branch => {
     replaceTemplateTokens("Q014", branch, { order_sn: "order_id", ticket_id: "work_order" });
@@ -1615,10 +1615,13 @@
       .filter(flow => flow.question === question.name && flow.branch === branchName)
       .forEach(flow => {
         flow.answerParts ||= [{ question: flow.question, branch: flow.branch, beforeText: "" }];
-        if (!flow.answerParts.some(part => part.question === "共用" && part.branch === commonBranch)) {
+        const existingPart = flow.answerParts.find(part => part.question === "共用" && part.branch === commonBranch);
+        if (existingPart) {
+          if (beforeText && !existingPart.beforeText) existingPart.beforeText = beforeText;
+        } else {
           flow.answerParts.push({ question: "共用", branch: commonBranch, beforeText });
-          flow.answerBranches = flow.answerParts.map(part => part.branch);
         }
+        flow.answerBranches = flow.answerParts.map(part => part.branch);
       });
   }
 

@@ -1002,6 +1002,258 @@
     ])
   });
 
+  // Shared ticket / table handling from PPT pages 68, 161, 194-196, 215, 243, 250-251, 254, 257, 260, 315, 318-319, 321.
+  const ticketLinks = {
+    jira: { title: "Shopee Jira - TW SBS", url: "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717" },
+    kam: { title: "KAM 表", url: "https://docs.google.com/spreadsheets/d/1_xD77w4iiQAEz3VG1L3UpTPZ5OPTpC1wJG5XHDQHz-I/edit?usp=sharing" },
+    vendor: { title: "廠商直送表", url: "https://docs.google.com/spreadsheets/d/1o4-K6POsC0vBq7z7KE_jGeyEtytzhYPH7XdmuVhLre8/edit?gid=0#gid=0" },
+    inhouse: { title: "InHouse 聊聊", url: "https://cs.localshop.shopee.tw/portal/inhouse/chat/home" },
+    csPortal: { title: "CS Portal", url: "https://dms.cs.shopee.tw/portal/info/search" }
+  };
+
+  const q018 = questionById("Q018");
+  if (q018) {
+    q018.enabled = true;
+    q018.description = "判斷是否需新建工單、填 KAM 表、填廠直／產值表，以及後續 1-2 個工作天追蹤。要判斷 KAM 表或廠直／產值表前，一定先確認商店名字。";
+    q018.answerText = "先確認客人問題是否只是單純資訊提供；若涉及退換貨意圖、後續追蹤、廠商處理、資訊不齊、商品異常或需跨窗口確認，就要建立工單或上對應表單。判斷要上 KAM 表或廠直／產值表時，一定要先取得商店名字／店鋪名稱，才能判斷該走 KAM 表、KAM 表．SBS 或廠直表。";
+  }
+
+  const sharedFlow = (branch, next = "填完欄位後產生共用處理內容") => {
+    const flow = data.flows.find(item => item.question === "共用" && item.branch === branch);
+    if (flow) {
+      flow.steps = [];
+      flow.next = next;
+      flow.answerBranches = [branch];
+      flow.answerParts = [{ question: "共用", branch, beforeText: "" }];
+    } else {
+      data.flows.push({
+        question: "共用",
+        steps: [],
+        branch,
+        next,
+        routes: [],
+        answerBranches: [branch],
+        answerParts: [{ question: "共用", branch, beforeText: "" }]
+      });
+    }
+  };
+
+  sharedFlow("新建工單");
+  sharedFlow("工單追蹤／未回覆安撫");
+
+  upsertTemplate({
+    q: "GLOBAL",
+    branch: "新建工單",
+    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\nJira 工單填寫重點：\n▪ 案件主旨：{{ticket_subject}}\n▪ Order SN / Buyer Username：{{ticket_customer_key}}\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 問題摘要：{{ticket_summary}}\n▪ 已確認資料：{{checked_info}}\n▪ 待追蹤事項：{{pending_note}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直／產值表，必須先用商店名字判斷表別，再把工單號回填到該表。"
+  });
+  upsertTemplate({
+    q: "GLOBAL",
+    branch: "工單追蹤／未回覆安撫",
+    text: "工單／表單追蹤：\n▪ 工單號：{{work_order}}\n▪ 追蹤情境：{{follow_type}}\n▪ 上次追蹤時間：{{last_follow_date}}\n▪ 未結案備註：{{pending_note}}\n\n處理原則：\n1. 平日案件約每 2 日追蹤一次，並積極確認窗口是否回覆。\n2. 假日前或假日中接獲案件，要先告知會在工作日追蹤。\n3. 假日後第一個上班日，若仍未回覆，要再次安撫並追蹤。\n4. 平日超過 2 個工作天仍未回覆，可先主動告知客人仍在確認，並在工單未結案備註留下「KAM 未回，已再次詢問，待追蹤」或對應內容。\n5. 若轉詢 SLA 達 48 小時仍無法解決，或買家重複來訊、情緒升高，可走聊聊轉二線／OPS／BAU 協助流程。\n\n可回覆客人：\n關於您詢問的商品／訂單問題，這邊已為您建立案件編號 {{work_order}} 進行追蹤，目前窗口仍在確認中。後續若有回覆，小幫手會再主動透過聊聊通知您，感謝您的耐心等候。"
+  });
+
+  [
+    ["ticket_subject", "工單主旨", "例：商品瑕疵／退貨退款／廠商確認／物流異常", false, true, "text"],
+    ["ticket_customer_key", "Order SN / Buyer Username", "售後填 Order SN；售前可填 Buyer Username", false, true, "text"],
+    ["shop_name", "商店名字／店鋪名稱", "要判斷 KAM 表或廠直／產值表前必填", false, true, "text"],
+    ["ticket_summary", "問題摘要", "簡述客人問題與目前卡點", true, true, "text"],
+    ["checked_info", "已確認資料", "已查商品頁、訂單、照片、貨態、是否申退等", true, false, "text"],
+    ["pending_note", "待追蹤事項／未結案備註", "例：KAM 未回，已再次詢問，待追蹤", true, true, "text"],
+    ["work_order", "工單號", "建立 Jira 後填入，例如 SPTWSBS-XXXXX", false, true, "text"]
+  ].forEach(([code, label, hint, multiline, required, type]) => upsertVariable({
+    q: "GLOBAL",
+    branch: "新建工單",
+    code,
+    label,
+    hint,
+    multiline,
+    required,
+    type,
+    category: "工單",
+    sourceLinks: code === "work_order" ? [ticketLinks.jira] : [],
+    sourceUrl: code === "work_order" ? ticketLinks.jira.url : "",
+    sourceNote: code === "shop_name" ? "商店名字是判斷要上 KAM 表、KAM 表．SBS 或廠直／產值表的必要資訊；沒有店名時不要直接判斷表別。" : ""
+  }));
+
+  [
+    ["work_order", "工單號", "貼上 Jira 工單號", false, true, "text"],
+    ["follow_type", "追蹤情境", "平日／假日前／假日中／假後第一天／超過2工作天／48小時未回覆", false, true, "select", ["平日 1-2 工作天內等待回覆", "假日前或假日中", "假後第一個上班日", "平日超過2個工作天仍未回覆", "轉詢 SLA >= 48 小時仍未解決"]],
+    ["last_follow_date", "上次追蹤日期", "選擇上次追蹤或安撫日期", false, false, "date"],
+    ["pending_note", "未結案備註", "可填：KAM 未回，已再次詢問，待追蹤", true, true, "text"]
+  ].forEach(([code, label, hint, multiline, required, type, options]) => upsertVariable({
+    q: "GLOBAL",
+    branch: "工單追蹤／未回覆安撫",
+    code,
+    label,
+    hint,
+    multiline,
+    required,
+    type,
+    options: options || [],
+    category: "工單",
+    sourceLinks: code === "work_order" ? [ticketLinks.jira] : [],
+    sourceUrl: code === "work_order" ? ticketLinks.jira.url : ""
+  }));
+
+  upsertAction({
+    q: "GLOBAL",
+    branch: "新建工單",
+    action: "新建 Jira 工單",
+    needed: true,
+    note: "需要追蹤或跨窗口確認時建立",
+    sourceLinks: [ticketLinks.jira],
+    url: ticketLinks.jira.url,
+    sourceNote: "<div><b>建立工單時機</b></div><ul><li>需要後續追蹤、廠商／KAM／OPS／WH／VM 確認。</li><li>買家有退換貨意圖、商品瑕疵爭議、品質爭議、保固驗證或技術檢測。</li><li>廠直、線下申退、Offline RR、特殊高單、假貨爭議等需個案處理。</li></ul>"
+  });
+  upsertAction({
+    q: "Q018",
+    branch: "需開單＋填 KAM 表",
+    action: "PPT 上表／工單情境索引",
+    needed: true,
+    note: "依 PPT 頁面判斷是否需上表或開工單",
+    sourceLinks: [ticketLinks.jira, ticketLinks.kam],
+    url: ticketLinks.jira.url,
+    sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 68 頁：售前商品問題，售前填 KAM 表；售後新建工單＋填 KAM 表。</li><li>第 161 頁：SCS 特殊情境，出貨／配送異常需填表；商品瑕疵／異常／要求退貨需填 KAM 表轉詢。</li><li>第 215 頁：小額折扣碼後，訂單問題仍需處理，需新建工單＋出貨相關問題表＋KAM 表。</li><li>第 243 頁：SCS 三原則可引導申退，同時新建工單詢問 KAM／VM／WH；商品完整未拆封可不開單。</li><li>第 250-251 頁：線上／線下申退，依情境新建 Jira 單、填 KAM 表；KAM 48 小時未回覆由 OPS 協助。</li><li>第 254 頁：高單商品需新建工單、填 KAM 表並轉 OPS 值日生或與 KAM／用戶溝通。</li><li>第 257 頁：假貨爭議需新建工單、通報 OPS、登記假貨表單或填 KAM 表。</li><li>第 260 頁：Offline RR 需新建工單、填 KAM 表，後續依線上申退流程處理。</li><li>第 315 頁：工單處理總原則，單純資訊不用開單；有退換貨意圖、後續追蹤、廠商處理或資訊不齊就要開單／上表。</li><li>第 318-319 頁：1-2 工作天、假日、超過 2 個工作天未回覆的追蹤話術與未結案備註。</li><li>第 321 頁：轉詢 SLA >= 48 小時、重複來訊或情緒升高時，走聊聊轉二線／OPS／BAU。</li></ul>"
+  });
+  upsertAction({
+    q: "Q018",
+    branch: "廠直問題需轉廠商",
+    action: "PPT 廠直／DSS 商談情境索引",
+    needed: true,
+    note: "依商店名字判斷廠直／產值表，必要時到 DSS 商談問廠商",
+    sourceLinks: [ticketLinks.vendor, { title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }],
+    url: "https://scm.internal.shopee.tw/homepage/backlogs",
+    sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 73、128 頁：MP SKU ID 必須查正確，錯誤會導致找不到正確供應商，無法催促 KAM／PM 回覆。</li><li>第 132 頁：DSS 商談更新回覆時，需移除 KAM 表廠商回覆；商談結案時，KAM 表也同步結案。</li><li>第 194 頁：廠商直送物流配送流程，商品問題、OOS、改址、簽收單等依情境填廠直 KAM 表、通知 OPS 或 Jira 工單＋填表。</li><li>第 195 頁：廠直退換貨補寄，請務必確認資訊後才上表；換貨／補寄與退貨皆需 Jira 工單＋填廠直 KAM 表。</li><li>第 196 頁：買家反映瑕疵／破損／缺件，需先確認照片、是否組裝使用、買家訴求；上表格式要清楚，避免二次來回詢問。</li></ul>"
+  });
+  upsertAction({
+    q: "GLOBAL",
+    branch: "工單追蹤／未回覆安撫",
+    action: "追蹤工單／表單回覆",
+    needed: true,
+    note: "1-2 工作天未回覆或 48 小時未解決時追蹤",
+    sourceLinks: [ticketLinks.jira],
+    url: ticketLinks.jira.url
+  });
+
+  const tableReminder = "<div><b>表別判斷前必填：商店名字／店鋪名稱。</b></div><div>要上 KAM 表、KAM 表．SBS 或廠直／產值表時，先用商店名字判斷出貨來源與對應表單；沒有商店名字時，不要直接判斷表別。</div>";
+  ["KAM表", "KAM表．SBS", "廠直表"].forEach(branch => {
+    const tpl = template("GLOBAL", branch);
+    if (tpl && !tpl.text.includes("商店名字／店鋪名稱")) {
+      tpl.text = `表別判斷前先確認：\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ 依店名判斷要上 KAM 表、KAM 表．SBS 或廠直／產值表。\n\n${tpl.text}`;
+    }
+    upsertVariable({
+      q: "GLOBAL",
+      branch,
+      code: "shop_name",
+      label: "商店名字／店鋪名稱",
+      hint: "要判斷 KAM 表或廠直／產值表前必填",
+      required: true,
+      multiline: false,
+      type: "text",
+      category: "商家相關",
+      sourceNote: tableReminder,
+      sourceLinks: [ticketLinks.kam, ticketLinks.vendor],
+      sourceUrl: ticketLinks.kam.url
+    });
+  });
+
+  const setFlowParts = (question, branch, parts) => {
+    const flow = data.flows.find(item => item.question === question && item.branch === branch);
+    if (!flow) return;
+    flow.answerParts = parts;
+    flow.answerBranches = parts.map(part => part.branch);
+  };
+
+  setFlowParts("詢問工單／KAM 表是否要建立", "需開單＋填 KAM 表", [
+    { question: "詢問工單／KAM 表是否要建立", branch: "需開單＋填 KAM 表", beforeText: "" },
+    { question: "共用", branch: "新建工單", beforeText: "需先建立工單：" },
+    { question: "共用", branch: "KAM表", beforeText: "再依商店名字判斷並填 KAM 表：" },
+    { question: "共用", branch: "工單追蹤／未回覆安撫", beforeText: "若 1-2 個工作天仍未回覆，使用追蹤話術與未結案備註：" }
+  ]);
+  setFlowParts("詢問工單／KAM 表是否要建立", "廠直問題需轉廠商", [
+    { question: "詢問工單／KAM 表是否要建立", branch: "廠直問題需轉廠商", beforeText: "" },
+    { question: "共用", branch: "新建工單", beforeText: "需先建立工單：" },
+    { question: "共用", branch: "廠直表", beforeText: "再依商店名字判斷並填廠直／產值表：" },
+    { question: "共用", branch: "工單追蹤／未回覆安撫", beforeText: "若 1-2 個工作天仍未回覆，使用追蹤話術與未結案備註：" }
+  ]);
+  setFlowParts("詢問工單／KAM 表是否要建立", "平日／假日追蹤話術", [
+    { question: "詢問工單／KAM 表是否要建立", branch: "平日／假日追蹤話術", beforeText: "" },
+    { question: "共用", branch: "工單追蹤／未回覆安撫", beforeText: "" }
+  ]);
+
+  upsertDecision({
+    prompt: "這個案件需要建立工單或上表嗎？",
+    options: ["單純商品資訊不用開單", "需開單＋填 KAM 表", "廠直問題需轉廠商", "平日／假日追蹤話術"]
+  });
+
+  ["詢問商品異常／貨損申退", "詢問補償折扣碼／小額折扣碼", "詢問退貨退款流程／NRR", "詢問 Offline RR／Agent AOC"].forEach(questionName => {
+    flows(questionName).forEach(flow => {
+      flow.routes ||= [];
+      flow.actions ||= [];
+      if (!flow.answerParts) flow.answerParts = [{ question: flow.question, branch: flow.branch, beforeText: "" }];
+    });
+  });
+
+  // Shared DSS vendor negotiation branch.
+  sharedFlow("DSS 商談詢問廠商");
+  upsertTemplate({
+    q: "GLOBAL",
+    branch: "DSS 商談詢問廠商",
+    text: "DSS 商談詢問廠商前先確認：\n▪ 商店名字／店鋪名稱：{{shop_name}}\n▪ Order SN：{{order_id}}\n▪ Product ID：{{product_id}}\n▪ MP SKU ID：{{V030}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 買家訴求：{{vendor_question}}\n\n操作方式：\n1. 開啟 Shopee Drop Shipping（DSS）。\n2. 進入對應訂單或供應商管理資料，確認 MP SKU ID 正確；不要直接使用系統預設的 PID_0。\n3. 進入商談，將 Question／商談內容整理成廠商看得懂的問題。\n4. 若是換貨／補寄，需一次問完：買家訴求、補寄規格、是否同原訂單資訊、是否需更改地址或收件資訊。\n5. 送出後記錄商談狀態與待回覆事項。\n\n商談內容建議：\n{{vendor_question}}\n\n廠商回覆：{{vendor_reply}}\n\n提醒：商談更新回覆時，要同步移除 KAM 表／廠直表中的待回覆註記；商談結案時，KAM 表／廠直表也要同步結案。"
+  });
+  [
+    ["shop_name", "商店名字／店鋪名稱", "判斷廠直／產值表與 DSS 商談前必填", false, true, "text", []],
+    ["order_id", "Order SN", "貼上訂單編號", false, true, "text", []],
+    ["product_id", "Product ID", "貼上商品頁 Product ID", false, true, "text", []],
+    ["V008", "商品名稱", "貼上產品頁完整標題", false, true, "text", []],
+    ["V010", "商品規格", "買家有指定規格時必填", false, false, "text", []],
+    ["V030", "MP SKU ID", "DSS → 供應商管理 → 商品 → 以 Product ID 查正確 MP SKU ID", false, true, "text", []],
+    ["vendor_question", "商談內容／要問廠商的問題", "一次問完買家訴求、規格、退貨／換貨／補寄需求", true, true, "text", []],
+    ["vendor_reply", "廠商回覆", "尚未回覆可填：待廠商回覆", true, false, "text", []],
+    ["dss_chat_status", "DSS 商談狀態", "選擇目前狀態", false, true, "select", ["已送出，待廠商回覆", "廠商已回覆，需整理回覆客人", "需再次補問廠商", "商談已結案"]]
+  ].forEach(([code, label, hint, multiline, required, type, options]) => upsertVariable({
+    q: "GLOBAL",
+    branch: "DSS 商談詢問廠商",
+    code,
+    label,
+    hint,
+    multiline,
+    required,
+    type,
+    options,
+    category: "DSS 商談",
+    sourceLinks: ["V030", "dss_chat_status"].includes(code) ? [
+      { title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" },
+      ticketLinks.vendor
+    ] : [],
+    sourceUrl: ["V030", "dss_chat_status"].includes(code) ? "https://scm.internal.shopee.tw/homepage/backlogs" : "",
+    sourceNote: code === "V030"
+      ? "PPT 第 73、128 頁提醒：MP SKU ID 必須查正確，資料不能包含空白、分行或多餘符號；若系統預設 PID_0，仍須查詢正確 SKU，否則可能找不到正確供應商，也無法催促 KAM／PM 回覆。"
+      : (code === "shop_name" ? "商店名字是判斷是否走廠直／產值表與 DSS 商談的必要資訊；沒有店名不要直接判斷。" : "")
+  }));
+  upsertAction({
+    q: "GLOBAL",
+    branch: "DSS 商談詢問廠商",
+    action: "到 DSS 商談詢問廠商",
+    needed: true,
+    note: "廠直／廠商確認、換貨／補寄、配送或商品問題需廠商回覆時使用",
+    sourceLinks: [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }, ticketLinks.vendor],
+    url: "https://scm.internal.shopee.tw/homepage/backlogs",
+    sourceNote: "<div><b>DSS 商談重點</b></div><ul><li>先確認商店名字、Product ID、MP SKU ID 與訂單資訊。</li><li>問題要一次問完，避免二次來回。</li><li>商談有回覆時，整理內容回覆客人；商談結案時，同步結案 KAM 表／廠直表。</li></ul>"
+  });
+  const vendorFlow = data.flows.find(flow => flow.question === "詢問工單／KAM 表是否要建立" && flow.branch === "廠直問題需轉廠商");
+  if (vendorFlow) {
+    vendorFlow.answerParts ||= [{ question: vendorFlow.question, branch: vendorFlow.branch, beforeText: "" }];
+    const hasDssPart = vendorFlow.answerParts.some(part => part.question === "共用" && part.branch === "DSS 商談詢問廠商");
+    if (!hasDssPart) {
+      const trackIndex = vendorFlow.answerParts.findIndex(part => part.question === "共用" && String(part.branch).includes("追蹤"));
+      const dssPart = { question: "共用", branch: "DSS 商談詢問廠商", beforeText: "需要廠商確認時，到 DSS 商談詢問廠商：" };
+      if (trackIndex >= 0) vendorFlow.answerParts.splice(trackIndex, 0, dssPart);
+      else vendorFlow.answerParts.push(dssPart);
+      vendorFlow.answerBranches = vendorFlow.answerParts.map(part => part.branch);
+    }
+  }
+
   const glossaryTerms = [
     ["Buyer Username", "買家帳號"],
     ["Order SN", "訂單編號"],

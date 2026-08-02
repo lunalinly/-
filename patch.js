@@ -297,12 +297,12 @@
       {
         name: "返還原折扣碼",
         text: "申請前檢查：\n▪ Order SN：{{order_sn}}\n▪ User ID：{{user_id}}\n▪ 原 Voucher Code：{{voucher_code}}\n▪ 已確認原折扣碼失效：{{voucher_invalid}}\n▪ 已確認賣場無相同或更優優惠：{{better_voucher_check}}\n\n處理方式：\n到 Promotion Admin／補碼小工具依原碼補碼欄位填寫，並在工單中記錄申請原因與自我檢查結果。\n\n提醒客人：補發折扣碼是否成立與使用條件，仍以審核及實際發放結果為主。",
-        variables: [field("order_sn", "Order SN", "OSN"), field("user_id", "User ID", "買家 UID"), field("voucher_code", "原 Voucher Code", "原折扣碼"), field("voucher_invalid", "原碼是否失效", "是／否"), field("better_voucher_check", "是否無更優優惠", "是／否"), field("ticket_id", "工單號碼", "Jira / Case", { required: false })]
+        variables: [field("order_sn", "Order SN", "OSN"), field("user_id", "User ID", "買家 UID"), field("voucher_code", "原 Voucher Code", "原折扣碼"), field("voucher_invalid", "原碼是否失效", "是／否"), field("better_voucher_check", "是否無更優優惠", "是／否"), field("work_order", "工單號", "原本工單號欄位", { required: false })]
       },
       {
         name: "返還損失折扣／價差",
         text: "判斷方式：\n▪ Order SN：{{order_sn}}\n▪ 折扣損失金額：{{discount_amount}}\n▪ 商品價差：{{price_difference}}\n▪ 最終補碼規格：滿 {{min_spend}} 折 {{voucher_amount}}\n\n處理原則：\n折扣金額加商品價差後計算補碼規格；若商品本身價差超過 500 元，需轉交職代評估。若是純補損失折扣，可依規範確認是否可擴至全店使用。\n\n提醒：複數折扣碼無法疊加使用，需明確告知買家。",
-        variables: [field("order_sn", "Order SN", "OSN"), field("discount_amount", "折扣損失金額", "蝦皮＋賣家折扣"), field("price_difference", "商品價差", "現價 - Subtotal"), field("min_spend", "最低消費", "補碼低消"), field("voucher_amount", "折扣金額", "補碼折扣額"), field("ticket_id", "工單號碼", "Jira / Case", { required: false })]
+        variables: [field("order_sn", "Order SN", "OSN"), field("discount_amount", "折扣損失金額", "蝦皮＋賣家折扣"), field("price_difference", "商品價差", "現價 - Subtotal"), field("min_spend", "最低消費", "補碼低消"), field("voucher_amount", "折扣金額", "補碼折扣額"), field("work_order", "工單號", "原本工單號欄位", { required: false })]
       },
       {
         name: "小額折扣碼",
@@ -430,7 +430,7 @@
       {
         name: "需開單＋填 KAM 表",
         text: "判斷結果：\n▪ 問題：{{issue_summary}}\n▪ 涉及退換貨意圖、商品瑕疵爭議、需要技術檢測、保固申請／驗證，或資訊不齊需後續追蹤時，需新建工單並填寫 KAM 表。\n\n未結案備註可寫：{{pending_note}}\n\n提醒：需等 KAM 二次回覆、買家回覆或 OPS 協助時，務必留下可交接的追蹤紀錄。",
-        variables: [field("issue_summary", "客人問題", "簡述問題", { multiline: true }), field("ticket_id", "工單號碼", "建立後填入", { required: false }), field("pending_note", "未結案備註", "待追蹤內容", { multiline: true })],
+        variables: [field("issue_summary", "客人問題", "簡述問題", { multiline: true }), field("work_order", "工單號", "建立後填入", { required: false }), field("pending_note", "未結案備註", "待追蹤內容", { multiline: true })],
         actions: [{ action: "新建工單＋填 KAM 表", needed: true, note: "需後續追蹤" }]
       },
       {
@@ -440,8 +440,8 @@
       },
       {
         name: "平日／假日追蹤話術",
-        text: "處理方式：\n▪ 工單：{{ticket_id}}\n▪ 追蹤情境：{{follow_type}}\n▪ 若假日前或假日中接獲案件，需先告知工作日會盡快追蹤；平日追蹤約每 2 日安撫一次並積極追蹤。\n\n可用提醒：\n已為您轉交窗口確認並建立案件追蹤，待 1-2 個工作天內窗口回覆後，小幫手會再主動聊聊通知您，請您再耐心等候。",
-        variables: [field("ticket_id", "工單號碼", "Jira / Case"), field("follow_type", "追蹤情境", "平日／假日／連假後／超過2工作天"), field("pending_note", "追蹤備註", "待追蹤內容", { multiline: true })]
+        text: "處理方式：\n▪ 工單：{{work_order}}\n▪ 追蹤情境：{{follow_type}}\n▪ 若假日前或假日中接獲案件，需先告知工作日會盡快追蹤；平日追蹤約每 2 日安撫一次並積極追蹤。\n\n可用提醒：\n已為您轉交窗口確認並建立案件追蹤，待 1-2 個工作天內窗口回覆後，小幫手會再主動聊聊通知您，請您再耐心等候。",
+        variables: [field("work_order", "工單號", "原本工單號欄位"), field("follow_type", "追蹤情境", "平日／假日／連假後／超過2工作天"), field("pending_note", "追蹤備註", "待追蹤內容", { multiline: true })]
       }
     ]
   });
@@ -457,8 +457,8 @@
     branches: [
       {
         name: "轉詢 SLA 超過 48 小時",
-        text: "處理方式：\n▪ 案件：{{ticket_id}}\n▪ 問題摘要：{{case_summary}}\n▪ 若問題需轉詢但超過 48 小時仍未收到回覆，可尋求 OPS／BAU 協助確認處理狀況或催促窗口。\n\n通知時需清楚標記訂單、目前卡點、已做過的處理與希望二線協助的事項。",
-        variables: [field("ticket_id", "工單／案件編號", "Jira / Case"), field("case_summary", "案件摘要", "卡點與已處理事項", { multiline: true }), field("requested_team", "欲尋求協助對象", "OPS／BAU")]
+        text: "處理方式：\n▪ 工單：{{work_order}}\n▪ 問題摘要：{{case_summary}}\n▪ 若問題需轉詢但超過 48 小時仍未收到回覆，可尋求 OPS／BAU 協助確認處理狀況或催促窗口。\n\n通知時需清楚標記訂單、目前卡點、已做過的處理與希望二線協助的事項。",
+        variables: [field("work_order", "工單號", "原本工單號欄位"), field("case_summary", "案件摘要", "卡點與已處理事項", { multiline: true }), field("requested_team", "欲尋求協助對象", "OPS／BAU")]
       },
       {
         name: "已說明 3 次仍重複詢問",
@@ -1341,7 +1341,7 @@
   upsertTemplate({
     q: "GLOBAL",
     branch: "新建工單",
-    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\nJira 工單填寫重點：\n▪ 案件主旨：{{ticket_subject}}\n▪ Order SN / Buyer Username：{{ticket_customer_key}}\n▪ 商城名字：{{V003}}\n▪ 問題摘要：{{ticket_summary}}\n▪ 已確認資料：{{checked_info}}\n▪ 待追蹤事項：{{pending_note}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直表，必須先用商城名字判斷表別，再把工單號回填到該表。"
+    text: "新建工單前先確認：\n▪ 是否需要後續追蹤、廠商／KAM／OPS／WH／VM 確認，或資訊不齊不能直接結案。\n▪ 售前商品問題若只是單純資訊提供，不用開單；若涉及退換貨意圖、商品瑕疵爭議、保固驗證、技術檢測或品質爭議，就要開單。\n▪ 售後商品／退貨退款／廠直個案需要追蹤時，需新建工單並搭配對應表單。\n\n工單填寫重點：\n▪ 案件主旨：{{ticket_subject}}\n▪ Order SN / Buyer Username：{{ticket_customer_key}}\n▪ 商城名字：{{V003}}\n▪ 問題摘要：{{ticket_summary}}\n▪ 已確認資料：{{checked_info}}\n▪ 待追蹤事項：{{pending_note}}\n\n建立後取得工單號：{{work_order}}\n提醒：若此案件同時需要上 KAM 表或廠直表，必須先用商城名字判斷表別，再把工單號回填到該表。"
   });
   upsertTemplate({
     q: "GLOBAL",
@@ -1356,7 +1356,7 @@
     ["ticket_summary", "問題摘要", "簡述客人問題與目前卡點", true, true, "text"],
     ["checked_info", "已確認資料", "已查商品頁、訂單、照片、貨態、是否申退等", true, false, "text"],
     ["pending_note", "待追蹤事項／未結案備註", "例：KAM 未回，已再次詢問，待追蹤", true, true, "text"],
-    ["work_order", "工單號", "建立 Jira 後填入，例如 SPTWSBS-XXXXX", false, true, "text"]
+    ["work_order", "工單號", "建立後填入，例如 SPTWSBS-XXXXX", false, true, "text"]
   ].forEach(([code, label, hint, multiline, required, type]) => upsertVariable({
     q: "GLOBAL",
     branch: "新建工單",
@@ -1373,7 +1373,7 @@
   }));
 
   [
-    ["work_order", "工單號", "貼上 Jira 工單號", false, true, "text"],
+    ["work_order", "工單號", "貼上工單號", false, true, "text"],
     ["follow_type", "追蹤情境", "平日／假日前／假日中／假後第一天／超過2工作天／48小時未回覆", false, true, "select", ["平日 1-2 工作天內等待回覆", "假日前或假日中", "假後第一個上班日", "平日超過2個工作天仍未回覆", "轉詢 SLA >= 48 小時仍未解決"]],
     ["last_follow_date", "上次追蹤日期", "選擇上次追蹤或安撫日期", false, false, "date"],
     ["pending_note", "未結案備註", "可填：KAM 未回，已再次詢問，待追蹤", true, true, "text"]
@@ -1395,7 +1395,7 @@
   upsertAction({
     q: "GLOBAL",
     branch: "新建工單",
-    action: "新建 Jira 工單",
+    action: "新建工單",
     needed: true,
     note: "需要追蹤或跨窗口確認時建立",
     sourceLinks: [ticketLinks.jira],
@@ -1410,7 +1410,7 @@
     note: "依 PPT 頁面判斷是否需上表或開工單",
     sourceLinks: [ticketLinks.jira, ticketLinks.kam],
     url: ticketLinks.jira.url,
-    sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 68 頁：售前商品問題，售前填 KAM 表；售後新建工單＋填 KAM 表。</li><li>第 161 頁：SCS 特殊情境，出貨／配送異常需填表；商品瑕疵／異常／要求退貨需填 KAM 表轉詢。</li><li>第 215 頁：小額折扣碼後，訂單問題仍需處理，需新建工單＋出貨相關問題表＋KAM 表。</li><li>第 243 頁：SCS 三原則可引導申退，同時新建工單詢問 KAM／VM／WH；商品完整未拆封可不開單。</li><li>第 250-251 頁：線上／線下申退，依情境新建 Jira 單、填 KAM 表；KAM 48 小時未回覆由 OPS 協助。</li><li>第 254 頁：高單商品需新建工單、填 KAM 表並轉 OPS 值日生或與 KAM／用戶溝通。</li><li>第 257 頁：假貨爭議需新建工單、通報 OPS、登記假貨表單或填 KAM 表。</li><li>第 260 頁：Offline RR 需新建工單、填 KAM 表，後續依線上申退流程處理。</li><li>第 315 頁：工單處理總原則，單純資訊不用開單；有退換貨意圖、後續追蹤、廠商處理或資訊不齊就要開單／上表。</li><li>第 318-319 頁：1-2 工作天、假日、超過 2 個工作天未回覆的追蹤話術與未結案備註。</li><li>第 321 頁：轉詢 SLA >= 48 小時、重複來訊或情緒升高時，走聊聊轉二線／OPS／BAU。</li></ul>"
+    sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 68 頁：售前商品問題，售前填 KAM 表；售後新建工單＋填 KAM 表。</li><li>第 161 頁：SCS 特殊情境，出貨／配送異常需填表；商品瑕疵／異常／要求退貨需填 KAM 表轉詢。</li><li>第 215 頁：小額折扣碼後，訂單問題仍需處理，需新建工單＋出貨相關問題表＋KAM 表。</li><li>第 243 頁：SCS 三原則可引導申退，同時新建工單詢問 KAM／VM／WH；商品完整未拆封可不開單。</li><li>第 250-251 頁：線上／線下申退，依情境新建工單、填 KAM 表；KAM 48 小時未回覆由 OPS 協助。</li><li>第 254 頁：高單商品需新建工單、填 KAM 表並轉 OPS 值日生或與 KAM／用戶溝通。</li><li>第 257 頁：假貨爭議需新建工單、通報 OPS、登記假貨表單或填 KAM 表。</li><li>第 260 頁：Offline RR 需新建工單、填 KAM 表，後續依線上申退流程處理。</li><li>第 315 頁：工單處理總原則，單純資訊不用開單；有退換貨意圖、後續追蹤、廠商處理或資訊不齊就要開單／上表。</li><li>第 318-319 頁：1-2 工作天、假日、超過 2 個工作天未回覆的追蹤話術與未結案備註。</li><li>第 321 頁：轉詢 SLA >= 48 小時、重複來訊或情緒升高時，走聊聊轉二線／OPS／BAU。</li></ul>"
   });
   upsertAction({
     q: "Q018",
@@ -1420,7 +1420,7 @@
     note: "依商城名字判斷廠直表，必要時到 DSS 商談問廠商",
     sourceLinks: [ticketLinks.vendor, { title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }],
     url: "https://scm.internal.shopee.tw/homepage/backlogs",
-    sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 73、128 頁：MP SKU ID 必須查正確，錯誤會導致找不到正確供應商，無法催促 KAM／PM 回覆。</li><li>第 132 頁：DSS 商談更新回覆時，需移除 KAM 表廠商回覆；商談結案時，KAM 表也同步結案。</li><li>第 194 頁：廠商直送物流配送流程，商品問題、OOS、改址、簽收單等依情境填廠直 KAM 表、通知 OPS 或 Jira 工單＋填表。</li><li>第 195 頁：廠直退換貨補寄，請務必確認資訊後才上表；換貨／補寄與退貨皆需 Jira 工單＋填廠直 KAM 表。</li><li>第 196 頁：買家反映瑕疵／破損／缺件，需先確認照片、是否組裝使用、買家訴求；上表格式要清楚，避免二次來回詢問。</li></ul>"
+    sourceNote: "<div><b>PPT 對應頁面</b></div><ul><li>第 73、128 頁：MP SKU ID 必須查正確，錯誤會導致找不到正確供應商，無法催促 KAM／PM 回覆。</li><li>第 132 頁：DSS 商談更新回覆時，需移除 KAM 表廠商回覆；商談結案時，KAM 表也同步結案。</li><li>第 194 頁：廠商直送物流配送流程，商品問題、OOS、改址、簽收單等依情境填廠直 KAM 表、通知 OPS 或工單＋填表。</li><li>第 195 頁：廠直退換貨補寄，請務必確認資訊後才上表；換貨／補寄與退貨皆需工單＋填廠直 KAM 表。</li><li>第 196 頁：買家反映瑕疵／破損／缺件，需先確認照片、是否組裝使用、買家訴求；上表格式要清楚，避免二次來回詢問。</li></ul>"
   });
   upsertAction({
     q: "GLOBAL",
@@ -1568,7 +1568,7 @@
   upsertTemplate({
     q: "GLOBAL",
     branch: "InHouse 轉單任務",
-    text: "InHouse 轉單任務處理：\n▪ 先建立 Case 統單或確認已有 Case。\n▪ 建立轉單任務 Task，清楚說明需要 Payments／MKT／物流／金流或其他外部門協助的事項。\n▪ 截止時間依 PPT 建議可設定 10 天；若主 Case 超過 5 天需結案重開，轉單任務不受影響。\n▪ 若同時有 Jira 工單，需在 Jira 註記 INH 任務編號追蹤中。\n\n轉單任務內容：\n{{inh_task_summary}}\n\n任務編號：{{inh_task_id}}\n待回覆事項：{{pending_note}}\n\nPPT 出處：第 153-159 頁"
+    text: "InHouse 轉單任務處理：\n▪ 先建立 Case 統單或確認已有 Case。\n▪ 建立轉單任務 Task，清楚說明需要 Payments／MKT／物流／金流或其他外部門協助的事項。\n▪ 截止時間依 PPT 建議可設定 10 天；若主 Case 超過 5 天需結案重開，轉單任務不受影響。\n▪ 若同時有工單，需在工單註記 INH 任務編號追蹤中。\n\n轉單任務內容：\n{{inh_task_summary}}\n\n任務編號：{{inh_task_id}}\n待回覆事項：{{pending_note}}\n\nPPT 出處：第 153-159 頁"
   });
   [
     ["inh_task_summary", "InHouse 轉單任務內容", "要給外部門協助確認的內容；請包含 Order SN、User ID、金額、時間、截圖或附件。", true, true],
@@ -1760,7 +1760,7 @@
       ["ticket_issue_category", "問題分類", "依客人實際詢問內容選擇。若是上 KAM 表，請對應表格中的問題分類；若是補碼，請選補償折扣碼分類。", false, true, "select", ticketCategoryOptions, []],
       ["vendor_table_type", "廠直表 Type", "只有走廠直表時需要。order=訂單問題；return=退貨問題；sku=商品問題。", false, false, "select", ["order", "return", "sku"], []],
       ["vendor_required_id_hint", "廠直表 ID 判斷", "選擇 Type 後自動帶出要填哪一種 ID。", true, false, "text", [], []],
-      ["jira_summary", "Jira 工單主旨", "依工單/表單種類 + 問題分類自動帶入，可再依實際案件微調。", false, false, "text", [], []],
+      ["jira_summary", "工單主旨", "依工單/表單種類 + 問題分類自動帶入，可再依實際案件微調。", false, false, "text", [], []],
       ["jira_description", "Jira Description / 案件內容", "依多層條件自動整理；貼到 Jira Description 後補齊截圖、連結或附件。", true, false, "text", [], []],
       ["sheet_question_format", "上表/詢問格式", "依 KAM 表、SBS 表、廠直表或補碼追蹤表的欄位整理。", true, false, "text", [], []],
       ["buyer_username", "Buyer Username（買家帳號）", "查詢買家、補碼、廠直表 CS 內部備註或 Jira Username 欄位會用到。", false, false, "text", [], []],

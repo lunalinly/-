@@ -1946,6 +1946,44 @@
     [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }]
   );
 
+  createToolBranch(
+    "工具：DSS 商談詢問廠商",
+    "DSS 商談詢問廠商：\n▪ 商城名字：{{V003}}\n▪ Order SN：{{order_id}}\n▪ Product ID：{{product_id}}\n▪ MP SKU ID：{{V030}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 商談位置／分頁：{{dss_chat_tab}}\n▪ 要問廠商的內容：\n{{vendor_question}}\n▪ 廠商回覆：\n{{vendor_reply}}\n▪ 商談狀態：{{dss_chat_status}}\n\n提醒：問題要一次問完，避免二次來回；商談有回覆時，要同步更新 KAM 表／廠直表待回覆狀態，商談結案時表單也要同步結案。",
+    [
+      toolVar("V003", "商城名字", "判斷廠直表與 DSS 商談前必填。", false, true),
+      toolVar("order_id", "Order SN", "有訂單時貼上訂單編號。"),
+      toolVar("product_id", "Product ID", "商品問題或商品頁查詢時填入。"),
+      toolVar("V030", "MP SKU ID", "DSS → 供應商管理 → 商品，用 Product ID 查正確 MP SKU ID。"),
+      toolVar("V008", "商品名稱", "貼上商品頁完整標題。"),
+      toolVar("V010", "商品規格", "買家有指定規格時填入。"),
+      toolVar("dss_chat_tab", "DSS 商談位置／分頁", "選擇實際操作位置。", false, true, "select", ["Backlogs / 商談", "供應商管理 / 商品", "訂單 / 配送"]),
+      toolVar("vendor_question", "商談內容／要問廠商的問題", "一次整理買家訴求、規格、退貨／換貨／補寄需求與已確認資料。", true, true),
+      toolVar("vendor_reply", "廠商回覆", "尚未回覆可填：待廠商回覆。", true),
+      toolVar("dss_chat_status", "DSS 商談狀態", "選擇目前狀態。", false, true, "select", ["已送出，待廠商回覆", "廠商已回覆，需整理回覆客人", "需再次補問廠商", "商談已結案"])
+    ],
+    "PPT 第 73、128、132、194-196 頁",
+    [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }, ticketLinks.vendor]
+  );
+
+  upsert("questions", "id", {
+    id: "Q026",
+    name: "DSS 商談詢問廠商",
+    keywords: "DSS,廠商,商談,詢問廠商,廠直,MP SKU ID,供應商",
+    description: "獨立使用 DSS 商談詢問廠商工具分支\nPPT 出處：第 73、128、132、194-196 頁",
+    enabled: true,
+    answerText: "需要到 DSS 跟廠商確認時，先整理商城名字、Product ID、MP SKU ID、訂單資訊與買家訴求，再建立商談詢問廠商。"
+  });
+  data.flows = data.flows.filter(flow => !(flow.question === "DSS 商談詢問廠商" && flow.branch === "共用"));
+  data.flows.push({
+    question: "DSS 商談詢問廠商",
+    steps: [],
+    branch: "共用",
+    next: "填完欄位後產生 DSS 商談內容",
+    routes: [],
+    answerBranches: ["工具：DSS 商談詢問廠商"],
+    answerParts: [{ question: "共用", branch: "工具：DSS 商談詢問廠商", beforeText: "" }]
+  });
+
   ensureCommonPart("Q006", "查詢買家目前可用優惠券", "工具：CS Portal 查詢");
   ["可以返還／可以再次使用", "不能返還／不能再次使用", "取消訂單後優惠券是否返還"].forEach(branch => {
     ensureCommonPart("Q006", branch, "工具：CS Portal 查詢");
@@ -1991,6 +2029,7 @@
     ensureCommonPart("Q024", branch, "工具：Order Admin 查詢");
   });
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "工具：DSS 商品／訂單查詢");
+  ensureCommonPart("Q025", "廠直退貨／未取回商品", "工具：DSS 商談詢問廠商");
 
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "新建工單", "此類特殊商品／管制區／高單若需跨窗口確認，先建立工單：");
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "KAM表", "再依商城名字判斷並填 KAM 表：");
@@ -2015,6 +2054,21 @@
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "DSS 商談詢問廠商", "需通知廠商派車或確認取回時，使用 DSS 商談共用分支：");
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "廠直表", "若需上廠直表，先確認商城名字再填表：");
   ensureCommonPart("Q025", "遊戲點數／SP_GAME", "新建工單", "遊戲點數／SP_GAME 需新建工單並轉職代確認：");
+
+  data.flows.forEach(flow => {
+    if (!flow.answerParts) return;
+    flow.answerParts.forEach(part => {
+      if (part.question === "共用" && part.branch === "DSS 商談詢問廠商") part.branch = "工具：DSS 商談詢問廠商";
+    });
+    const seenParts = new Set();
+    flow.answerParts = flow.answerParts.filter(part => {
+      const key = `${part.question}::${part.branch}`;
+      if (seenParts.has(key)) return false;
+      seenParts.add(key);
+      return true;
+    });
+    flow.answerBranches = flow.answerParts.map(part => part.branch);
+  });
 
   const protectedFirstFourQuestions = new Set(["Q001", "Q002", "Q003", "Q004"].map(id => questionById(id)?.name).filter(Boolean));
   data.flows.forEach(flow => {
@@ -2389,7 +2443,8 @@
     Q022: "93-94",
     Q023: "125、247-249",
     Q024: "244-245",
-    Q025: "252-258"
+    Q025: "252-258",
+    Q026: "73、128、132、194-196"
   };
 
   Object.entries(pptQuestionPages).forEach(([id, pages]) => {
@@ -2424,7 +2479,8 @@
     "工具：HighRisk Buyer 查詢表": "185-187",
     "工具：AOC_OPS_V2 判別": "263-265",
     "工具：SCI 分箱／貨態查詢": "125、247-249",
-    "工具：DSS 商品／訂單查詢": "73、128、132、194-196"
+    "工具：DSS 商品／訂單查詢": "73、128、132、194-196",
+    "工具：DSS 商談詢問廠商": "73、128、132、194-196"
   };
 
   Object.entries(pptBranchPages).forEach(([branch, pages]) => {

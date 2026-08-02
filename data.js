@@ -1,6 +1,6 @@
 // 由 SOP 視覺化編輯室產生；操作畫面僅使用中文。
 window.SOP_DATA = {
-  "version": "2026/8/1",
+  "version": "2026/8/2",
   "sourceUrl": "https://docs.google.com/spreadsheets/d/1cDKewCq-QZ6ln3f8keneZ8p8N7NXTCGnYPAouxmyveI/edit?gid=101001#gid=101001",
   "questions": [
     {
@@ -9,7 +9,7 @@ window.SOP_DATA = {
       "keywords": "鑑賞期,七天,15天,十五天,退貨期限",
       "description": "依取貨日期產生鑑賞期說明",
       "enabled": true,
-      "answerText": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{{{pickup_date}}}}，那鑑賞期就是從 {{{{return_start}}}} 開始算 15 天。\n要記得在 {{{{return_deadline}}}} 前提出退貨申請。"
+      "answerText": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{{pickup_date}}}，那鑑賞期就是從 {{{return_start}}} 開始算 15 天。\n要記得在 {{{return_deadline}}} 前提出退貨申請。"
     },
     {
       "id": "Q002",
@@ -41,7 +41,7 @@ window.SOP_DATA = {
       "keywords": "限時特賣,限時優惠,特價,限購,購買數量,最多買幾個,一次買幾件",
       "description": "確認限時特賣及結帳頁的實際限購數量",
       "enabled": true,
-      "answerText": "確認步驟：\n1. 打開商品頁，確認是否顯示「限時特賣」。\n2. 將商品加入購物車。\n3. 進入結帳頁確認實際可購買數量。\n\n回覆重點：\n▪ 限時特賣通常會限制購買數量。\n▪ 實際可購買數量以結帳頁面顯示為主。\n▪ 結帳頁目前顯示：{{flash_sale_limit}}。"
+      "answerText": "確認商品：\n▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n\n確認步驟：\n1. 打開商品頁，確認是否顯示「限時特賣」標籤或限時特賣區塊。\n2. 若商品頁有顯示限時特賣，通常會限制購買數量。\n3. 將商品加入購物車，進入結帳頁確認實際可購買數量。\n\n回覆重點：\n▪ 商品頁可先判斷是否正在限時特賣。\n▪ 限購數量仍以結帳頁面實際顯示為主。\n▪ 結帳頁目前顯示：{{flash_sale_limit}}。"
     },
     {
       "id": "Q006",
@@ -49,7 +49,7 @@ window.SOP_DATA = {
       "keywords": "優惠券,賣場優惠券,折扣券,優惠代碼,領券,券在哪裡,取消訂單優惠券",
       "description": "依領取、查詢可用狀態或取消訂單後返還需求提供操作",
       "enabled": true,
-      "answerText": ""
+      "answerText": "先確認客人問的是哪一種優惠券問題。\n可先從商品頁的賣場優惠券、活動頁、賣場首頁或優惠券錢包確認；如果是查買家帳號目前可用優惠券，才到 CS Portal 查優惠代碼錢包。"
     },
     {
       "id": "Q007",
@@ -57,7 +57,7 @@ window.SOP_DATA = {
       "keywords": "運費,免運門檻,滿額免運,店取最快當日到,宅配最快隔日到,蝦皮店到店隔日到貨,到貨時間,什麼時候到貨,預計配達,退貨步驟,商品怎麼退",
       "description": "共用處理直營物流運費、預計到貨時間及一般退貨步驟",
       "enabled": true,
-      "answerText": ""
+      "answerText": "先確認客人問的是運費、到貨時間，還是退貨步驟。\n運費與預計到貨時間可先看商品頁的運費說明與物流標籤，再以購物車／結帳頁或訂單系統實際顯示為主。"
     },
     {
       "id": "Q008",
@@ -65,7 +65,7 @@ window.SOP_DATA = {
       "keywords": "加價購,優惠加購,搭配商品,主商品,加購商品,add-on",
       "description": "確認加價購標籤，或使用工具反查可搭配的主商品",
       "enabled": true,
-      "answerText": ""
+      "answerText": "如果客人是問商品有沒有加價購，先打開商品頁確認是否有「加價購／優惠加購」標籤或優惠加購區塊。\n看到標籤後，再進下一步判斷商品頁有沒有顯示加價購標籤；若有顯示，才整理可加購與結帳頁實際顯示給客人。\n若客人是問加價購商品要搭配哪件主商品，則走反查主商品流程。"
     },
     {
       "id": "Q009",
@@ -73,21 +73,98 @@ window.SOP_DATA = {
       "keywords": "滿額贈,贈品,贈完,剩餘數量,購物車沒有贈品,贈品怎麼拿",
       "description": "依商品卡標籤與購物車是否自動加入贈品判斷",
       "enabled": true,
-      "answerText": "確認步驟：\n1. 查看商品卡是否顯示「滿額贈」標籤。\n2. 將商品加入購物車。\n3. 確認系統是否自動加入贈品。"
+      "answerText": "確認商品：\n▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n\n確認步驟：\n1. 先看商品卡是否顯示「滿額贈」標籤。\n2. 商品頁目前不會另外顯示滿額贈區塊。\n3. 將商品加入購物車，確認系統是否自動加入贈品與剩餘數量。"
+    },
+    {
+      "id": "Q010",
+      "name": "詢問商品效期／進貨日",
+      "keywords": "效期,保存期限,到期日,有效日期,進貨日,補貨,什麼時候進貨,Inventory Expiration Date",
+      "description": "依商品 PID 查詢效期或商品進貨日",
+      "enabled": true,
+      "answerText": "先確認客人要問的是商品效期，還是商品何時進貨／補貨。商品效期與進貨日都以小工具查詢結果為主；如果客人沒有指定規格，效期可用小工具完整結果輔助說明。"
+    },
+    {
+      "id": "Q011",
+      "name": "詢問訂單出貨狀態／OOS",
+      "keywords": "出貨,待出貨,WMS,OMS,OOS,缺貨,包裹,配送進度,OUTBOUND,Created",
+      "description": "依 OMS/WMS/CS Portal 判斷出貨狀態、延遲或缺貨",
+      "enabled": true,
+      "answerText": "先用 OSN 查 CS Portal／Order Admin／OMS，再依狀態判斷：尚未入 WMS、已入 WMS 撿貨或出貨中、Outbound 後延遲、或 OMS/WMS 顯示 OOS 缺貨。"
+    },
+    {
+      "id": "Q012",
+      "name": "詢問包裹貨態異常",
+      "keywords": "貨態異常,包裹遺失,延遲未配達,配達門市未取件,已配達未收到,已取件未收到,COD,補匯款",
+      "description": "SCS 包裹延遲、門市滯留、已配達未收到、已取件但貨態未更新等情境",
+      "enabled": true,
+      "answerText": "先檢查 WMS 與物流貨態，再依異常類型決定是否登記表單、轉 SPX 調查、引導申退或通知補匯款。"
+    },
+    {
+      "id": "Q013",
+      "name": "詢問商品異常／貨損申退",
+      "keywords": "貨損,破包,漏液,過期,長蟲,瑕疵,錯品,缺件,商品異常,低單,200元,照片,申退",
+      "description": "依照片、商品金額、管制區或高單條件判斷是否引導申退或轉詢",
+      "enabled": true,
+      "answerText": "先確認商品問題類型、是否有照片、商品金額與是否屬管制區／高單／特殊商品。符合低單或 SCS 貨損優化條件時，可優先引導買家申請退貨退款。"
+    },
+    {
+      "id": "Q014",
+      "name": "詢問補償折扣碼／小額折扣碼",
+      "keywords": "補償折扣碼,補碼,原碼補碼,返還原折扣碼,返還損失折扣,小額折扣碼,價差,折扣碼無法使用",
+      "description": "判斷返還原折扣碼、返還損失折扣、個案補碼或小額折扣碼",
+      "enabled": true,
+      "answerText": "先確認客人要補的是原本失效的折扣碼、訂單取消造成的折扣／價差損失，還是商品異常的小額客維折扣碼。補碼前務必檢查原折扣碼是否失效、賣場是否已有相同或更優優惠、是否需綁定商品。"
+    },
+    {
+      "id": "Q015",
+      "name": "詢問退貨退款流程／NRR",
+      "keywords": "退貨退款,NRR,自動退款,快速退款,包裹未送達,缺件,一般退貨,僅退款,退貨物流",
+      "description": "依退貨原因與金額判斷自動退款、快速退款、蝦皮審核或一般退貨",
+      "enabled": true,
+      "answerText": "先確認退貨原因、商品金額、是否包裹未送達、是否缺件僅退款，以及買家目前是否已提出退貨退款申請。不同原因會進不同審核路徑。"
+    },
+    {
+      "id": "Q016",
+      "name": "詢問 Offline RR／Agent AOC",
+      "keywords": "Offline RR,ORR,AOC,AOCRR,完成訂單,線下退貨,專員代申請,Return ID,退貨原因備註",
+      "description": "完成訂單後的線下退貨退款、AOC 判斷與專員代發 RR",
+      "enabled": true,
+      "answerText": "先確認訂單是否已完成、是否仍在 15 天鑑賞期內、是否有延長撥款、是否可讓買家自行 AOC，或需由專員協助發起 Offline RR。"
+    },
+    {
+      "id": "Q017",
+      "name": "詢問取消配送中訂單",
+      "keywords": "取消配送中,Intransit RR,取消配送中訂單,攔截,SPX,Pickup Done,SP_Ready_collection,RT1,RT2,RT3",
+      "description": "判斷買家是否可申請取消配送中訂單與 RR 狀態",
+      "enabled": true,
+      "answerText": "此功能適用於賣家寄件後到抵達門市前的部分訂單，並非所有物流都適用。先確認訂單頁是否有取消配送中訂單按鈕、物流是否屬適用範圍、RR 狀態與 Remark。"
+    },
+    {
+      "id": "Q018",
+      "name": "詢問工單／KAM 表是否要建立",
+      "keywords": "工單,KAM表,售前商品問題,廠直,轉詢,追蹤,平日追蹤,假日追蹤,未結案備註",
+      "description": "判斷售前商品問題、廠直情境是否需開單、填 KAM 表與追蹤",
+      "enabled": false,
+      "answerText": "先判斷是否只是單純資訊提供，還是涉及退換貨意圖、後續追蹤、廠商處理或資訊不齊。需要轉詢或追蹤時，才建立工單與對應表單。"
+    },
+    {
+      "id": "Q019",
+      "name": "詢問聊聊轉二線",
+      "keywords": "轉二線,二線,OPS,BAU,QA,轉詢超過48小時,已說明3次,客訴,不雅字眼,性騷擾,SLA",
+      "description": "判斷聊聊是否需轉 OPS／BAU／QA 協助",
+      "enabled": false,
+      "answerText": "先確認是問題仍無法解決、轉詢超過 48 小時、買家重複來訊、已說明 3 次仍持續詢問，還是有情緒、不雅字眼或性騷擾等特殊情境。"
+    },
+    {
+      "id": "Q020",
+      "name": "詢問延遲補償",
+      "keywords": "延遲補償,delay voucher,隔日到貨,未收到補償,黑名單,付款時間,到貨時間,HighRisk",
+      "description": "判斷訂單是否適用延遲補償、是否黑名單或符合補發",
+      "enabled": true,
+      "answerText": "先確認物流渠道是否適用延遲補償，再查買家是否為黑名單或高風險名單；如買家提供單號，需用付款時間與實際到貨時間判斷是否真的符合補償資格。"
     }
   ],
   "flows": [
-    {
-      "question": "詢問鑑賞期",
-      "steps": [],
-      "branch": "共用",
-      "next": "填入取貨日期，產生鑑賞期回覆",
-      "routes": [],
-      "answerBranches": [
-        "共用"
-      ],
-      "answerParts": []
-    },
     {
       "question": "詢問付款方式",
       "steps": [],
@@ -621,20 +698,29 @@ window.SOP_DATA = {
           "question": "詢問運費／物流",
           "branch": "退貨步驟是什麼",
           "beforeText": ""
+        },
+        {
+          "question": "共用",
+          "branch": "鑑賞期",
+          "beforeText": "先確認是否仍在 15 天鑑賞期內："
         }
       ],
-      "next": "先確認退貨原因、照片及退貨規範，再引導買家依系統申請與交寄"
+      "next": "先確認退貨原因、照片及退貨規範，再引導買家依系統申請與交寄",
+      "answerBranches": [
+        "退貨步驟是什麼",
+        "鑑賞期"
+      ]
     },
     {
       "question": "詢問加價購",
       "branch": "有顯示加價購標籤",
       "steps": [
         {
-          "prompt": "客人是哪一種加價購問題？",
+          "prompt": "客人是要確認商品是否有加價購，還是要反查加價購商品搭配哪件主商品？",
           "option": "確認商品是否有加價購"
         },
         {
-          "prompt": "商品頁有沒有顯示加價購標籤？",
+          "prompt": "商品頁有沒有顯示「加價購／優惠加購」標籤？",
           "option": "有顯示加價購標籤"
         }
       ],
@@ -642,7 +728,7 @@ window.SOP_DATA = {
       "answerParts": [
         {
           "question": "詢問加價購",
-          "branch": "加價購標籤有顯示",
+          "branch": "有顯示加價購標籤",
           "beforeText": ""
         }
       ],
@@ -653,11 +739,11 @@ window.SOP_DATA = {
       "branch": "沒有顯示加價購標籤",
       "steps": [
         {
-          "prompt": "客人是哪一種加價購問題？",
+          "prompt": "客人是要確認商品是否有加價購，還是要反查加價購商品搭配哪件主商品？",
           "option": "確認商品是否有加價購"
         },
         {
-          "prompt": "商品頁有沒有顯示加價購標籤？",
+          "prompt": "商品頁有沒有顯示「加價購／優惠加購」標籤？",
           "option": "沒有顯示加價購標籤"
         }
       ],
@@ -665,7 +751,7 @@ window.SOP_DATA = {
       "answerParts": [
         {
           "question": "詢問加價購",
-          "branch": "加價購標籤沒有顯示",
+          "branch": "沒有顯示加價購標籤",
           "beforeText": ""
         }
       ],
@@ -676,7 +762,7 @@ window.SOP_DATA = {
       "branch": "加價購商品要搭配哪件主商品",
       "steps": [
         {
-          "prompt": "客人是哪一種加價購問題？",
+          "prompt": "客人是要確認商品是否有加價購，還是要反查加價購商品搭配哪件主商品？",
           "option": "加價購商品要搭配哪件主商品"
         }
       ],
@@ -684,7 +770,7 @@ window.SOP_DATA = {
       "answerParts": [
         {
           "question": "詢問加價購",
-          "branch": "反查加價購主商品",
+          "branch": "加價購商品要搭配哪件主商品",
           "beforeText": ""
         }
       ],
@@ -726,7 +812,7 @@ window.SOP_DATA = {
       "answerParts": [
         {
           "question": "詢問滿額贈",
-          "branch": "購物車有顯示滿額贈",
+          "branch": "購物車有自動加入贈品",
           "beforeText": ""
         }
       ],
@@ -749,7 +835,7 @@ window.SOP_DATA = {
       "answerParts": [
         {
           "question": "詢問滿額贈",
-          "branch": "購物車沒有顯示滿額贈",
+          "branch": "購物車沒有自動加入贈品",
           "beforeText": ""
         }
       ],
@@ -773,6 +859,886 @@ window.SOP_DATA = {
         }
       ],
       "next": "選擇優惠券是否能返還"
+    },
+    {
+      "question": "詢問商品效期／進貨日",
+      "steps": [
+        {
+          "prompt": "客人要查哪一種商品時間？",
+          "option": "查商品效期"
+        }
+      ],
+      "branch": "查商品效期",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "查商品效期"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問商品效期／進貨日",
+          "branch": "查商品效期",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問商品效期／進貨日",
+      "steps": [
+        {
+          "prompt": "客人要查哪一種商品時間？",
+          "option": "查商品進貨日"
+        }
+      ],
+      "branch": "查商品進貨日",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "查商品進貨日"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問商品效期／進貨日",
+          "branch": "查商品進貨日",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問訂單出貨狀態／OOS",
+      "steps": [
+        {
+          "prompt": "後台查到的主要狀態是哪一種？",
+          "option": "尚未進入 WMS"
+        }
+      ],
+      "branch": "尚未進入 WMS",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "尚未進入 WMS"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問訂單出貨狀態／OOS",
+          "branch": "尚未進入 WMS",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問訂單出貨狀態／OOS",
+      "steps": [
+        {
+          "prompt": "後台查到的主要狀態是哪一種？",
+          "option": "WMS 已出貨但延遲"
+        }
+      ],
+      "branch": "WMS 已出貨但延遲",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "WMS 已出貨但延遲"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問訂單出貨狀態／OOS",
+          "branch": "WMS 已出貨但延遲",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問訂單出貨狀態／OOS",
+      "steps": [
+        {
+          "prompt": "後台查到的主要狀態是哪一種？",
+          "option": "OMS／WMS 顯示 OOS 缺貨"
+        }
+      ],
+      "branch": "OMS／WMS 顯示 OOS 缺貨",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "OMS／WMS 顯示 OOS 缺貨"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問訂單出貨狀態／OOS",
+          "branch": "OMS／WMS 顯示 OOS 缺貨",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問包裹貨態異常",
+      "steps": [
+        {
+          "prompt": "包裹目前是哪一種異常？",
+          "option": "包裹延遲未配達"
+        }
+      ],
+      "branch": "包裹延遲未配達",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "包裹延遲未配達"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問包裹貨態異常",
+          "branch": "包裹延遲未配達",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問包裹貨態異常",
+      "steps": [
+        {
+          "prompt": "包裹目前是哪一種異常？",
+          "option": "配達門市超過 10 天未取消"
+        }
+      ],
+      "branch": "配達門市超過 10 天未取消",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "配達門市超過 10 天未取消"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問包裹貨態異常",
+          "branch": "配達門市超過 10 天未取消",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問包裹貨態異常",
+      "steps": [
+        {
+          "prompt": "包裹目前是哪一種異常？",
+          "option": "貨態已配達但買家未收到"
+        }
+      ],
+      "branch": "貨態已配達但買家未收到",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "貨態已配達但買家未收到"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問包裹貨態異常",
+          "branch": "貨態已配達但買家未收到",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問包裹貨態異常",
+      "steps": [
+        {
+          "prompt": "包裹目前是哪一種異常？",
+          "option": "貨態配送中但買家已取件"
+        }
+      ],
+      "branch": "貨態配送中但買家已取件",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "貨態配送中但買家已取件"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問包裹貨態異常",
+          "branch": "貨態配送中但買家已取件",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問商品異常／貨損申退",
+      "steps": [
+        {
+          "prompt": "商品異常屬於哪一種處理情境？",
+          "option": "低單 200 元以下且有照片"
+        }
+      ],
+      "branch": "低單 200 元以下且有照片",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "低單 200 元以下且有照片"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問商品異常／貨損申退",
+          "branch": "低單 200 元以下且有照片",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問商品異常／貨損申退",
+      "steps": [
+        {
+          "prompt": "商品異常屬於哪一種處理情境？",
+          "option": "SCS 貨損有照片"
+        }
+      ],
+      "branch": "SCS 貨損有照片",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "SCS 貨損有照片"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問商品異常／貨損申退",
+          "branch": "SCS 貨損有照片",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問商品異常／貨損申退",
+      "steps": [
+        {
+          "prompt": "商品異常屬於哪一種處理情境？",
+          "option": "管制區／高單／特殊商品"
+        }
+      ],
+      "branch": "管制區／高單／特殊商品",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "管制區／高單／特殊商品"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問商品異常／貨損申退",
+          "branch": "管制區／高單／特殊商品",
+          "beforeText": ""
+        },
+        {
+          "beforeText": "",
+          "question": "共用",
+          "branch": "KAM表"
+        }
+      ]
+    },
+    {
+      "question": "詢問補償折扣碼／小額折扣碼",
+      "steps": [
+        {
+          "prompt": "補償折扣碼屬於哪一類？",
+          "option": "返還原折扣碼"
+        }
+      ],
+      "branch": "返還原折扣碼",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "返還原折扣碼"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問補償折扣碼／小額折扣碼",
+          "branch": "返還原折扣碼",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問補償折扣碼／小額折扣碼",
+      "steps": [
+        {
+          "prompt": "補償折扣碼屬於哪一類？",
+          "option": "返還損失折扣／價差"
+        }
+      ],
+      "branch": "返還損失折扣／價差",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "返還損失折扣／價差"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問補償折扣碼／小額折扣碼",
+          "branch": "返還損失折扣／價差",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問補償折扣碼／小額折扣碼",
+      "steps": [
+        {
+          "prompt": "補償折扣碼屬於哪一類？",
+          "option": "小額折扣碼"
+        }
+      ],
+      "branch": "小額折扣碼",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "小額折扣碼"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問補償折扣碼／小額折扣碼",
+          "branch": "小額折扣碼",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問退貨退款流程／NRR",
+      "steps": [
+        {
+          "prompt": "退貨退款主要是哪一種情境？",
+          "option": "60 元以下自動退款"
+        }
+      ],
+      "branch": "60 元以下自動退款",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "60 元以下自動退款"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問退貨退款流程／NRR",
+          "branch": "60 元以下自動退款",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問退貨退款流程／NRR",
+      "steps": [
+        {
+          "prompt": "退貨退款主要是哪一種情境？",
+          "option": "61-1380 元快速退款"
+        }
+      ],
+      "branch": "61-1380 元快速退款",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "61-1380 元快速退款"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問退貨退款流程／NRR",
+          "branch": "61-1380 元快速退款",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問退貨退款流程／NRR",
+      "steps": [
+        {
+          "prompt": "退貨退款主要是哪一種情境？",
+          "option": "包裹未送達進蝦皮審核"
+        }
+      ],
+      "branch": "包裹未送達進蝦皮審核",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "包裹未送達進蝦皮審核"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問退貨退款流程／NRR",
+          "branch": "包裹未送達進蝦皮審核",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問退貨退款流程／NRR",
+      "steps": [
+        {
+          "prompt": "退貨退款主要是哪一種情境？",
+          "option": "缺件僅退款進蝦皮審核"
+        }
+      ],
+      "branch": "缺件僅退款進蝦皮審核",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "缺件僅退款進蝦皮審核"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問退貨退款流程／NRR",
+          "branch": "缺件僅退款進蝦皮審核",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問退貨退款流程／NRR",
+      "steps": [
+        {
+          "prompt": "退貨退款主要是哪一種情境？",
+          "option": "其他原因一般退貨"
+        }
+      ],
+      "branch": "其他原因一般退貨",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "其他原因一般退貨"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問退貨退款流程／NRR",
+          "branch": "其他原因一般退貨",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問 Offline RR／Agent AOC",
+      "steps": [
+        {
+          "prompt": "Offline RR 目前判斷結果是什麼？",
+          "option": "鑑賞期內優先引導買家自行 AOC"
+        }
+      ],
+      "branch": "鑑賞期內優先引導買家自行 AOC",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "鑑賞期內優先引導買家自行 AOC"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問 Offline RR／Agent AOC",
+          "branch": "鑑賞期內優先引導買家自行 AOC",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問 Offline RR／Agent AOC",
+      "steps": [
+        {
+          "prompt": "Offline RR 目前判斷結果是什麼？",
+          "option": "可發起 Agent AOC"
+        }
+      ],
+      "branch": "可發起 Agent AOC",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "可發起 Agent AOC"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問 Offline RR／Agent AOC",
+          "branch": "可發起 Agent AOC",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問 Offline RR／Agent AOC",
+      "steps": [
+        {
+          "prompt": "Offline RR 目前判斷結果是什麼？",
+          "option": "不可發起 AOC RR"
+        }
+      ],
+      "branch": "不可發起 AOC RR",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "不可發起 AOC RR"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問 Offline RR／Agent AOC",
+          "branch": "不可發起 AOC RR",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問 Offline RR／Agent AOC",
+      "steps": [
+        {
+          "prompt": "Offline RR 目前判斷結果是什麼？",
+          "option": "專員已代發 RR"
+        }
+      ],
+      "branch": "專員已代發 RR",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "專員已代發 RR"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問 Offline RR／Agent AOC",
+          "branch": "專員已代發 RR",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問取消配送中訂單",
+      "steps": [
+        {
+          "prompt": "取消配送中目前是哪一種狀態？",
+          "option": "訂單可申請取消配送中"
+        }
+      ],
+      "branch": "訂單可申請取消配送中",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "訂單可申請取消配送中"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問取消配送中訂單",
+          "branch": "訂單可申請取消配送中",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問取消配送中訂單",
+      "steps": [
+        {
+          "prompt": "取消配送中目前是哪一種狀態？",
+          "option": "申請處理中"
+        }
+      ],
+      "branch": "申請處理中",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "申請處理中"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問取消配送中訂單",
+          "branch": "申請處理中",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問取消配送中訂單",
+      "steps": [
+        {
+          "prompt": "取消配送中目前是哪一種狀態？",
+          "option": "系統同意取消"
+        }
+      ],
+      "branch": "系統同意取消",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "系統同意取消"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問取消配送中訂單",
+          "branch": "系統同意取消",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問取消配送中訂單",
+      "steps": [
+        {
+          "prompt": "取消配送中目前是哪一種狀態？",
+          "option": "系統拒絕或買家撤回"
+        }
+      ],
+      "branch": "系統拒絕或買家撤回",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "系統拒絕或買家撤回"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問取消配送中訂單",
+          "branch": "系統拒絕或買家撤回",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問工單／KAM 表是否要建立",
+      "steps": [
+        {
+          "prompt": "目前案件需要哪一種處理？",
+          "option": "單純商品資訊不用開單"
+        }
+      ],
+      "branch": "單純商品資訊不用開單",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "單純商品資訊不用開單"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問工單／KAM 表是否要建立",
+          "branch": "單純商品資訊不用開單",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問工單／KAM 表是否要建立",
+      "steps": [
+        {
+          "prompt": "目前案件需要哪一種處理？",
+          "option": "需開單＋填 KAM 表"
+        }
+      ],
+      "branch": "需開單＋填 KAM 表",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "需開單＋填 KAM 表"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問工單／KAM 表是否要建立",
+          "branch": "需開單＋填 KAM 表",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問工單／KAM 表是否要建立",
+      "steps": [
+        {
+          "prompt": "目前案件需要哪一種處理？",
+          "option": "廠直問題需轉廠商"
+        }
+      ],
+      "branch": "廠直問題需轉廠商",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "廠直問題需轉廠商"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問工單／KAM 表是否要建立",
+          "branch": "廠直問題需轉廠商",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問工單／KAM 表是否要建立",
+      "steps": [
+        {
+          "prompt": "目前案件需要哪一種處理？",
+          "option": "平日／假日追蹤話術"
+        }
+      ],
+      "branch": "平日／假日追蹤話術",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "平日／假日追蹤話術"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問工單／KAM 表是否要建立",
+          "branch": "平日／假日追蹤話術",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問聊聊轉二線",
+      "steps": [
+        {
+          "prompt": "轉二線原因是哪一種？",
+          "option": "轉詢 SLA 超過 48 小時"
+        }
+      ],
+      "branch": "轉詢 SLA 超過 48 小時",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "轉詢 SLA 超過 48 小時"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問聊聊轉二線",
+          "branch": "轉詢 SLA 超過 48 小時",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問聊聊轉二線",
+      "steps": [
+        {
+          "prompt": "轉二線原因是哪一種？",
+          "option": "已說明 3 次仍重複詢問"
+        }
+      ],
+      "branch": "已說明 3 次仍重複詢問",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "已說明 3 次仍重複詢問"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問聊聊轉二線",
+          "branch": "已說明 3 次仍重複詢問",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問聊聊轉二線",
+      "steps": [
+        {
+          "prompt": "轉二線原因是哪一種？",
+          "option": "買家有情緒／不雅／性騷擾"
+        }
+      ],
+      "branch": "買家有情緒／不雅／性騷擾",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "買家有情緒／不雅／性騷擾"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問聊聊轉二線",
+          "branch": "買家有情緒／不雅／性騷擾",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問聊聊轉二線",
+      "steps": [
+        {
+          "prompt": "轉二線原因是哪一種？",
+          "option": "無法判斷需協助方向"
+        }
+      ],
+      "branch": "無法判斷需協助方向",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "無法判斷需協助方向"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問聊聊轉二線",
+          "branch": "無法判斷需協助方向",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問延遲補償",
+      "steps": [
+        {
+          "prompt": "延遲補償查詢結果是哪一種？",
+          "option": "物流渠道適用延遲補償"
+        }
+      ],
+      "branch": "物流渠道適用延遲補償",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "物流渠道適用延遲補償"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問延遲補償",
+          "branch": "物流渠道適用延遲補償",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問延遲補償",
+      "steps": [
+        {
+          "prompt": "延遲補償查詢結果是哪一種？",
+          "option": "黑名單或不符合補償"
+        }
+      ],
+      "branch": "黑名單或不符合補償",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "黑名單或不符合補償"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問延遲補償",
+          "branch": "黑名單或不符合補償",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問延遲補償",
+      "steps": [
+        {
+          "prompt": "延遲補償查詢結果是哪一種？",
+          "option": "符合補發延遲補償"
+        }
+      ],
+      "branch": "符合補發延遲補償",
+      "next": "確認欄位後產生回覆",
+      "routes": [],
+      "answerBranches": [
+        "符合補發延遲補償"
+      ],
+      "answerParts": [
+        {
+          "question": "詢問延遲補償",
+          "branch": "符合補發延遲補償",
+          "beforeText": ""
+        }
+      ]
+    },
+    {
+      "question": "詢問鑑賞期",
+      "steps": [],
+      "branch": "鑑賞期",
+      "next": "填入取貨日期，套用共用鑑賞期判斷",
+      "routes": [],
+      "answerBranches": [
+        "鑑賞期"
+      ],
+      "answerParts": [
+        {
+          "question": "共用",
+          "branch": "鑑賞期",
+          "beforeText": ""
+        }
+      ]
     }
   ],
   "variables": [
@@ -3150,19 +4116,19 @@ window.SOP_DATA = {
       "code": "addon_campaign_id",
       "label": "活動檔期／add_on_deal_id",
       "hint": "填入工具顯示的活動檔期或 add_on_deal_id",
-      "sourceNote": "可使用以下兩種方式查找：\n▪ SCS CS Tool：從下拉選單查看活動檔期。\n▪ [DB] Add-on / Gift / Bundle：先在 Add-on_Sub 使用 Product ID 查出 add_on_deal_id，再到 Add-on_Main 反查主商品。",
+      "sourceNote": "<div><b>加價購主商品確認</b></div><ol><li>問題本身先在下方打字說明：需到 AOD-Main 確認商品是否為加價購主商品。</li><li>若工具查不到，再用 [DB] Add-on / Gift / Bundle：先在 Sub 以 Product ID 反查 add_on_deal_id。</li><li>再到 Main 用 add_on_deal_id 查主商品資訊；有加價購標籤才繼續產出下一層答案。</li><li>回覆時帶入主商品 Product ID / 商品名稱；需要時請一併傳送商品卡。</li></ol>",
       "sourceLinks": [
         {
-          "title": "SCS CS Tool（正職）",
-          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+          "title": "加價購主商品 AOD-Main",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/AOD-Main?authuser=3"
         },
         {
-          "title": "SCS CS Tool（派遣）",
-          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
-        },
-        {
-          "title": "[DB] Add-on / Gift / Bundle",
+          "title": "[DB] Add-on / Gift / Bundle 反查流程 - Sub",
           "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle 反查流程 - Main",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=0#gid=0"
         }
       ],
       "options": [],
@@ -3172,7 +4138,7 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": false,
-      "sourceUrl": "",
+      "sourceUrl": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/AOD-Main?authuser=3",
       "category": "促銷活動",
       "fillRules": [],
       "q": "Q008",
@@ -3182,19 +4148,19 @@ window.SOP_DATA = {
       "code": "addon_main_product",
       "label": "可搭配的主商品",
       "hint": "填入主商品的 Product ID 或商品名稱",
-      "sourceNote": "查到主商品後：\n1. 複製主商品的商品 ID 或商品名稱。\n2. 到聊聊系統搜尋。\n3. 透過商品卡傳送給買家。",
+      "sourceNote": "<div><b>加價購主商品確認</b></div><ol><li>問題本身先在下方打字說明：需到 AOD-Main 確認商品是否為加價購主商品。</li><li>若工具查不到，再用 [DB] Add-on / Gift / Bundle：先在 Sub 以 Product ID 反查 add_on_deal_id。</li><li>再到 Main 用 add_on_deal_id 查主商品資訊；有加價購標籤才繼續產出下一層答案。</li><li>回覆時帶入主商品 Product ID / 商品名稱；需要時請一併傳送商品卡。</li></ol>",
       "sourceLinks": [
         {
-          "title": "SCS CS Tool（正職）",
-          "url": "https://sites.google.com/shopee.com/scs-cs-tool/home"
+          "title": "加價購主商品 AOD-Main",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/AOD-Main?authuser=3"
         },
         {
-          "title": "SCS CS Tool（派遣）",
-          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home"
-        },
-        {
-          "title": "[DB] Add-on / Gift / Bundle",
+          "title": "[DB] Add-on / Gift / Bundle 反查流程 - Sub",
           "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+        },
+        {
+          "title": "[DB] Add-on / Gift / Bundle 反查流程 - Main",
+          "url": "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=0#gid=0"
         }
       ],
       "options": [],
@@ -3204,7 +4170,7 @@ window.SOP_DATA = {
       "common": false,
       "type": "text",
       "multiline": true,
-      "sourceUrl": "",
+      "sourceUrl": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/AOD-Main?authuser=3",
       "category": "促銷活動",
       "fillRules": [],
       "q": "Q008",
@@ -3222,7 +4188,7 @@ window.SOP_DATA = {
       "required": true,
       "common": false,
       "type": "text",
-      "multiline": true,
+      "multiline": false,
       "sourceUrl": "",
       "category": "促銷活動",
       "fillRules": [],
@@ -3719,7 +4685,7 @@ window.SOP_DATA = {
       "required": true,
       "common": false,
       "type": "text",
-      "multiline": true,
+      "multiline": false,
       "sourceUrl": "https://help.shopee.tw/portal/4/article/186734?previousPage=other%20articles",
       "category": "物流相關",
       "fillRules": [],
@@ -3754,13 +4720,3138 @@ window.SOP_DATA = {
       "autoDays": 0,
       "required": true,
       "common": false,
-      "type": "text",
-      "multiline": true,
+      "type": "date",
+      "multiline": false,
       "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
       "category": "物流相關",
       "fillRules": [],
       "q": "Q007",
       "branch": "問什麼時候到貨"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q010",
+      "branch": "查商品效期",
+      "category": "商品詢問",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": ""
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "商品效期 Inventory Expiration Date",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Expiration-Date?authuser=3"
+        }
+      ],
+      "q": "Q010",
+      "branch": "查商品效期",
+      "category": "售前商品工具",
+      "code": "expiration_result",
+      "label": "小工具查詢效期",
+      "hint": "貼上各規格或指定規格效期",
+      "sourceUrl": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Expiration-Date?authuser=3",
+      "sourceNote": "<div><b>商品效期查詢</b></div><ol><li>到 SCS CS Tool 的 Inventory Expiration Date。</li><li>以 Product ID 查詢；若客人提供規格，需確認對應 variation / spec。</li><li>回覆前提醒商品實際效期仍以包裝標示為準。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q010",
+      "branch": "查商品進貨日",
+      "category": "商品詢問",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": ""
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "商品進貨日 Inventory Inbound Date",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Inbound-Date?authuser=3"
+        }
+      ],
+      "q": "Q010",
+      "branch": "查商品進貨日",
+      "category": "售前商品工具",
+      "code": "inbound_result",
+      "label": "小工具查詢進貨日",
+      "hint": "貼上小工具顯示結果",
+      "sourceUrl": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Inbound-Date?authuser=3",
+      "sourceNote": "<div><b>商品進貨日查詢</b></div><ol><li>到 SCS CS Tool 的 Inventory Inbound Date。</li><li>以 Product ID 查詢商品進貨日；若有規格差異，需確認對應品項。</li><li>把查到的進貨日轉成客人看得懂的說法，不直接貼內部欄位名稱。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q011",
+      "branch": "尚未進入 WMS",
+      "category": "售後出貨配送",
+      "code": "backend_note",
+      "label": "後台查詢結果",
+      "hint": "貼上 CS Portal / OMS / WMS 重點"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q011",
+      "branch": "WMS 已出貨但延遲",
+      "category": "售後出貨配送",
+      "code": "wms_status",
+      "label": "WMS 狀態",
+      "hint": "Created / Information Received / Outbound 等",
+      "options": [
+        "Created",
+        "Information Received",
+        "Outbound",
+        "其他／需補充"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q011",
+      "branch": "WMS 已出貨但延遲",
+      "category": "售後出貨配送",
+      "code": "delay_days",
+      "label": "延遲天數",
+      "hint": "例如：Outbound > 2D"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q011",
+      "branch": "OMS／WMS 顯示 OOS 缺貨",
+      "category": "售後出貨配送",
+      "code": "oos_item",
+      "label": "缺貨商品",
+      "hint": "可填商品名稱或品項"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q011",
+      "branch": "OMS／WMS 顯示 OOS 缺貨",
+      "category": "售後出貨配送",
+      "code": "backend_note",
+      "label": "後台查詢結果",
+      "hint": "貼上 OMS/WMS 重點"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "包裹延遲未配達",
+      "category": "售後出貨配送",
+      "code": "logistics_status",
+      "label": "物流貨態",
+      "hint": "貼上目前貨態"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "包裹延遲未配達",
+      "category": "售後出貨配送",
+      "code": "follow_note",
+      "label": "追蹤紀錄",
+      "hint": "表單或轉詢紀錄"
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "配達門市超過 10 天未取消",
+      "category": "售後出貨配送",
+      "code": "store_arrival_date",
+      "label": "門市配達日",
+      "hint": "YYYY/MM/DD"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "配達門市超過 10 天未取消",
+      "category": "售後出貨配送",
+      "code": "logistics_status",
+      "label": "目前貨態",
+      "hint": "貼上目前貨態"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "貨態已配達但買家未收到",
+      "category": "售後出貨配送",
+      "code": "logistics_status",
+      "label": "目前貨態",
+      "hint": "貼上目前貨態"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "貨態已配達但買家未收到",
+      "category": "售後出貨配送",
+      "code": "buyer_confirm",
+      "label": "買家確認內容",
+      "hint": "是否回門市、是否拿到包裹"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "貨態配送中但買家已取件",
+      "category": "售後出貨配送",
+      "code": "payment_method",
+      "label": "付款方式",
+      "hint": "COD / 非 COD",
+      "options": [
+        "COD",
+        "非 COD",
+        "待確認"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q012",
+      "branch": "貨態配送中但買家已取件",
+      "category": "售後出貨配送",
+      "code": "amount_note",
+      "label": "收款金額確認",
+      "hint": "正確／不正確／待確認",
+      "options": [
+        "收款金額正確",
+        "收款金額不正確",
+        "待確認"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "category": "售後商品問題",
+      "code": "item_amount",
+      "label": "商品單價",
+      "hint": "NT$"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "category": "售後商品問題",
+      "code": "issue_type",
+      "label": "問題類型",
+      "hint": "破包／漏液／過期／缺件／錯品等",
+      "options": [
+        "破包",
+        "破碎／破裂",
+        "漏液",
+        "過期",
+        "長蟲",
+        "缺件",
+        "錯品",
+        "商品瑕疵",
+        "其他"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "category": "售後商品問題",
+      "code": "photo_status",
+      "label": "照片狀態",
+      "hint": "已提供／未提供",
+      "options": [
+        "已提供照片",
+        "未提供照片",
+        "照片不足需補充"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "category": "售後商品問題",
+      "code": "issue_type",
+      "label": "問題類型",
+      "hint": "貨損／破包／漏液等",
+      "options": [
+        "破包",
+        "破碎／破裂",
+        "漏液",
+        "過期",
+        "長蟲",
+        "缺件",
+        "錯品",
+        "商品瑕疵",
+        "其他"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "category": "售後商品問題",
+      "code": "photo_status",
+      "label": "照片狀態",
+      "hint": "已提供／未提供",
+      "options": [
+        "已提供照片",
+        "未提供照片",
+        "照片不足需補充"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "category": "售後商品問題",
+      "code": "special_note",
+      "label": "特殊條件",
+      "hint": "管制區／高單／特殊商品，無則填無"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "category": "售後商品問題",
+      "code": "special_note",
+      "label": "特殊條件",
+      "hint": "管制區／高單／特殊 3C／餐券等"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "category": "售後商品問題",
+      "code": "case_note",
+      "label": "案件備註",
+      "hint": "轉詢或表單紀錄"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "category": "售後補償",
+      "code": "user_id",
+      "label": "User ID",
+      "hint": "買家 UID"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "category": "售後補償",
+      "code": "voucher_code",
+      "label": "原 Voucher Code",
+      "hint": "原折扣碼",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082",
+      "sourceNote": "<div><b>補償折扣碼 / 原折扣碼確認</b></div><ol><li>Shopee CS Tool 補碼小工具是瀏覽器擴充功能，只能在 CP 或 DSS 上使用。</li><li>先確認原折扣碼是否失效、是否沒有同等或更好的券可以提供。</li><li>依工具產出的內容貼到個案補碼追蹤表，再帶回可回覆客人的折扣碼資訊。</li></ol>"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "category": "售後補償",
+      "code": "voucher_invalid",
+      "label": "原碼是否失效",
+      "hint": "是／否",
+      "options": [
+        "已失效",
+        "未失效",
+        "查無資料"
+      ],
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "category": "售後補償",
+      "code": "better_voucher_check",
+      "label": "是否無更優優惠",
+      "hint": "是／否",
+      "options": [
+        "已確認無更優優惠",
+        "已有相同或更優優惠",
+        "尚未確認"
+      ],
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "category": "售後補償",
+      "code": "discount_amount",
+      "label": "折扣損失金額",
+      "hint": "蝦皮＋賣家折扣",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "category": "售後補償",
+      "code": "price_difference",
+      "label": "商品價差",
+      "hint": "現價 - Subtotal",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "category": "售後補償",
+      "code": "min_spend",
+      "label": "最低消費",
+      "hint": "補碼低消",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "category": "售後補償",
+      "code": "voucher_amount",
+      "label": "折扣金額",
+      "hint": "補碼折扣額",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082",
+      "sourceNote": "<div><b>返還損失折扣 / 價差</b></div><ol><li>在 CP 或 DSS 使用 Shopee CS Tool 補碼小工具。</li><li>將工具結果貼到個案補碼追蹤表指定欄位，依表內結果確認補償金額與門檻。</li><li>金額欄位用單行文字填寫，保留幣別或必要說明。</li></ol>"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "category": "售後補償",
+      "code": "issue_type",
+      "label": "問題類型",
+      "hint": "破包／漏液／缺件／錯品等",
+      "options": [
+        "破包",
+        "漏液",
+        "過期",
+        "長蟲",
+        "缺件",
+        "商品出錯",
+        "重複出貨",
+        "其他"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "category": "售後補償",
+      "code": "proof_status",
+      "label": "佐證狀態",
+      "hint": "照片／表單／OPS通知",
+      "options": [
+        "照片已確認",
+        "表單／OPS 通知",
+        "待補佐證"
+      ],
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082",
+      "sourceNote": "<div><b>小額折扣碼</b></div><ol><li>先確認客人佐證是否足夠，不足時補請截圖或訂單資訊。</li><li>需要補碼時走共用補碼流程與個案補碼追蹤表；小額券不代表原訂單問題已處理完。</li><li>若仍涉及物流、商品或退款問題，另外接回對應共用分支處理。</li></ol>"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "60 元以下自動退款",
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因",
+      "hint": "買家選擇／描述",
+      "options": [
+        "包裹未收到",
+        "商品缺件",
+        "不需要了／已購買類似商品",
+        "實品與描述／圖片有落差",
+        "收到不對的商品",
+        "商品功能有問題",
+        "商品外表瑕疵／毀損",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "60 元以下自動退款",
+      "category": "售後退貨退款",
+      "code": "refund_amount",
+      "label": "退款金額",
+      "hint": "NT$"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "61-1380 元快速退款",
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因",
+      "hint": "買家選擇／描述",
+      "options": [
+        "包裹未收到",
+        "商品缺件",
+        "不需要了／已購買類似商品",
+        "實品與描述／圖片有落差",
+        "收到不對的商品",
+        "商品功能有問題",
+        "商品外表瑕疵／毀損",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "61-1380 元快速退款",
+      "category": "售後退貨退款",
+      "code": "refund_amount",
+      "label": "退款金額",
+      "hint": "NT$"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "包裹未送達進蝦皮審核",
+      "category": "售後退貨退款",
+      "code": "logistics_status",
+      "label": "物流貨態",
+      "hint": "貼上目前貨態"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "缺件僅退款進蝦皮審核",
+      "category": "售後退貨退款",
+      "code": "missing_item",
+      "label": "缺件內容",
+      "hint": "缺少品項／數量"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "缺件僅退款進蝦皮審核",
+      "category": "售後退貨退款",
+      "code": "proof_status",
+      "label": "證明資料",
+      "hint": "照片／影片／描述",
+      "options": [
+        "照片已上傳",
+        "影片已上傳",
+        "待補證明"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "其他原因一般退貨",
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因",
+      "hint": "買家選擇／描述",
+      "options": [
+        "包裹未收到",
+        "商品缺件",
+        "不需要了／已購買類似商品",
+        "實品與描述／圖片有落差",
+        "收到不對的商品",
+        "商品功能有問題",
+        "商品外表瑕疵／毀損",
+        "其他"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "其他原因一般退貨",
+      "category": "售後退貨退款",
+      "code": "return_channel",
+      "label": "退貨物流",
+      "hint": "7-11／SPX／黑貓／賣家自行安排等",
+      "options": [
+        "7-11",
+        "SPX",
+        "黑貓／蝦宅",
+        "賣家自行安排",
+        "待系統顯示"
+      ]
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "鑑賞期內優先引導買家自行 AOC",
+      "category": "售後退貨退款",
+      "code": "complete_date",
+      "label": "完成／取貨日期",
+      "hint": "YYYY/MM/DD"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "鑑賞期內優先引導買家自行 AOC",
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因",
+      "hint": "買家描述"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "可發起 Agent AOC",
+      "category": "售後退貨退款",
+      "code": "return_id",
+      "label": "Return ID",
+      "hint": "CS Portal Return ID"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "可發起 Agent AOC",
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因備註",
+      "hint": "用公版格式"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        }
+      ],
+      "q": "Q016",
+      "branch": "可發起 Agent AOC",
+      "category": "售後退貨退款",
+      "code": "proof_status",
+      "label": "圖片／證明",
+      "hint": "是否已上傳或放入案件",
+      "options": [
+        "圖片已上傳",
+        "圖片放入案件",
+        "圖片過多已備註",
+        "待補圖片"
+      ],
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "sourceNote": "<div><b>Offline RR / AOC_OPS_V2 判別</b></div><ol><li>AOC_OPS_V2 是瀏覽器擴充功能，只能在 CsP 使用。</li><li>到 CS Portal 以 Return ID 查詢案件，再點選 AOC_OPS_V2 判別小工具。</li><li>判別為可發起 Agent AOC 才建立；若顯示已退款或不可發起，改走對應退貨 / 退款處理分支。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "不可發起 AOC RR",
+      "category": "售後退貨退款",
+      "code": "return_id",
+      "label": "Return ID",
+      "hint": "CS Portal Return ID"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "不可發起 AOC RR",
+      "category": "售後退貨退款",
+      "code": "tool_result",
+      "label": "小工具結果",
+      "hint": "已退款／不可發起原因",
+      "options": [
+        "已退款",
+        "紅字不可發起 AOC RR",
+        "查無發起按鈕",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "不可發起 AOC RR",
+      "category": "售後退貨退款",
+      "code": "case_note",
+      "label": "後續處理",
+      "hint": "需轉詢或說明內容"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "專員已代發 RR",
+      "category": "售後退貨退款",
+      "code": "return_id",
+      "label": "Related Return/Refund ID",
+      "hint": "專員建立後產生"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q016",
+      "branch": "專員已代發 RR",
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因",
+      "hint": "備註內容"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "訂單可申請取消配送中",
+      "category": "售後退貨退款",
+      "code": "logistics_channel",
+      "label": "物流渠道",
+      "hint": "SPX／店到店等",
+      "options": [
+        "蝦皮店到店",
+        "蝦皮店到店 - 隔日到貨",
+        "SCS",
+        "店到家宅配",
+        "其他物流"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "訂單可申請取消配送中",
+      "category": "售後退貨退款",
+      "code": "button_status",
+      "label": "按鈕狀態",
+      "hint": "有／沒有",
+      "options": [
+        "有取消配送中訂單按鈕",
+        "沒有按鈕",
+        "待確認"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "申請處理中",
+      "category": "售後退貨退款",
+      "code": "rr_status",
+      "label": "RR 狀態",
+      "hint": "例如 RT1:Requested",
+      "options": [
+        "RT1:Requested",
+        "RT2:Accept",
+        "RT5:Refund Paid",
+        "RT3:Cancel",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "申請處理中",
+      "category": "售後退貨退款",
+      "code": "remark",
+      "label": "Remark",
+      "hint": "後台顯示 remark"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "系統同意取消",
+      "category": "售後退貨退款",
+      "code": "rr_status",
+      "label": "RR 狀態",
+      "hint": "RT2/RT5 Accept/Refund Paid",
+      "options": [
+        "RT1:Requested",
+        "RT2:Accept",
+        "RT5:Refund Paid",
+        "RT3:Cancel",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "系統同意取消",
+      "category": "售後退貨退款",
+      "code": "remark",
+      "label": "Remark",
+      "hint": "accepted reason"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "系統拒絕或買家撤回",
+      "category": "售後退貨退款",
+      "code": "rr_status",
+      "label": "RR 狀態",
+      "hint": "RT3:Cancel",
+      "options": [
+        "RT1:Requested",
+        "RT2:Accept",
+        "RT5:Refund Paid",
+        "RT3:Cancel",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "系統拒絕或買家撤回",
+      "category": "售後退貨退款",
+      "code": "remark",
+      "label": "Remark",
+      "hint": "取消原因"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q017",
+      "branch": "系統拒絕或買家撤回",
+      "category": "售後退貨退款",
+      "code": "next_step",
+      "label": "後續建議",
+      "hint": "取件／等配送／一般 RR"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "單純商品資訊不用開單",
+      "category": "日常作業",
+      "code": "issue_summary",
+      "label": "客人問題",
+      "hint": "簡述問題"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "需開單＋填 KAM 表",
+      "category": "日常作業",
+      "code": "issue_summary",
+      "label": "客人問題",
+      "hint": "簡述問題"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "需開單＋填 KAM 表",
+      "category": "日常作業",
+      "code": "pending_note",
+      "label": "未結案備註",
+      "hint": "待追蹤內容"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "廠直問題需轉廠商",
+      "category": "日常作業",
+      "code": "issue_summary",
+      "label": "問題摘要",
+      "hint": "物流／商品／訂單問題"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "廠直問題需轉廠商",
+      "category": "日常作業",
+      "code": "vendor_reply",
+      "label": "廠商回覆",
+      "hint": "尚未回覆可填待回覆"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "平日／假日追蹤話術",
+      "category": "日常作業",
+      "code": "follow_type",
+      "label": "追蹤情境",
+      "hint": "平日／假日／連假後／超過2工作天"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q018",
+      "branch": "平日／假日追蹤話術",
+      "category": "日常作業",
+      "code": "pending_note",
+      "label": "追蹤備註",
+      "hint": "待追蹤內容"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "轉詢 SLA 超過 48 小時",
+      "category": "日常作業",
+      "code": "case_summary",
+      "label": "案件摘要",
+      "hint": "卡點與已處理事項"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "轉詢 SLA 超過 48 小時",
+      "category": "日常作業",
+      "code": "requested_team",
+      "label": "欲尋求協助對象",
+      "hint": "OPS／BAU"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "已說明 3 次仍重複詢問",
+      "category": "日常作業",
+      "code": "reply_summary",
+      "label": "已回覆內容",
+      "hint": "整理已說明的3次重點"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "已說明 3 次仍重複詢問",
+      "category": "日常作業",
+      "code": "case_summary",
+      "label": "目前訴求",
+      "hint": "買家仍在意的點"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "買家有情緒／不雅／性騷擾",
+      "category": "日常作業",
+      "code": "risk_type",
+      "label": "風險類型",
+      "hint": "情緒／不雅／性騷擾／非理性用詞"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "買家有情緒／不雅／性騷擾",
+      "category": "日常作業",
+      "code": "case_summary",
+      "label": "對話摘要",
+      "hint": "貼上重點即可"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "買家有情緒／不雅／性騷擾",
+      "category": "日常作業",
+      "code": "requested_team",
+      "label": "欲尋求協助對象",
+      "hint": "QA／OPS／BAU"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "無法判斷需協助方向",
+      "category": "日常作業",
+      "code": "case_summary",
+      "label": "問題摘要",
+      "hint": "買家訴求＋已查資料＋卡點"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q019",
+      "branch": "無法判斷需協助方向",
+      "category": "日常作業",
+      "code": "requested_team",
+      "label": "欲尋求協助對象",
+      "hint": "QA／OPS／BAU"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "物流渠道適用延遲補償",
+      "category": "售後出貨配送",
+      "code": "logistics_channel",
+      "label": "物流渠道",
+      "hint": "店到店／宅配等",
+      "options": [
+        "蝦皮店到店",
+        "蝦皮店到店 - 隔日到貨",
+        "店到家宅配",
+        "店取 - 最快當日到",
+        "宅配 - 最快隔日到",
+        "蝦皮店到店 - 無包裝隔日到",
+        "不適用渠道"
+      ],
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "物流渠道適用延遲補償",
+      "category": "售後出貨配送",
+      "code": "paid_time",
+      "label": "付款完成時間",
+      "hint": "YYYY/MM/DD HH:mm",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "物流渠道適用延遲補償",
+      "category": "售後出貨配送",
+      "code": "delivered_time",
+      "label": "實際到貨時間",
+      "hint": "YYYY/MM/DD HH:mm",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q020",
+      "branch": "黑名單或不符合補償",
+      "category": "售後出貨配送",
+      "code": "buyer_id",
+      "label": "Buyer ID",
+      "hint": "買家 UID"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "黑名單或不符合補償",
+      "category": "售後出貨配送",
+      "code": "blacklist_result",
+      "label": "查詢表結果",
+      "hint": "是否黑名單／不符合原因",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22",
+      "sourceNote": "<div><b>延遲補償資格確認</b></div><ol><li>先用延遲補償工具確認物流渠道、付款時間與配達時間是否符合規則。</li><li>再到 2025 查詢表4 / HighRisk Buyer 查詢表，用 Buyer Username / Buyer ID 或 OSN 確認是否為高風險或排除名單。</li><li>若命中黑名單、未延遲或不符規則，不要承諾補償；可參考規則頁說明 14:00 與付款異動相關判斷。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "category": "售後出貨配送",
+      "code": "paid_time",
+      "label": "付款完成時間",
+      "hint": "YYYY/MM/DD HH:mm",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "category": "售後出貨配送",
+      "code": "delivered_time",
+      "label": "實際到貨時間",
+      "hint": "YYYY/MM/DD HH:mm",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "category": "售後出貨配送",
+      "code": "voucher_note",
+      "label": "補發紀錄",
+      "hint": "補發表單或處理狀態",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22",
+      "sourceNote": "<div><b>補發延遲補償</b></div><ol><li>延遲補償工具確認符合後，再用 HighRisk Buyer 查詢表排除黑名單或不可補償情境。</li><li>符合才執行補發，並告知買家留意通知與優惠券錢包。</li><li>回覆文字需帶入補發結果或預計可查看的位置。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q005",
+      "branch": "共用",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q005",
+      "branch": "共用",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q005",
+      "branch": "共用",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q010",
+      "branch": "查商品效期",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q010",
+      "branch": "查商品進貨日",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q010",
+      "branch": "查商品效期",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q011",
+      "branch": "尚未進入 WMS",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q011",
+      "branch": "WMS 已出貨但延遲",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q011",
+      "branch": "OMS／WMS 顯示 OOS 缺貨",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q012",
+      "branch": "包裹延遲未配達",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q012",
+      "branch": "配達門市超過 10 天未取消",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q012",
+      "branch": "貨態已配達但買家未收到",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q012",
+      "branch": "貨態配送中但買家已取件",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Jura工單",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "code": "work_order",
+      "label": "工單號",
+      "hint": "建立後填入",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
+      "options": [],
+      "defaultValue": "售前不用填",
+      "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Jura工單",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "code": "work_order",
+      "label": "工單號",
+      "hint": "建立後填入",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
+      "options": [],
+      "defaultValue": "售前不用填",
+      "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Jura工單",
+          "url": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717"
+        }
+      ],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "code": "work_order",
+      "label": "工單號",
+      "hint": "建立後填入",
+      "sourceNote": "<div><b>在 Shopee Jira 中，工單號就是案件的 Key，格式通常類似 SPTWSBS-XXXXX。</b></div><div><b>售前不用填</b></div><div><br></div><div>查詢方式：</div><div><ul><li>進入 <a href=\"https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717\" target=\"_blank\" rel=\"noopener\">Shopee TW SBS（SPTWSBS）</a>。</li><li>點選 Queues → Switch Queues → Assigned to me。</li><li>清單中的 Key 欄位就是工單號；點擊 Key 或 Summary 可開啟案件。</li></ul></div><div>如果找不到工單：</div><div><ul><li>到 Global Search／TW SBS ticket search，用訂單編號、買家帳號或案件關鍵字搜尋；結果包含已結案工單。</li><li>沒有工單號且關鍵字也找不到時，可進入指定佇列，清除 Contains text，再用 Assignee 搜尋經辦人。</li></ul></div>",
+      "options": [],
+      "defaultValue": "售前不用填",
+      "sourceUrl": "https://jira.shopee.io/projects/SPTWSBS/queues/custom/2717",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q015",
+      "branch": "包裹未送達進蝦皮審核",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "缺件僅退款進蝦皮審核",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "缺件僅退款進蝦皮審核",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "缺件僅退款進蝦皮審核",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "其他原因一般退貨",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "其他原因一般退貨",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q015",
+      "branch": "其他原因一般退貨",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "商品卡沒有顯示滿額贈",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "商品卡沒有顯示滿額贈",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "商品卡沒有顯示滿額贈",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "購物車有自動加入贈品",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "購物車有自動加入贈品",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "購物車有自動加入贈品",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "購物車沒有自動加入贈品",
+      "code": "product_id",
+      "label": "商品代碼_Product ID",
+      "hint": "貼上Product ID",
+      "sourceNote": "產品頁網址有兩段數字，後面那一段就是Product ID",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "購物車沒有自動加入贈品",
+      "code": "V008",
+      "label": "商品品項",
+      "hint": "貼上產品頁的完整標題",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "Q009",
+      "branch": "購物車沒有自動加入贈品",
+      "code": "V010",
+      "label": "商品規格",
+      "hint": "如果客人有詢問再填",
+      "sourceNote": "",
+      "options": [],
+      "defaultValue": "客人沒問不用填",
+      "sourceUrl": "",
+      "category": "商品詢問"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q016",
+      "branch": "鑑賞期內優先引導買家自行 AOC",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q017",
+      "branch": "訂單可申請取消配送中",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q017",
+      "branch": "申請處理中",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q020",
+      "branch": "物流渠道適用延遲補償",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "q": "Q020",
+      "branch": "物流渠道適用延遲補償",
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "hint": "是填入Buyer Username／User Name",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q020",
+      "branch": "黑名單或不符合補償",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "q": "Q020",
+      "branch": "黑名單或不符合補償",
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "hint": "是填入Buyer Username／User Name",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        }
+      ],
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "code": "order_id",
+      "label": "訂單編號_Order SN",
+      "hint": "貼上訂單編號",
+      "sourceNote": "<div><b>方法一．從<a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">聊聊控制台</a>找（最快）</b></div><div><ol><li>開啟「訂單詳情」：依訂單狀態或建立時間篩選<br>若訂單沒有顯示完整，將 Created Time 的條件按 ⓧ 清除</li><li>訂單列表中顯示的 Order SN 就是訂單編號</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>在搜尋欄輸入買家的 Username</li><li>按 Enter&nbsp;</li><li>展開底下的 Order，即可找到該買家的訂單及 OSN。</li></ol></div><div>注意：Order SN／OSN 是一般使用的訂單編號；如果需要的是純數字的 Order ID，可從「聊聊 → 訂單詳情 → 網址列」取得。</div>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "InHouse聊聊",
+          "url": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home"
+        },
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "User Portal",
+          "url": "https://admin.user.shopee.io/"
+        }
+      ],
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "code": "V018",
+      "label": "買家名字_Buyer Username",
+      "hint": "是填入Buyer Username／User Name",
+      "sourceNote": "<div><b>方法一．從 <a href=\"https://cs.localshop.shopee.tw/portal/inhouse/chat/home\" target=\"_blank\" rel=\"noopener\">InHouse 聊聊</a>介面找（最快）</b></div><div><ol><li>左側「買家列表」會顯示目前進線買家的名稱。</li><li>點選該買家的對話後，可在控制台切換到 「用戶資訊」 查看買家資料。</li></ol></div><div><b>方法二．從 <a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a> 找</b></div><div><ol><li>如果已有訂單編號，在搜尋欄輸入 OSN 後按 Enter。</li><li>展開 Order，再查看 Buyer &amp; Seller Info，即可確認買家帳號。</li></ol></div><div><b>方法三．從 <a href=\"https://admin.user.shopee.io/\" target=\"_blank\" rel=\"noopener\">User Portal</a> 反查</b></div><blockquote><div>如果已有 User ID，可在 User Portal 首頁輸入 User ID，查詢對應的 User Name。</div></blockquote><div><b>注意：</b></div><div>Buyer Username／User Name：買家的帳號名稱。</div><div>User ID／UID：買家的數字識別碼，兩者不同。</div><div>建立售前案件時，Case Subject 使用的是 Username；售後案件則使用Order SN。</div>",
+      "options": [],
+      "defaultValue": "Luna Lin",
+      "sourceUrl": "https://cs.localshop.shopee.tw/portal/inhouse/chat/home",
+      "category": "常用"
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "CS Portal",
+          "url": "https://dms.cs.shopee.tw/portal/info/search"
+        },
+        {
+          "title": "SCI 貨態系統",
+          "url": "https://sci.twtc.shopee.tw/shopee24-hub/search"
+        }
+      ],
+      "q": "GLOBAL",
+      "branch": "鑑賞期",
+      "code": "pickup_date",
+      "label": "取貨日期",
+      "hint": "日期，例如 2026/7/30",
+      "sourceNote": "<h3>方法一：<a href=\"https://sci.twtc.shopee.tw/shopee24-hub/search\" target=\"_blank\" rel=\"noopener\">SCI 貨態系統（優先）</a></h3><ol><li>開啟 SCI 貨態系統。</li><li>輸入 {物流單號} 或 {Order SN} 查詢。</li><li>找到狀態「已取件／Delivered／Picked Up」。</li><li>該狀態旁的日期時間就是 {取貨日期}。</li></ol><h3>方法二：<a href=\"https://dms.cs.shopee.tw/portal/info/search\" target=\"_blank\" rel=\"noopener\">CS Portal</a></h3><ol><li>輸入 {Order SN}。</li><li>展開正確的 Order。</li><li>查看「物流資訊」或「訂單與物流歷程」。</li><li>找到「買家已取件／訂單已送達」。</li><li>取該狀態的日期作為 {取貨日期}。</li></ol><p>如果查不到「已取件」紀錄，代表貨態可能尚未更新，先不要自行推算日期。</p><p>如果你問的是退貨物流到府取件日期：<br>Order Admin → Return → Return &amp; Refund Requests → 申退詳情 → Status &amp; Timeline</p><p>黑貓／蝦宅退貨也可在買家端「退貨退款詳情」查看取件時間與地址。<br></p>",
+      "options": [],
+      "defaultValue": "",
+      "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
+      "category": "常用"
+    },
+    {
+      "type": "text",
+      "autoDays": 1,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "GLOBAL",
+      "branch": "鑑賞期",
+      "code": "return_start",
+      "label": "第一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "sourceNote": "<div><br></div>",
+      "options": [],
+      "defaultValue": "",
+      "autoSource": "pickup_date",
+      "sourceUrl": "",
+      "category": "鑑賞期"
+    },
+    {
+      "type": "text",
+      "autoDays": 15,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "q": "GLOBAL",
+      "branch": "鑑賞期",
+      "code": "return_deadline",
+      "label": "最後一天（鑑賞期）",
+      "hint": "由取貨日期自動計算",
+      "sourceNote": "<div><br></div>",
+      "options": [],
+      "defaultValue": "",
+      "autoSource": "pickup_date",
+      "sourceUrl": "",
+      "category": "鑑賞期"
     }
   ],
   "templates": [
@@ -3837,7 +7928,7 @@ window.SOP_DATA = {
     {
       "q": "Q006",
       "branch": "查詢買家目前可用優惠券",
-      "text": "查詢結果：\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
+      "text": "查詢方式：\n▪ 到 CS Portal 搜尋 Buyer Username：{{V018}}\n▪ 進入「詳細資訊（買家）」→「優惠代碼錢包」。\n\n查詢結果：\n▪ Buyer Username：{{V018}}\n▪ 買家目前可使用的優惠代碼：\n{{available_voucher_codes}}"
     },
     {
       "q": "Q007",
@@ -3857,17 +7948,17 @@ window.SOP_DATA = {
     {
       "q": "Q008",
       "branch": "有顯示加價購標籤",
-      "text": "確認結果：\n▪ 商品頁有顯示「加價購」標籤。\n▪ 此商品可以搭配其他商品進行優惠加購。\n\n下一步：\n1. 將商品加入購物車。\n2. 查看實際可加購商品與優惠價格。\n3. 以結帳頁面顯示為主。"
+      "text": "確認結果：\n▪ 商品頁有顯示「加價購／優惠加購」標籤。\n▪ 此商品可以搭配其他商品進行優惠加購，價格通常會較優惠。\n\n下一步：\n1. 將商品加入購物車。\n2. 查看實際可加購商品與優惠價格。\n3. 活動內容、可搭配商品及價格皆以結帳頁面顯示為主。"
     },
     {
       "q": "Q008",
       "branch": "沒有顯示加價購標籤",
-      "text": "確認結果：\n▪ 商品頁目前沒有顯示「加價購」標籤。\n▪ 目前無法確認有加價購活動。\n▪ 活動內容可能變動，請以商品頁及結帳頁實際顯示為主。"
+      "text": "確認結果：\n▪ 商品頁目前沒有顯示「加價購／優惠加購」標籤。\n▪ 目前無法確認有加價購活動。\n▪ 活動內容可能變動，請以商品頁、購物車及結帳頁實際顯示為主。"
     },
     {
       "q": "Q008",
       "branch": "加價購商品要搭配哪件主商品",
-      "text": "查詢結果：\n▪ Product ID：{{product_id}}\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}"
+      "text": "確認方式：\n1. 複製加價購商品的 Product ID：{{product_id}}。\n2. 到 [DB] Add-on / Gift / Bundle 表單的 [Add-on_Sub] 分頁，搜尋此 PID 對應的 add_on_deal_id。\n3. 複製 add_on_deal_id：{{addon_campaign_id}}。\n4. 到 [Add-on_Main] 分頁搜尋同一組 add_on_deal_id，確認該檔期可搭配的主商品清單。\n\n查詢結果：\n▪ 加價購商品 Product ID：{{product_id}}\n▪ 活動檔期／add_on_deal_id：{{addon_campaign_id}}\n▪ 可搭配的主商品：{{addon_main_product}}\n\n提醒：若表單查無資料，先確認 PID 是否複製正確、是否有選到正確分頁與檔期，再回覆以表單目前查詢結果為主。"
     },
     {
       "q": "Q009",
@@ -3877,12 +7968,12 @@ window.SOP_DATA = {
     {
       "q": "Q009",
       "branch": "購物車有自動加入贈品",
-      "text": "確認結果：\n▪ 商品卡有顯示「滿額贈」標籤。\n▪ 系統已在購物車自動加入贈品，不需要另外選取。\n▪ 滿額贈商品：{{gift_item}}\n▪ 購物車顯示的剩餘數量：{{gift_remaining_quantity}}\n▪ 最終以結帳頁面實際顯示為主。"
+      "text": "確認結果：\n▪ 商品卡有顯示「滿額贈」標籤。\n▪ 商品頁目前不會另外顯示滿額贈區塊。\n▪ 符合活動條件時，系統會在購物車自動加入贈品，不需要另外選取。\n▪ 滿額贈商品：{{gift_item}}\n▪ 購物車顯示的剩餘數量：{{gift_remaining_quantity}}\n▪ 最終以購物車及結帳頁面實際顯示為主。"
     },
     {
       "q": "Q009",
       "branch": "購物車沒有自動加入贈品",
-      "text": "確認結果：\n▪ 商品卡有顯示「滿額贈」標籤。\n▪ 購物車沒有自動出現贈品。\n\n確認步驟：\n1. 檢查購物車是否達到活動條件。\n2. 若符合條件仍未顯示，贈品可能已經贈完。\n\n注意：\n▪ 滿額贈若已贈完，購物車就不會顯示。"
+      "text": "確認結果：\n▪ 商品卡有顯示「滿額贈」標籤。\n▪ 商品頁目前不會另外顯示滿額贈區塊。\n▪ 購物車沒有自動出現贈品。\n\n確認步驟：\n1. 檢查購物車是否達到活動條件。\n2. 若符合條件仍未顯示，贈品可能已經贈完。\n\n注意：\n▪ 滿額贈若已贈完，購物車就不會顯示。\n▪ 最終以購物車及結帳頁面實際顯示為主。"
     },
     {
       "q": "Q006",
@@ -3913,6 +8004,206 @@ window.SOP_DATA = {
       "q": "Q003",
       "branch": "補發電子發票通知信",
       "text": "可透過以下兩種方式申請補發：\n\n方式一｜自助服務中心申請\n前往「發票開立通知補發申請表單」（連結：https://reurl.cc/DYdVlR）提出申請。\n若填寫資料正確，通知信將於 3～5 個工作天（不含假日）補發至客人填寫的電子信箱。客人可透過「查詢進度」（連結：https://reurl.cc/gN0qeX）查看申請狀態。\n\n方式二｜關貿網路電子發票平台申請\n請先查詢「會員編號」及「歸戶驗證碼」：\n▪ App 版操作：  \n進入【我的】➜ 點選右上角【⚙️】進入帳號設定 ➜ 點選【我的電子發票】即可查看。\n▪ 網頁版操作：  \n進入【賣家中心】➜ 點選左側【賣場設定】➜【帳號與隱私設定】➜ 於【我的電子發票】旁點選【查看】即可。\n取得資料後，請依下列步驟申請：\n▪ 前往「關貿網路電子發票平台」（連結：https://reurl.cc/0k2NaM） \n▪ 填寫會員及發票相關資訊  \n▪ 選擇欲查詢的發票日期  \n▪ 點選【補發開立通知】  \n▪ 點選【變更】並輸入欲收取通知信的電子信箱  \n▪ 點選【寄送】，即可完成申請  \n通知信將於 1～2 個工作天（不含假日）補發至客人填寫的電子信箱。\n\n申請補發時填寫的電子信箱，可與帳號原先設定的收信信箱不同。"
+    },
+    {
+      "q": "Q010",
+      "branch": "查商品效期",
+      "text": "確認方式：\n1. 請先取得商品頁 Product ID：{{product_id}}。\n2. 到商品效期 Inventory Expiration Date 小工具輸入 PID 查詢。\n3. 若客人有指定規格，對照指定規格的效期；若未指定規格，可整理小工具顯示的各規格效期。\n\n回覆重點：\n▪ 商品：{{V008}}\n▪ 規格：{{V010}}\n▪ 小工具目前查詢到的效期：{{expiration_result}}\n▪ 商品效期會依實際出貨批次變動，仍以倉庫實際出貨商品標示為主。"
+    },
+    {
+      "q": "Q010",
+      "branch": "查商品進貨日",
+      "text": "確認方式：\n1. 請先取得商品頁 Product ID：{{product_id}}。\n2. 到商品進貨日小工具輸入 PID 查詢。\n3. 依小工具目前顯示整理給客人，避免自行承諾一定補貨時間。\n\n回覆重點：\n▪ 商品：{{V008}}\n▪ 小工具目前顯示的進貨／補貨資訊：{{inbound_result}}\n▪ 進貨時間可能受供應與倉庫作業影響，請以商品頁後續實際上架狀態為主。"
+    },
+    {
+      "q": "Q011",
+      "branch": "尚未進入 WMS",
+      "text": "確認結果：\n▪ 訂單：{{order_id}}\n▪ 目前查詢結果：尚未進入 WMS，或 Fulfilment Type 顯示空白。\n▪ 可先跟客人說明訂單仍在出貨處理流程中，會依訂單狀態陸續更新。\n\n內部提醒：若已超過一般備貨或出貨時效，需依出貨異常流程追蹤或轉詢 OPS。"
+    },
+    {
+      "q": "Q011",
+      "branch": "WMS 已出貨但延遲",
+      "text": "確認結果：\n▪ 訂單：{{order_id}}\n▪ WMS 狀態：{{wms_status}}\n▪ 若已 Outbound 超過 2 天仍未更新，需依包裹延遲未配達流程登記或轉詢。\n\n可回覆客人：\n目前已協助確認包裹出貨狀態，因物流更新可能需要作業時間，我們會依流程追蹤配送進度，請您再留意蝦皮通知與物流狀態更新。"
+    },
+    {
+      "q": "Q011",
+      "branch": "OMS／WMS 顯示 OOS 缺貨",
+      "text": "確認結果：\n▪ 訂單：{{order_id}}\n▪ 缺貨商品：{{oos_item}}\n▪ OMS Parcel Status 若顯示 ForderSourceFailed，即可判斷為 OOS 訂單。\n▪ OOS 代表揀貨過程發現庫存不足，訂單後續會由 OPS 取消，商品不會出貨。\n\n可回覆客人：\n很抱歉，經確認此訂單因商品庫存不足無法安排出貨，後續系統會依流程取消並退款，退款時間會依原付款方式處理。"
+    },
+    {
+      "q": "Q012",
+      "branch": "包裹延遲未配達",
+      "text": "處理方式：\n▪ 訂單：{{order_id}}\n▪ 貨態：{{logistics_status}}\n▪ 若 WMS Outbound 超過 2 天且配送未更新，依包裹延遲未配達流程登記表單。\n\n可先通知客人：\n初步確認包裹配送狀態異常，已轉達相關單位協助確認。若包裹尋獲會再更新訂單狀態；若超過尋找期仍未找到，系統會依流程更新後續退款或訂單狀態。"
+    },
+    {
+      "q": "Q012",
+      "branch": "配達門市超過 10 天未取消",
+      "text": "處理方式：\n▪ 訂單：{{order_id}}\n▪ 門市配達日：{{store_arrival_date}}\n▪ 若配達門市超過 10 天仍未取消，依流程填寫表單，請職代協助回壓 damaged。\n\n可通知客人：\n這邊確認包裹已超過門市滯留期，可能因系統串接異常未正常取消，已轉達相關單位協助調整，請您後續留意蝦皮通知。"
+    },
+    {
+      "q": "Q012",
+      "branch": "貨態已配達但買家未收到",
+      "text": "處理方式：\n▪ 訂單：{{order_id}}\n▪ 目前貨態：{{logistics_status}}\n▪ 先確認買家是否已回門市取貨；若未取貨，轉 SPX 調查。\n▪ 若門市找到包裹，引導用戶回店取貨；若確認遺失，依流程處理後續退款或訂單狀態。\n\n回覆客人時避免直接承諾結果，以調查結果與系統通知為主。"
+    },
+    {
+      "q": "Q012",
+      "branch": "貨態配送中但買家已取件",
+      "text": "處理方式：\n▪ 訂單：{{order_id}}\n▪ 付款方式：{{payment_method}}\n▪ 先提醒訂單狀態可能影響取件支付金額，並填寫表單請相關單位確認。\n▪ 若確認收款金額不正確，依流程引導買家補匯款並追蹤 2 天；若拒付或客訴，使用安撫說明並依流程回壓。\n\n補充：COD 與非 COD 處理路徑不同，請以表單與職代判斷為主。"
+    },
+    {
+      "q": "Q013",
+      "branch": "低單 200 元以下且有照片",
+      "text": "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n判斷結果：\n▪ 商品單價：{{item_amount}}\n▪ 問題類型：{{issue_type}}\n▪ 買家已提供照片：{{photo_status}}\n\n處理方式：\n若商品單價在 NT$200 以下，且屬毀損、瑕疵、錯品等商品問題並有照片，可直接引導買家申請退貨退款，不需再要求其他證據，由 Shop CS 吸收處理。\n\n提醒：仍需確認退貨原因、照片與 15 天鑑賞期內三項條件。"
+    },
+    {
+      "q": "Q013",
+      "branch": "SCS 貨損有照片",
+      "text": "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n處理方式：\n▪ 問題類型：{{issue_type}}\n▪ 照片確認：{{photo_status}}\n▪ 若屬 SCS 貨損且有照片，依 SCS 貨損流程引導買家申退，並開單記錄貨損照片。\n▪ 一般情境不需轉 SPX／WH；但管制區、高單或特殊商品需依原流程反應。\n\n回覆客人：\n很抱歉商品狀況造成您的困擾，這邊會依退貨退款流程協助您處理，請您於訂單內提出退貨退款申請並上傳商品異常照片。"
+    },
+    {
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "text": "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n處理方式：\n▪ 商品／館別：{{V008}}\n▪ 特殊條件：{{special_note}}\n▪ 若屬管制區、高單、特殊 3C、餐券等情境，不直接套用一般貨損優化流程，需依原流程轉 SPX／WH 或 KAM／廠商確認。\n\n內部提醒：先完成照片與訂單資訊蒐集，再依對應表單或工單流程追蹤。"
+    },
+    {
+      "q": "Q014",
+      "branch": "返還原折扣碼",
+      "text": "申請前檢查：\n▪ Order SN：{{order_id}}\n▪ User ID：{{user_id}}\n▪ 原 Voucher Code：{{voucher_code}}\n▪ 已確認原折扣碼失效：{{voucher_invalid}}\n▪ 已確認賣場無相同或更優優惠：{{better_voucher_check}}\n\n處理方式：\n到 Promotion Admin／補碼小工具依原碼補碼欄位填寫，並在工單中記錄申請原因與自我檢查結果。\n\n提醒客人：補發折扣碼是否成立與使用條件，仍以審核及實際發放結果為主。"
+    },
+    {
+      "q": "Q014",
+      "branch": "返還損失折扣／價差",
+      "text": "判斷方式：\n▪ Order SN：{{order_id}}\n▪ 折扣損失金額：{{discount_amount}}\n▪ 商品價差：{{price_difference}}\n▪ 最終補碼規格：滿 {{min_spend}} 折 {{voucher_amount}}\n\n處理原則：\n折扣金額加商品價差後計算補碼規格；若商品本身價差超過 500 元，需轉交職代評估。若是純補損失折扣，可依規範確認是否可擴至全店使用。\n\n提醒：複數折扣碼無法疊加使用，需明確告知買家。"
+    },
+    {
+      "q": "Q014",
+      "branch": "小額折扣碼",
+      "text": "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n適用情境：\n▪ 問題類型：{{issue_type}}\n▪ 訂單／商品：{{order_id}}\n▪ 確認照片或佐證：{{proof_status}}\n\n處理方式：\n若屬破包、漏液、過期、長蟲、缺件、商品出錯、重複出貨等小額客維情境，且已確認訂單狀況屬實，可至對應交接表領取折扣碼提供給客人。\n\n注意：折扣碼提供後，訂單問題仍需依流程處理，該新建工單、填出貨相關問題表或 KAM 表的情境仍要完成。"
+    },
+    {
+      "q": "Q015",
+      "branch": "60 元以下自動退款",
+      "text": "確認結果：\n▪ 退貨原因：{{return_reason}}\n▪ 商品金額：{{refund_amount}}\n▪ 若符合 60 元以下自動退款規則，系統會依流程處理退款。\n\n可回覆客人：\n請您依訂單內的退貨退款流程提出申請並填寫原因，系統會依申請內容與規則進行審核，退款進度可於退貨退款詳情查看。"
+    },
+    {
+      "q": "Q015",
+      "branch": "61-1380 元快速退款",
+      "text": "確認結果：\n▪ 退貨原因：{{return_reason}}\n▪ 商品金額：{{refund_amount}}\n▪ 若符合快速退款門檻，系統會依流程審核並處理退款。\n\n提醒：若案件需補充圖片、退貨物流或蝦皮審核，仍以退貨退款詳情頁顯示為主。"
+    },
+    {
+      "q": "Q015",
+      "branch": "包裹未送達進蝦皮審核",
+      "text": "處理方式：\n▪ 訂單：{{order_id}}\n▪ 貨態：{{logistics_status}}\n▪ 若買家以包裹未送達提出退貨退款，通常會進蝦皮審核流程。\n\n可提醒客人：\n請您於退貨退款申請中完整描述未收到包裹的狀況，後續審核進度與結果會顯示在退貨退款詳情頁。"
+    },
+    {
+      "q": "Q015",
+      "branch": "缺件僅退款進蝦皮審核",
+      "text": "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n處理方式：\n▪ 商品／缺件內容：{{missing_item}}\n▪ 證明資料：{{proof_status}}\n▪ 缺件僅退款通常需依申請內容與圖片進入審核。\n\n提醒客人：\n請於退貨退款申請中上傳收到商品與缺件狀況的照片，並清楚描述缺少的品項與數量，以利審核。"
+    },
+    {
+      "q": "Q015",
+      "branch": "其他原因一般退貨",
+      "text": "▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n處理方式：\n▪ 退貨原因：{{return_reason}}\n▪ 退貨物流：{{return_channel}}\n▪ 一般退貨需依系統指示選擇退貨方式並寄回商品，退款會依賣家驗收與平台流程處理。\n\n可回覆客人：\n請您在訂單的退貨退款詳情中依照系統指示完成退貨流程，包含選擇退貨物流與寄回商品；後續進度以退貨退款詳情頁顯示為主。"
+    },
+    {
+      "q": "Q016",
+      "branch": "鑑賞期內優先引導買家自行 AOC",
+      "text": "判斷結果：\n▪ 訂單：{{order_id}}\n▪ 完成／取貨日期：{{complete_date}}\n▪ 目前仍在 15 天鑑賞期內，優先引導買家自行於訂單內提出 Buyer AOC。\n\n提醒：若買家點了延長撥款，鑑賞期判斷可延長為 18 天，仍需依系統顯示確認。"
+    },
+    {
+      "q": "Q016",
+      "branch": "可發起 Agent AOC",
+      "text": "處理方式：\n▪ Return ID：{{return_id}}\n▪ 退貨原因：{{return_reason}}\n▪ 判別小工具顯示可發起 AOC RR 時，可依 CS Portal 的 TW商城退貨/退款按鈕協助買家提出 RR。\n\n備註要求：\n退貨原因需清楚寫明進線對象與買家描述，例如：[買家]通知，收到商品缺少口罩一盒。備註越明確越有利後續審核。"
+    },
+    {
+      "q": "Q016",
+      "branch": "不可發起 AOC RR",
+      "text": "判斷結果：\n▪ Return ID：{{return_id}}\n▪ 小工具結果：{{tool_result}}\n▪ 若顯示已退款或紅字不可發起 AOC RR，代表此案件不可由專員發起 AOC RR。\n\n處理方式：\n依案件原因向買家說明，必要時改走工單／KAM／OPS 個案處理。"
+    },
+    {
+      "q": "Q016",
+      "branch": "專員已代發 RR",
+      "text": "可通知買家：\n您好，久等了，因訂單已經完成，這邊已手動替您在系統上提出退貨申請，預計 3 個工作天內會完成審核。若審核通過後，您會在蝦皮通知中收到通知訊息，屆時請依通知內容於時限內點進退貨詳情內選擇退貨的運送方式，謝謝您。\n\n內部記錄：\n▪ Related Return/Refund ID：{{return_id}}\n▪ 退貨原因：{{return_reason}}"
+    },
+    {
+      "q": "Q017",
+      "branch": "訂單可申請取消配送中",
+      "text": "判斷結果：\n▪ 訂單：{{order_id}}\n▪ 物流：{{logistics_channel}}\n▪ 訂單頁若在賣家寄件後到抵達門市前顯示「取消配送中訂單」按鈕，買家可自行提出申請。\n\n限制提醒：僅適用部分蝦皮店到店訂單，排除 NDD、SCS、店到家宅配、其他物流、預購品與特殊規範商品。"
+    },
+    {
+      "q": "Q017",
+      "branch": "申請處理中",
+      "text": "確認結果：\n▪ 訂單：{{order_id}}\n▪ RR 狀態：{{rr_status}}\n▪ 申請後會被視為 RR，買家可在訂單頁或退貨退款標籤頁看到申請處理中。\n▪ 提出後 13 天內若 SPX 攔截成功，多數會在 2-3 天內成立，但仍以系統結果為主。"
+    },
+    {
+      "q": "Q017",
+      "branch": "系統同意取消",
+      "text": "確認結果：\n▪ RR 狀態：{{rr_status}}\n▪ Remark：{{remark}}\n▪ 若系統同意取消，通常會從蝦皮審核轉為退款處理中，最後退款完成。\n\n可回覆客人：\n您的取消配送中訂單申請已依系統流程處理，後續退款進度請以退貨退款詳情與蝦皮通知為主。"
+    },
+    {
+      "q": "Q017",
+      "branch": "系統拒絕或買家撤回",
+      "text": "確認結果：\n▪ RR 狀態：{{rr_status}}\n▪ Remark：{{remark}}\n▪ 若超過監控時間、包裹已配達或買家自行撤回，系統會取消此 RR。\n\n回覆重點：\n請依訂單目前狀態向買家說明是否仍可取件、等待配送，或後續改依一般退貨退款流程處理。"
+    },
+    {
+      "q": "Q018",
+      "branch": "單純商品資訊不用開單",
+      "text": "判斷結果：\n▪ 問題：{{issue_summary}}\n▪ 若只是保固條件、配件使用方式、商品使用或規格、品質相關但僅確認資訊，且沒有退貨意圖，回覆資訊後即可結案，不需開單。\n\n提醒：若後續買家仍有爭議、要求佐證、提到退換貨或需要技術檢測，就要重新判斷是否需開單／KAM 表。"
+    },
+    {
+      "q": "Q018",
+      "branch": "需開單＋填 KAM 表",
+      "text": "判斷結果：\n▪ 問題：{{issue_summary}}\n▪ 涉及退換貨意圖、商品瑕疵爭議、需要技術檢測、保固申請／驗證，或資訊不齊需後續追蹤時，需新建工單並填寫 KAM 表。\n\n未結案備註可寫：{{pending_note}}\n\n提醒：需等 KAM 二次回覆、買家回覆或 OPS 協助時，務必留下可交接的追蹤紀錄。"
+    },
+    {
+      "q": "Q018",
+      "branch": "廠直問題需轉廠商",
+      "text": "判斷結果：\n▪ 訂單／商品：{{order_sn}}\n▪ 問題：{{issue_summary}}\n▪ 廠直訂單若無法一線解決或需廠商確認，依物流、商品、訂單類型填表；須開單類型需同時建立工單追蹤。\n\n提醒：可不開單問題若第一次轉詢並回覆買家後，買家再次進線反映，需協助開單追蹤。"
+    },
+    {
+      "q": "Q018",
+      "branch": "平日／假日追蹤話術",
+      "text": "處理方式：\n▪ 工單：{{ticket_id}}\n▪ 追蹤情境：{{follow_type}}\n▪ 若假日前或假日中接獲案件，需先告知工作日會盡快追蹤；平日追蹤約每 2 日安撫一次並積極追蹤。\n\n可用提醒：\n已為您轉交窗口確認並建立案件追蹤，待 1-2 個工作天內窗口回覆後，小幫手會再主動聊聊通知您，請您再耐心等候。"
+    },
+    {
+      "q": "Q019",
+      "branch": "轉詢 SLA 超過 48 小時",
+      "text": "處理方式：\n▪ 案件：{{ticket_id}}\n▪ 問題摘要：{{case_summary}}\n▪ 若問題需轉詢但超過 48 小時仍未收到回覆，可尋求 OPS／BAU 協助確認處理狀況或催促窗口。\n\n通知時需清楚標記訂單、目前卡點、已做過的處理與希望二線協助的事項。"
+    },
+    {
+      "q": "Q019",
+      "branch": "已說明 3 次仍重複詢問",
+      "text": "處理方式：\n▪ 已回覆重點：{{reply_summary}}\n▪ 若已明確說明達 3 次但買家仍持續詢問，可請 OPS／BAU 協助判斷訴求合理性、是否需額外處理方向或明確回覆時間。\n\n提醒：二線協助後，需與買家給予明確回覆時間；若時間到仍無法答覆，也要主動聯繫說明。"
+    },
+    {
+      "q": "Q019",
+      "branch": "買家有情緒／不雅／性騷擾",
+      "text": "處理方式：\n▪ 風險類型：{{risk_type}}\n▪ 對話摘要：{{case_summary}}\n▪ 若買家已有情緒、關鍵字、不雅字眼或性騷擾，需依流程尋求 QA／OPS／BAU 協助話術或評估是否終止服務。\n\n提醒：通知二線時要附上具體對話脈絡與需要協助的方向，不只丟單號。"
+    },
+    {
+      "q": "Q019",
+      "branch": "無法判斷需協助方向",
+      "text": "處理方式：\n▪ 問題摘要：{{case_summary}}\n▪ 若一線無法判斷問題、訴求是否能再轉詢，或需要擬定更清楚的回覆方向，可標記 QA／OPS／BAU 協助確認。\n\n通知格式建議：\n訂單／案件、買家訴求、已查詢資料、目前判斷卡點、希望協助確認的問題。"
+    },
+    {
+      "q": "Q020",
+      "branch": "物流渠道適用延遲補償",
+      "text": "確認方式：\n▪ 訂單：{{order_id}}\n▪ 物流渠道：{{logistics_channel}}\n▪ 延遲補償適用於指定配送方式，例如蝦皮店到店、蝦皮店到店隔日到貨、店到家宅配、店取最快當日到、宅配最快隔日到等。\n\n下一步：\n確認付款時間、預計配達時間與實際到貨時間，再判斷是否超過補償門檻。"
+    },
+    {
+      "q": "Q020",
+      "branch": "黑名單或不符合補償",
+      "text": "判斷結果：\n▪ Buyer ID：{{buyer_id}}\n▪ 查詢表結果：{{blacklist_result}}\n▪ 若買家為黑名單或訂單不符合補償條件，系統可能不會派發延遲補償。\n\n回覆重點：\n依訂單付款時間、配送方式與實際到貨時間判斷後，目前未符合延遲補償派發條件；如買家仍有疑問，可請買家提供單號再逐筆確認。"
+    },
+    {
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "text": "判斷結果：\n▪ 訂單：{{order_id}}\n▪ 付款時間：{{paid_time}}\n▪ 實際到貨時間：{{delivered_time}}\n▪ 查詢後若確認符合補償資格但未派發，可依延遲補償補發流程處理。\n\n可回覆客人：\n這邊已協助確認訂單配送時間，若符合補償資格但尚未收到補償，我們會依流程協助確認補發，後續請您留意蝦皮通知或優惠券錢包。"
+    },
+    {
+      "q": "GLOBAL",
+      "branch": "鑑賞期",
+      "text": "要跟客人說蝦皮有提供優於消保法（七天鑑賞期）的「15天鑑賞期」，是從系統判定的取貨日隔天開始算。\n取貨日為 {{pickup_date}}，那鑑賞期就是從 {{return_start}} 開始算 15 天。\n要記得在 {{return_deadline}} 前提出退貨申請。"
     }
   ],
   "actions": [
@@ -4114,9 +8405,79 @@ window.SOP_DATA = {
         }
       ],
       "url": "https://help.shopee.tw/portal/4/article/79943"
+    },
+    {
+      "q": "Q010",
+      "branch": "查商品效期",
+      "action": "查商品效期小工具",
+      "needed": true,
+      "note": "Inventory Expiration Date"
+    },
+    {
+      "q": "Q010",
+      "branch": "查商品進貨日",
+      "action": "查商品進貨日小工具",
+      "needed": true,
+      "note": "商品進貨日"
+    },
+    {
+      "q": "Q011",
+      "branch": "尚未進入 WMS",
+      "action": "查 CS Portal／OMS／WMS",
+      "needed": true,
+      "note": "確認是否已入 WMS"
+    },
+    {
+      "q": "Q011",
+      "branch": "WMS 已出貨但延遲",
+      "action": "登記出貨異常表單",
+      "needed": true,
+      "note": "Outbound > 2D 時使用"
+    },
+    {
+      "q": "Q011",
+      "branch": "OMS／WMS 顯示 OOS 缺貨",
+      "action": "通報／轉詢 OPS",
+      "needed": true,
+      "note": "OOS 或非既有狀況"
+    },
+    {
+      "q": "Q012",
+      "branch": "包裹延遲未配達",
+      "action": "登記包裹貨態異常表單",
+      "needed": true,
+      "note": "Outbound > 2D"
+    },
+    {
+      "q": "Q013",
+      "branch": "管制區／高單／特殊商品",
+      "action": "依原流程轉詢",
+      "needed": true,
+      "note": "SPX／WH／KAM／廠商"
+    },
+    {
+      "q": "Q018",
+      "branch": "需開單＋填 KAM 表",
+      "action": "新建工單＋填 KAM 表",
+      "needed": true,
+      "note": "需後續追蹤"
+    },
+    {
+      "q": "Q020",
+      "branch": "黑名單或不符合補償",
+      "action": "查延遲補償黑名單／查詢表",
+      "needed": true,
+      "note": "以 Buyer ID 或 OSN 查詢"
+    },
+    {
+      "q": "Q020",
+      "branch": "符合補發延遲補償",
+      "action": "依延遲補償補發流程處理",
+      "needed": true,
+      "note": "符合但未派發時"
     }
   ],
-  "updatedAt": "2026-08-01T08:39:20.235Z",
+  "updatedAt": "2026-08-02T04:42:59.219Z",
   "fields": [
     {
       "code": "invoice_period_deadline",
@@ -5730,6 +10091,945 @@ window.SOP_DATA = {
       "sourceUrl": "https://dms.cs.shopee.tw/portal/info/search",
       "category": "優惠券",
       "fillRules": []
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "商品效期 Inventory Expiration Date",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Expiration-Date?authuser=3"
+        }
+      ],
+      "category": "售前商品工具",
+      "code": "expiration_result",
+      "label": "小工具查詢效期",
+      "hint": "貼上各規格或指定規格效期",
+      "sourceUrl": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Expiration-Date?authuser=3",
+      "sourceNote": "<div><b>商品效期查詢</b></div><ol><li>到 SCS CS Tool 的 Inventory Expiration Date。</li><li>以 Product ID 查詢；若客人提供規格，需確認對應 variation / spec。</li><li>回覆前提醒商品實際效期仍以包裝標示為準。</li></ol>"
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "商品進貨日 Inventory Inbound Date",
+          "url": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Inbound-Date?authuser=3"
+        }
+      ],
+      "category": "售前商品工具",
+      "code": "inbound_result",
+      "label": "小工具查詢進貨日",
+      "hint": "貼上小工具顯示結果",
+      "sourceUrl": "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Inbound-Date?authuser=3",
+      "sourceNote": "<div><b>商品進貨日查詢</b></div><ol><li>到 SCS CS Tool 的 Inventory Inbound Date。</li><li>以 Product ID 查詢商品進貨日；若有規格差異，需確認對應品項。</li><li>把查到的進貨日轉成客人看得懂的說法，不直接貼內部欄位名稱。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "backend_note",
+      "label": "後台查詢結果",
+      "hint": "貼上 CS Portal / OMS / WMS 重點"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "wms_status",
+      "label": "WMS 狀態",
+      "hint": "Created / Information Received / Outbound 等",
+      "options": [
+        "Created",
+        "Information Received",
+        "Outbound",
+        "其他／需補充"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "delay_days",
+      "label": "延遲天數",
+      "hint": "例如：Outbound > 2D"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "oos_item",
+      "label": "缺貨商品",
+      "hint": "可填商品名稱或品項"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "logistics_status",
+      "label": "物流貨態",
+      "hint": "貼上目前貨態"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "follow_note",
+      "label": "追蹤紀錄",
+      "hint": "表單或轉詢紀錄"
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "store_arrival_date",
+      "label": "門市配達日",
+      "hint": "YYYY/MM/DD"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "buyer_confirm",
+      "label": "買家確認內容",
+      "hint": "是否回門市、是否拿到包裹"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "payment_method",
+      "label": "付款方式",
+      "hint": "COD / 非 COD",
+      "options": [
+        "COD",
+        "非 COD",
+        "待確認"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "amount_note",
+      "label": "收款金額確認",
+      "hint": "正確／不正確／待確認",
+      "options": [
+        "收款金額正確",
+        "收款金額不正確",
+        "待確認"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後商品問題",
+      "code": "item_amount",
+      "label": "商品單價",
+      "hint": "NT$"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後商品問題",
+      "code": "issue_type",
+      "label": "問題類型",
+      "hint": "破包／漏液／過期／缺件／錯品等",
+      "options": [
+        "破包",
+        "破碎／破裂",
+        "漏液",
+        "過期",
+        "長蟲",
+        "缺件",
+        "錯品",
+        "商品瑕疵",
+        "其他"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後商品問題",
+      "code": "photo_status",
+      "label": "照片狀態",
+      "hint": "已提供／未提供",
+      "options": [
+        "已提供照片",
+        "未提供照片",
+        "照片不足需補充"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後商品問題",
+      "code": "special_note",
+      "label": "特殊條件",
+      "hint": "管制區／高單／特殊商品，無則填無"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後商品問題",
+      "code": "case_note",
+      "label": "案件備註",
+      "hint": "轉詢或表單紀錄"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後補償",
+      "code": "user_id",
+      "label": "User ID",
+      "hint": "買家 UID"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "voucher_code",
+      "label": "原 Voucher Code",
+      "hint": "原折扣碼",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082",
+      "sourceNote": "<div><b>補償折扣碼 / 原折扣碼確認</b></div><ol><li>Shopee CS Tool 補碼小工具是瀏覽器擴充功能，只能在 CP 或 DSS 上使用。</li><li>先確認原折扣碼是否失效、是否沒有同等或更好的券可以提供。</li><li>依工具產出的內容貼到個案補碼追蹤表，再帶回可回覆客人的折扣碼資訊。</li></ol>"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "voucher_invalid",
+      "label": "原碼是否失效",
+      "hint": "是／否",
+      "options": [
+        "已失效",
+        "未失效",
+        "查無資料"
+      ],
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "better_voucher_check",
+      "label": "是否無更優優惠",
+      "hint": "是／否",
+      "options": [
+        "已確認無更優優惠",
+        "已有相同或更優優惠",
+        "尚未確認"
+      ],
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "discount_amount",
+      "label": "折扣損失金額",
+      "hint": "蝦皮＋賣家折扣",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "price_difference",
+      "label": "商品價差",
+      "hint": "現價 - Subtotal",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "min_spend",
+      "label": "最低消費",
+      "hint": "補碼低消",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "voucher_amount",
+      "label": "折扣金額",
+      "hint": "補碼折扣額",
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082",
+      "sourceNote": "<div><b>返還損失折扣 / 價差</b></div><ol><li>在 CP 或 DSS 使用 Shopee CS Tool 補碼小工具。</li><li>將工具結果貼到個案補碼追蹤表指定欄位，依表內結果確認補償金額與門檻。</li><li>金額欄位用單行文字填寫，保留幣別或必要說明。</li></ol>"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "Order Admin Portal",
+          "url": "https://order-admin.shopee.tw/"
+        },
+        {
+          "title": "Promotion Admin",
+          "url": "https://promotion-admin.shopee.tw/"
+        },
+        {
+          "title": "個案補碼追蹤表",
+          "url": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+        }
+      ],
+      "category": "售後補償",
+      "code": "proof_status",
+      "label": "佐證狀態",
+      "hint": "照片／表單／OPS通知",
+      "options": [
+        "照片已確認",
+        "表單／OPS 通知",
+        "待補佐證"
+      ],
+      "sourceUrl": "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082",
+      "sourceNote": "<div><b>小額折扣碼</b></div><ol><li>先確認客人佐證是否足夠，不足時補請截圖或訂單資訊。</li><li>需要補碼時走共用補碼流程與個案補碼追蹤表；小額券不代表原訂單問題已處理完。</li><li>若仍涉及物流、商品或退款問題，另外接回對應共用分支處理。</li></ol>"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "return_reason",
+      "label": "退貨原因",
+      "hint": "買家選擇／描述",
+      "options": [
+        "包裹未收到",
+        "商品缺件",
+        "不需要了／已購買類似商品",
+        "實品與描述／圖片有落差",
+        "收到不對的商品",
+        "商品功能有問題",
+        "商品外表瑕疵／毀損",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "refund_amount",
+      "label": "退款金額",
+      "hint": "NT$"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "missing_item",
+      "label": "缺件內容",
+      "hint": "缺少品項／數量"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "return_channel",
+      "label": "退貨物流",
+      "hint": "7-11／SPX／黑貓／賣家自行安排等",
+      "options": [
+        "7-11",
+        "SPX",
+        "黑貓／蝦宅",
+        "賣家自行安排",
+        "待系統顯示"
+      ]
+    },
+    {
+      "type": "date",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "complete_date",
+      "label": "完成／取貨日期",
+      "hint": "YYYY/MM/DD"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "return_id",
+      "label": "Return ID",
+      "hint": "CS Portal Return ID"
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "tool_result",
+      "label": "小工具結果",
+      "hint": "已退款／不可發起原因",
+      "options": [
+        "已退款",
+        "紅字不可發起 AOC RR",
+        "查無發起按鈕",
+        "其他"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "logistics_channel",
+      "label": "物流渠道",
+      "hint": "SPX／店到店等",
+      "options": [
+        "蝦皮店到店",
+        "蝦皮店到店 - 隔日到貨",
+        "SCS",
+        "店到家宅配",
+        "其他物流"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "button_status",
+      "label": "按鈕狀態",
+      "hint": "有／沒有",
+      "options": [
+        "有取消配送中訂單按鈕",
+        "沒有按鈕",
+        "待確認"
+      ]
+    },
+    {
+      "type": "select",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "rr_status",
+      "label": "RR 狀態",
+      "hint": "例如 RT1:Requested",
+      "options": [
+        "RT1:Requested",
+        "RT2:Accept",
+        "RT5:Refund Paid",
+        "RT3:Cancel",
+        "其他"
+      ]
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "remark",
+      "label": "Remark",
+      "hint": "後台顯示 remark"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後退貨退款",
+      "code": "next_step",
+      "label": "後續建議",
+      "hint": "取件／等配送／一般 RR"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "issue_summary",
+      "label": "客人問題",
+      "hint": "簡述問題"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "pending_note",
+      "label": "未結案備註",
+      "hint": "待追蹤內容"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "vendor_reply",
+      "label": "廠商回覆",
+      "hint": "尚未回覆可填待回覆"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "follow_type",
+      "label": "追蹤情境",
+      "hint": "平日／假日／連假後／超過2工作天"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "case_summary",
+      "label": "案件摘要",
+      "hint": "卡點與已處理事項"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "requested_team",
+      "label": "欲尋求協助對象",
+      "hint": "OPS／BAU"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "reply_summary",
+      "label": "已回覆內容",
+      "hint": "整理已說明的3次重點"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "日常作業",
+      "code": "risk_type",
+      "label": "風險類型",
+      "hint": "情緒／不雅／性騷擾／非理性用詞"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "category": "售後出貨配送",
+      "code": "paid_time",
+      "label": "付款完成時間",
+      "hint": "YYYY/MM/DD HH:mm",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "category": "售後出貨配送",
+      "code": "delivered_time",
+      "label": "實際到貨時間",
+      "hint": "YYYY/MM/DD HH:mm",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": false,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [],
+      "category": "售後出貨配送",
+      "code": "buyer_id",
+      "label": "Buyer ID",
+      "hint": "買家 UID"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": true,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "category": "售後出貨配送",
+      "code": "blacklist_result",
+      "label": "查詢表結果",
+      "hint": "是否黑名單／不符合原因",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22",
+      "sourceNote": "<div><b>延遲補償資格確認</b></div><ol><li>先用延遲補償工具確認物流渠道、付款時間與配達時間是否符合規則。</li><li>再到 2025 查詢表4 / HighRisk Buyer 查詢表，用 Buyer Username / Buyer ID 或 OSN 確認是否為高風險或排除名單。</li><li>若命中黑名單、未延遲或不符規則，不要承諾補償；可參考規則頁說明 14:00 與付款異動相關判斷。</li></ol>"
+    },
+    {
+      "type": "text",
+      "autoDays": 0,
+      "required": false,
+      "multiline": true,
+      "common": false,
+      "fillRules": [],
+      "sourceLinks": [
+        {
+          "title": "延遲補償工具",
+          "url": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+        },
+        {
+          "title": "2025 查詢表4 / HighRisk Buyer 查詢表",
+          "url": "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+        },
+        {
+          "title": "延遲訂單補償規則",
+          "url": "https://help.shopee.tw/portal/4/article/149656"
+        }
+      ],
+      "category": "售後出貨配送",
+      "code": "voucher_note",
+      "label": "補發紀錄",
+      "hint": "補發表單或處理狀態",
+      "sourceUrl": "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22",
+      "sourceNote": "<div><b>補發延遲補償</b></div><ol><li>延遲補償工具確認符合後，再用 HighRisk Buyer 查詢表排除黑名單或不可補償情境。</li><li>符合才執行補發，並告知買家留意通知與優惠券錢包。</li><li>回覆文字需帶入補發結果或預計可查看的位置。</li></ol>"
     }
   ],
   "decisions": [
@@ -5813,6 +11113,122 @@ window.SOP_DATA = {
         "問運費",
         "問什麼時候到貨",
         "退貨步驟是什麼"
+      ]
+    },
+    {
+      "prompt": "客人要查哪一種商品時間？",
+      "options": [
+        "查商品效期",
+        "查商品進貨日"
+      ]
+    },
+    {
+      "prompt": "後台查到的主要狀態是哪一種？",
+      "options": [
+        "尚未進入 WMS",
+        "WMS 已出貨但延遲",
+        "OMS／WMS 顯示 OOS 缺貨"
+      ]
+    },
+    {
+      "prompt": "包裹目前是哪一種異常？",
+      "options": [
+        "包裹延遲未配達",
+        "配達門市超過 10 天未取消",
+        "貨態已配達但買家未收到",
+        "貨態配送中但買家已取件"
+      ]
+    },
+    {
+      "prompt": "商品異常屬於哪一種處理情境？",
+      "options": [
+        "低單 200 元以下且有照片",
+        "SCS 貨損有照片",
+        "管制區／高單／特殊商品"
+      ]
+    },
+    {
+      "prompt": "補償折扣碼屬於哪一類？",
+      "options": [
+        "返還原折扣碼",
+        "返還損失折扣／價差",
+        "小額折扣碼"
+      ]
+    },
+    {
+      "prompt": "退貨退款主要是哪一種情境？",
+      "options": [
+        "60 元以下自動退款",
+        "61-1380 元快速退款",
+        "包裹未送達進蝦皮審核",
+        "缺件僅退款進蝦皮審核",
+        "其他原因一般退貨"
+      ]
+    },
+    {
+      "prompt": "Offline RR 目前判斷結果是什麼？",
+      "options": [
+        "鑑賞期內優先引導買家自行 AOC",
+        "可發起 Agent AOC",
+        "不可發起 AOC RR",
+        "專員已代發 RR"
+      ]
+    },
+    {
+      "prompt": "取消配送中目前是哪一種狀態？",
+      "options": [
+        "訂單可申請取消配送中",
+        "申請處理中",
+        "系統同意取消",
+        "系統拒絕或買家撤回"
+      ]
+    },
+    {
+      "prompt": "目前案件需要哪一種處理？",
+      "options": [
+        "單純商品資訊不用開單",
+        "需開單＋填 KAM 表",
+        "廠直問題需轉廠商",
+        "平日／假日追蹤話術"
+      ]
+    },
+    {
+      "prompt": "轉二線原因是哪一種？",
+      "options": [
+        "轉詢 SLA 超過 48 小時",
+        "已說明 3 次仍重複詢問",
+        "買家有情緒／不雅／性騷擾",
+        "無法判斷需協助方向"
+      ]
+    },
+    {
+      "prompt": "延遲補償查詢結果是哪一種？",
+      "options": [
+        "物流渠道適用延遲補償",
+        "黑名單或不符合補償",
+        "符合補發延遲補償"
+      ]
+    },
+    {
+      "prompt": "客人問的是哪一種物流／退貨問題？",
+      "options": [
+        "問運費",
+        "問什麼時候到貨",
+        "退貨步驟是什麼"
+      ]
+    },
+    {
+      "prompt": "客人是要確認商品是否有加價購，還是要反查加價購商品搭配哪件主商品？",
+      "options": [
+        "確認商品是否有加價購",
+        "加價購商品要搭配哪件主商品"
+      ]
+    },
+    {
+      "prompt": "商品頁有沒有顯示「加價購／優惠加購」標籤？",
+      "options": [
+        "有顯示加價購標籤",
+        "沒有顯示加價購標籤"
       ]
     }
   ]

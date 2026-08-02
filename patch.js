@@ -1725,6 +1725,273 @@
       });
   }
 
+  function createToolBranch(branch, text, variables = [], actionNote = "", sourceLinks = []) {
+    sharedFlow(branch);
+    const pptText = actionNote.includes("PPT") ? actionNote.replace(/^PPT\s*/, "PPT 出處：") : "";
+    upsertTemplate({
+      q: "GLOBAL",
+      branch,
+      text: pptText && !text.includes("PPT 出處") ? `${text}\n\n${pptText}` : text
+    });
+    variables.forEach(variable => upsertVariable({
+      q: "GLOBAL",
+      branch,
+      category: "小工具／查詢表",
+      ...variable
+    }));
+    upsertAction({
+      q: "GLOBAL",
+      branch,
+      action: branch.replace(/^工具：/, "使用"),
+      needed: true,
+      note: actionNote || "依分支提示完成查詢",
+      sourceLinks,
+      url: sourceLinks[0]?.url || "",
+      sourceNote: sourceLinks.length
+        ? `<div><b>${branch.replace(/^工具：/, "")}</b></div><ul>${sourceLinks.map(link => `<li><a href="${link.url}" target="_blank" rel="noopener">${link.title}</a></li>`).join("")}</ul>`
+        : ""
+    });
+  }
+
+  const toolVar = (code, label, hint, multiline = false, required = false, type = "text", options = [], extra = {}) => ({
+    code,
+    label,
+    hint,
+    multiline,
+    required,
+    type,
+    options,
+    ...extra
+  });
+
+  createToolBranch(
+    "工具：CS Portal 查詢",
+    "CS Portal 查詢結果：\n▪ Buyer Username：{{V018}}\n▪ Order SN：{{order_id}}\n▪ Return ID：{{return_id}}\n▪ 查詢位置／分頁：{{cs_portal_tab}}\n▪ 查詢結果：{{cs_portal_result}}",
+    [
+      toolVar("V018", "Buyer Username（買家帳號）", "需要查買家優惠券、蝦幣或帳號資料時填買家的 Buyer Username。"),
+      toolVar("order_id", "Order SN", "需要查訂單、貨態、包裹或退貨案件時填入。"),
+      toolVar("return_id", "Return ID", "需要查退貨退款或 AOC（Agent Order Cancellation／專員代申退）案件時填入。"),
+      toolVar("cs_portal_tab", "CS Portal 查詢位置／分頁", "選擇實際查詢的位置。", false, true, "select", ["優惠代碼錢包", "訂單詳情", "退貨退款詳情", "蝦幣交易紀錄", "Offline RR / AOC_OPS_V2"]),
+      toolVar("cs_portal_result", "CS Portal 查詢結果", "貼上查到的可用券、貨態、蝦幣紀錄或退貨狀態。", true)
+    ],
+    "PPT 多處以 CS Portal 查詢買家、訂單、退貨退款或蝦幣資料",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：Order Admin 查詢",
+    "Order Admin 查詢結果：\n▪ Order SN：{{order_id}}\n▪ Return ID：{{return_id}}\n▪ 查詢位置／分頁：{{order_admin_tab}}\n▪ 查詢結果：{{order_admin_result}}",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。"),
+      toolVar("return_id", "Return ID", "退貨退款案件才需要填。"),
+      toolVar("order_admin_tab", "Order Admin 查詢位置／分頁", "選擇實際查詢的位置。", false, true, "select", ["Orders / Order Information", "Return / Return & Refund Requests", "Payment / Refund", "Shipping / Tracking"]),
+      toolVar("order_admin_result", "Order Admin 查詢結果", "貼上訂單狀態、付款退款狀態、退貨資訊或物流歷程。", true)
+    ],
+    "查訂單、退款、退貨或逆物流資料",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：Promotion Admin 查詢",
+    "Promotion Admin 查詢結果：\n▪ 優惠券代碼：{{voucher_code}}\n▪ 查詢位置／分頁：{{promotion_admin_tab}}\n▪ 優惠券狀態／使用條件：{{promotion_admin_result}}",
+    [
+      toolVar("voucher_code", "優惠券代碼", "貼上客人原本使用或需確認的優惠券代碼。"),
+      toolVar("promotion_admin_tab", "Promotion Admin 查詢位置／分頁", "選擇優惠券或活動查詢頁。", false, true, "select", ["Voucher / Voucher Code", "Promotion / Campaign", "Voucher Usage"]),
+      toolVar("promotion_admin_result", "Promotion Admin 查詢結果", "貼上券狀態、門檻、可用期間、是否失效或是否可返還。", true)
+    ],
+    "查優惠券狀態、門檻與返還條件",
+    [exactLinks.promotionAdmin]
+  );
+
+  createToolBranch(
+    "工具：商品效期 Inventory Expiration Date",
+    "商品效期查詢：\n▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n▪ 效期結果：{{expiration_result}}\n\n提醒：若買家未指定規格，可截圖小工具結果給買家；仍需提醒實際效期以收到商品包裝標示為準。",
+    [
+      toolVar("product_id", "Product ID", "從商品頁複製 Product ID，再到 Inventory Expiration Date 查詢。", false, true),
+      toolVar("V008", "商品名稱", "貼上商品頁完整標題。", false, true),
+      toolVar("V010", "商品規格", "買家有指定規格時必填，需對照小工具顯示規格。"),
+      toolVar("expiration_result", "商品效期", "選擇或填入小工具查到的效期。", false, true, "date")
+    ],
+    "PPT 第 52-56 頁",
+    [exactLinks.inventoryExpiration]
+  );
+
+  createToolBranch(
+    "工具：商品進貨日 Inventory Inbound Date",
+    "商品進貨日查詢：\n▪ Product ID：{{product_id}}\n▪ 商品名稱：{{V008}}\n▪ 查詢結果：{{inbound_result}}\n\n提醒：進貨日不是保證補貨或上架日，回覆時需保留實際庫存仍以系統顯示為準。",
+    [
+      toolVar("product_id", "Product ID", "從商品頁複製 Product ID，再到 Inventory Inbound Date 查詢。", false, true),
+      toolVar("V008", "商品名稱", "貼上商品頁完整標題。", false, true),
+      toolVar("inbound_result", "商品進貨日", "選擇小工具查到的進貨日。", false, true, "date")
+    ],
+    "PPT 第 61-66 頁",
+    [exactLinks.inventoryInbound]
+  );
+
+  createToolBranch(
+    "工具：加價購主商品 AOD-Main",
+    "加價購主商品查詢：\n▪ Product ID：{{product_id}}\n▪ Add-on Deal ID／活動 ID：{{addon_campaign_id}}\n▪ 主商品查詢結果：{{addon_main_product}}\n\n流程：先確認商品是否有加價購標籤；有標籤才使用 AOD-Main 或 DB 反查主商品。",
+    [
+      toolVar("product_id", "Product ID", "貼上加價購商品的 Product ID。", false, true),
+      toolVar("addon_campaign_id", "Add-on Deal ID／活動 ID", "工具或 DB 查到的加價購活動 ID。"),
+      toolVar("addon_main_product", "加價購主商品", "貼上可搭配的主商品或活動結果。", true, true)
+    ],
+    "PPT 第 57-60 頁",
+    [exactLinks.aodMain]
+  );
+
+  createToolBranch(
+    "工具：[DB] Add-on / Gift / Bundle",
+    "[DB] Add-on / Gift / Bundle 反查：\n▪ Add-on_Sub 分頁：用 Product ID {{product_id}} 查 Add-on Deal ID：{{addon_campaign_id}}\n▪ Add-on_Main 分頁：用 Add-on Deal ID 反查主商品：{{addon_main_product}}\n\n提醒：這個分支只處理 DB 反查步驟，是否要告知買家仍回到原題目分支判斷。",
+    [
+      toolVar("product_id", "Product ID", "在 Add-on_Sub 分頁搜尋加價購子商品 Product ID。", false, true),
+      toolVar("addon_campaign_id", "Add-on Deal ID／活動 ID", "從 Add-on_Sub 查到後，再拿去 Add-on_Main 搜尋。", false, true),
+      toolVar("addon_main_product", "主商品反查結果", "貼上 Add-on_Main 查到的主商品 Product ID／名稱。", true, true)
+    ],
+    "PPT 第 351-352 頁",
+    [exactLinks.addonDbSub, exactLinks.addonDbMain]
+  );
+
+  createToolBranch(
+    "工具：補碼小工具",
+    "補碼小工具查詢：\n▪ 補償類型：{{compensation_type}}\n▪ 原優惠券／補償金額：{{voucher_amount}}\n▪ 低消門檻：{{min_spend}}\n▪ 小工具產出結果：{{voucher_note}}\n\n提醒：Shopee CS Tool 補碼小工具是瀏覽器擴充功能，只能在 CP 或 DSS 上使用。",
+    [
+      toolVar("compensation_type", "補償類型", "選擇補碼原因。", false, true, "select", ["返還原折扣碼", "返還損失折扣／價差", "小額折扣碼", "延遲補償補發", "金流／個案補償"]),
+      toolVar("voucher_amount", "補償金額", "填小工具或公版計算後的金額。", false, true),
+      toolVar("min_spend", "低消門檻", "若補碼需要低消門檻，填入門檻。"),
+      toolVar("voucher_note", "小工具產出結果", "貼上補碼工具產出的券資訊或備註。", true, true)
+    ],
+    "PPT 第 171-179 頁",
+    [exactLinks.voucherTracking]
+  );
+
+  createToolBranch(
+    "工具：個案補碼追蹤表",
+    "個案補碼追蹤表填寫：\n▪ 分頁：個案補碼追蹤表\n▪ Order SN：{{order_id}}\n▪ User ID：{{user_id}}\n▪ Buyer Username：{{V018}}\n▪ 申請類別：{{ticket_issue_category}}\n▪ 補碼金額：{{voucher_amount}}\n▪ 工單號：{{work_order}}\n▪ 備註：{{pending_note}}",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("user_id", "User ID", "貼上買家 User ID。"),
+      toolVar("V018", "Buyer Username（買家帳號）", "貼上買家的 Buyer Username。", false, true),
+      toolVar("ticket_issue_category", "申請類別", "依補碼原因選擇。", false, true, "select", ["返還原折扣碼", "返還損失折扣／價差", "小額折扣碼", "延遲補償補發", "金流／個案補償"]),
+      toolVar("voucher_amount", "補碼金額", "填入需補發的折扣碼金額。", false, true),
+      toolVar("work_order", "工單號", "若有 Jira 工單，填入原本的工單號。"),
+      toolVar("pending_note", "備註", "貼上補碼原因、查詢結果或待追蹤事項。", true)
+    ],
+    "PPT 第 175-176 頁",
+    [exactLinks.voucherTracking]
+  );
+
+  createToolBranch(
+    "工具：延遲補償工具",
+    "延遲補償工具查詢：\n▪ Order SN：{{order_id}}\n▪ 物流渠道：{{logistics_channel}}\n▪ 付款完成時間：{{paid_time}}\n▪ 實際配達時間：{{delivered_time}}\n▪ 工具判斷結果：{{delay_compensation_result}}",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。"),
+      toolVar("logistics_channel", "物流渠道", "依訂單物流渠道選擇。", false, true, "select", ["蝦皮店到店", "蝦皮店到店 - 隔日到貨", "店到家宅配", "店取 - 最快當日到", "宅配 - 最快隔日到", "蝦皮店到店 - 無包裝隔日到", "不適用渠道"]),
+      toolVar("paid_time", "付款完成時間", "填訂單付款完成時間。", false, true),
+      toolVar("delivered_time", "實際配達時間", "填貨態實際配達時間。", false, true),
+      toolVar("delay_compensation_result", "延遲補償工具結果", "貼上工具判斷：符合／不符合／需排除黑名單。", true, true)
+    ],
+    "PPT 第 183-187 頁",
+    [exactLinks.delayDashboard]
+  );
+
+  createToolBranch(
+    "工具：HighRisk Buyer 查詢表",
+    "HighRisk Buyer 查詢表確認：\n▪ 分頁：2025 查詢表4 / HighRisk Buyer\n▪ Buyer Username：{{V018}}\n▪ Order SN：{{order_id}}\n▪ 查詢結果：{{blacklist_result}}",
+    [
+      toolVar("V018", "Buyer Username（買家帳號）", "用買家帳號查詢是否為 HighRisk Buyer。", false, true),
+      toolVar("order_id", "Order SN", "可用 OSN 輔助確認。"),
+      toolVar("blacklist_result", "HighRisk Buyer 查詢結果", "填是否命中黑名單／排除名單，以及表內備註。", true, true)
+    ],
+    "PPT 第 185-187 頁",
+    [exactLinks.highRiskBuyer]
+  );
+
+  createToolBranch(
+    "工具：AOC_OPS_V2 判別",
+    "AOC_OPS_V2 判別：\n▪ Return ID：{{return_id}}\n▪ Order SN：{{order_id}}\n▪ 判別結果：{{aoc_ops_result}}\n\n提醒：AOC_OPS_V2 是瀏覽器擴充功能，只能在 CsP 使用；可發起 Agent AOC 才繼續代處理。",
+    [
+      toolVar("return_id", "Return ID", "貼上退貨退款案件 Return ID。", false, true),
+      toolVar("order_id", "Order SN", "貼上訂單編號。"),
+      toolVar("aoc_ops_result", "AOC_OPS_V2 判別結果", "填可發起／不可發起，以及原因。", true, true)
+    ],
+    "PPT 第 263-265 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：SCI 分箱／貨態查詢",
+    "SCI 分箱／貨態查詢：\n▪ Order SN：{{order_id}}\n▪ 已收到包裹：{{received_parcels}}\n▪ 未收到／異常包裹：{{missing_parcels}}\n▪ 查詢整理：{{tracking_summary}}",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("received_parcels", "已收到包裹", "列出已配達或買家已收到的子包裹。", true),
+      toolVar("missing_parcels", "未收到／異常包裹", "列出未配達、取消或異常的子包裹。", true),
+      toolVar("tracking_summary", "分箱／貨態查詢整理", "整理每箱物流單號與目前狀態。", true, true)
+    ],
+    "PPT 第 125、247-249 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：DSS 商品／訂單查詢",
+    "DSS 商品／訂單查詢：\n▪ 商城名字：{{V003}}\n▪ Product ID：{{product_id}}\n▪ MP SKU ID：{{V030}}\n▪ 查詢位置／分頁：{{dss_lookup_tab}}\n▪ 查詢結果：{{dss_lookup_result}}",
+    [
+      toolVar("V003", "商城名字", "判斷廠直表與 DSS 查詢前必填。", false, true),
+      toolVar("product_id", "Product ID", "貼上商品頁 Product ID。"),
+      toolVar("V030", "MP SKU ID", "DSS 商品頁查到的正確 MP SKU ID。"),
+      toolVar("dss_lookup_tab", "DSS 查詢位置／分頁", "選擇實際查詢的位置。", false, true, "select", ["供應商管理 / 商品", "Backlogs / 商談", "訂單 / 配送"]),
+      toolVar("dss_lookup_result", "DSS 查詢結果", "貼上供應商、商談或訂單配送查詢結果。", true, true)
+    ],
+    "PPT 第 73、128、132、194-196 頁",
+    [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }]
+  );
+
+  ensureCommonPart("Q006", "查詢買家目前可用優惠券", "工具：CS Portal 查詢");
+  ["可以返還／可以再次使用", "不能返還／不能再次使用", "取消訂單後優惠券是否返還"].forEach(branch => {
+    ensureCommonPart("Q006", branch, "工具：CS Portal 查詢");
+    ensureCommonPart("Q006", branch, "工具：Order Admin 查詢");
+  });
+  ensureCommonPart("Q007", "問什麼時候到貨", "工具：CS Portal 查詢");
+  ensureCommonPart("Q007", "退貨步驟是什麼", "工具：CS Portal 查詢");
+  ensureCommonPart("Q008", "加價購商品要搭配哪件主商品", "工具：加價購主商品 AOD-Main");
+  ensureCommonPart("Q008", "加價購商品要搭配哪件主商品", "工具：[DB] Add-on / Gift / Bundle");
+  ensureCommonPart("Q010", "查商品效期", "工具：商品效期 Inventory Expiration Date");
+  ensureCommonPart("Q010", "查商品進貨日", "工具：商品進貨日 Inventory Inbound Date");
+  ["尚未進入 WMS", "WMS 已出貨但延遲", "OMS／WMS 顯示 OOS 缺貨"].forEach(branch => {
+    ensureCommonPart("Q011", branch, "工具：CS Portal 查詢");
+    ensureCommonPart("Q011", branch, "工具：Order Admin 查詢");
+  });
+  ["包裹延遲未配達", "配達門市超過 10 天未取消", "貨態已配達但買家未收到", "貨態配送中但買家已取件"].forEach(branch => {
+    ensureCommonPart("Q012", branch, "工具：CS Portal 查詢");
+    ensureCommonPart("Q012", branch, "工具：Order Admin 查詢");
+  });
+  ["返還原折扣碼", "返還損失折扣／價差", "小額折扣碼"].forEach(branch => {
+    ensureCommonPart("Q014", branch, "工具：補碼小工具");
+    ensureCommonPart("Q014", branch, "工具：個案補碼追蹤表");
+  });
+  ensureCommonPart("Q014", "返還原折扣碼", "工具：Promotion Admin 查詢");
+  ensureCommonPart("Q014", "返還損失折扣／價差", "工具：Order Admin 查詢");
+  ensureCommonPart("Q016", "可發起 Agent AOC", "工具：AOC_OPS_V2 判別");
+  ["訂單可申請取消配送中", "申請處理中", "系統同意取消", "系統拒絕或買家撤回"].forEach(branch => {
+    ensureCommonPart("Q017", branch, "工具：Order Admin 查詢");
+  });
+  ["物流渠道適用延遲補償", "黑名單或不符合補償", "符合補發延遲補償"].forEach(branch => {
+    ensureCommonPart("Q020", branch, "工具：延遲補償工具");
+    ensureCommonPart("Q020", branch, "工具：HighRisk Buyer 查詢表");
+  });
+  ensureCommonPart("Q020", "符合補發延遲補償", "工具：補碼小工具");
+  ensureCommonPart("Q020", "符合補發延遲補償", "工具：個案補碼追蹤表");
+  ensureCommonPart("Q022", "查蝦幣交易紀錄", "工具：CS Portal 查詢");
+  ensureCommonPart("Q023", "多包裹尚未全部收到", "工具：CS Portal 查詢");
+  ensureCommonPart("Q023", "多包裹尚未全部收到", "工具：SCI 分箱／貨態查詢");
+  ensureCommonPart("Q023", "子包裹取消但母訂單已完成", "工具：CS Portal 查詢");
+  ensureCommonPart("Q023", "子包裹取消但母訂單已完成", "工具：Order Admin 查詢");
+  ensureCommonPart("Q024", "查詢逆物流資訊", "工具：Order Admin 查詢");
+  ["有逆物流單號但 1-2 工作天無貨態", "無逆物流單號也無歷程"].forEach(branch => {
+    ensureCommonPart("Q024", branch, "工具：Order Admin 查詢");
+  });
+  ensureCommonPart("Q025", "廠直退貨／未取回商品", "工具：DSS 商品／訂單查詢");
+
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "新建工單", "此類特殊商品／管制區／高單若需跨窗口確認，先建立工單：");
   ensureCommonPart("Q013", "管制區／高單／特殊商品", "KAM表", "再依商城名字判斷並填 KAM 表：");
   ensureCommonPart("Q014", "小額折扣碼", "新建工單", "若提供小額折扣碼後仍有訂單問題要追蹤，需另建工單：");
@@ -2143,7 +2410,21 @@
     "KAM表．SBS": "67-70、315",
     "廠直表": "67、70、73、128、132、194-196",
     "DSS 商談詢問廠商": "73、128、132、194-196",
-    "InHouse 轉單任務": "153-159"
+    "InHouse 轉單任務": "153-159",
+    "工具：CS Portal 查詢": "5、116、185-186、264、266",
+    "工具：Order Admin 查詢": "5、20-21、195、221-237、244-245",
+    "工具：Promotion Admin 查詢": "171-179",
+    "工具：商品效期 Inventory Expiration Date": "52-56",
+    "工具：商品進貨日 Inventory Inbound Date": "61-66",
+    "工具：加價購主商品 AOD-Main": "57-60",
+    "工具：[DB] Add-on / Gift / Bundle": "351-352",
+    "工具：補碼小工具": "171-179",
+    "工具：個案補碼追蹤表": "175-176",
+    "工具：延遲補償工具": "183-187",
+    "工具：HighRisk Buyer 查詢表": "185-187",
+    "工具：AOC_OPS_V2 判別": "263-265",
+    "工具：SCI 分箱／貨態查詢": "125、247-249",
+    "工具：DSS 商品／訂單查詢": "73、128、132、194-196"
   };
 
   Object.entries(pptBranchPages).forEach(([branch, pages]) => {
@@ -2270,6 +2551,7 @@
   data.templates.forEach(templateItem => {
     const question = data.questions.find(item => item.id === templateItem.q);
     if (["Q001", "Q002", "Q003", "Q004"].includes(question?.id || "")) return;
+    if (templateItem.q === "GLOBAL" && String(templateItem.branch || "").startsWith("工具：")) return;
     templateItem.text = stripTemplateSourceNoise(templateItem.text);
   });
 

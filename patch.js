@@ -1043,6 +1043,8 @@
       branch: "鑑賞期",
       category: variable.category || "鑑賞期"
     }));
+  data.templates = data.templates.filter(item => !(item.q === "Q001" && item.branch === "共用"));
+  data.variables = data.variables.filter(variable => !(variable.q === "Q001" && variable.branch === "共用"));
 
   data.flows = data.flows.filter(flow => !(flow.question === "詢問鑑賞期"));
   data.flows.push({
@@ -1057,7 +1059,7 @@
 
   const returnStepParts = [
     { question: "詢問運費／物流", branch: "退貨步驟是什麼", beforeText: "" },
-    { question: "共用", branch: "鑑賞期", beforeText: "先確認是否仍在 15 天鑑賞期內：" }
+    { question: "共用", branch: "鑑賞期", beforeText: "" }
   ];
   const returnStepFlow = data.flows.find(flow => flow.question === "詢問運費／物流" && flow.branch === "退貨步驟是什麼");
   if (returnStepFlow) {

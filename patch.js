@@ -793,4 +793,213 @@
   setPropsAllBranches("Q015", "refund_amount", asSingleText);
   setPropsAllBranches("Q013", "item_amount", asSingleText);
 
+  const toolLinks = [
+    { title: "SCS CS Tool（正職）", url: "https://sites.google.com/shopee.com/scs-cs-tool/home" },
+    { title: "SCS CS Tool（派遣）", url: "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/home" }
+  ];
+  const orderAdminLink = { title: "Order Admin Portal", url: "https://order-admin.shopee.tw/" };
+  const promotionAdminLink = { title: "Promotion Admin", url: "https://promotion-admin.shopee.tw/" };
+  const delayHelpLink = { title: "隔日到貨服務說明", url: "https://help.shopee.tw/portal/4/article/149656" };
+
+  setVariableProps("Q010", "查商品效期", "expiration_result", {
+    sourceLinks: toolLinks,
+    sourceUrl: toolLinks[0].url,
+    sourceNote: "<div><b>使用小工具協作平台查詢商品效期</b></div><ol><li>開啟 SCS CS Tool（依身分選正職或派遣連結）。</li><li>若首次登入，先點選【Review Permissions】完成授權。</li><li>進入【商品效期 Inventory Expiration Date】。</li><li>輸入 Product ID 查詢；若買家有指定規格，請對照該規格的效期。</li></ol><div><b>注意：</b></div><ul><li>工具會帶出目前商品規格對應效期，但無法確認是哪個倉別庫存。</li><li>若買家未指定規格，可以截圖小工具畫面給買家；其他系統／工具不可以。</li><li>回覆時仍需提醒實際以收到商品包裝標示日期為準。</li></ul>"
+  });
+  setVariableProps("Q010", "查商品進貨日", "inbound_result", {
+    sourceLinks: toolLinks,
+    sourceUrl: toolLinks[0].url,
+    sourceNote: "<div><b>使用小工具協作平台查詢商品進貨日</b></div><ol><li>開啟 SCS CS Tool（依身分選正職或派遣連結）。</li><li>若首次登入，先點選【Review Permissions】完成授權。</li><li>進入【商品進貨日】。</li><li>輸入 Product ID 查詢目前預計進貨日期。</li></ol><div><b>回覆提醒：</b></div><ul><li>若工具查得到日期，仍需說明實際進貨時間會受廠商配送、倉庫驗收與上架作業影響，可能提前或延後。</li><li>若工具查不到時間，請回覆近期無較新的進貨安排，建議買家持續關注商品頁或收藏商品。</li></ul>"
+  });
+
+  ["返還原折扣碼", "返還損失折扣／價差", "小額折扣碼"].forEach(branch => {
+    ["voucher_code", "voucher_invalid", "better_voucher_check", "discount_amount", "price_difference", "min_spend", "voucher_amount", "proof_status"].forEach(code => {
+      setVariableProps("Q014", branch, code, {
+        sourceLinks: [orderAdminLink, promotionAdminLink],
+        sourceUrl: branch === "返還原折扣碼" ? promotionAdminLink.url : orderAdminLink.url
+      });
+    });
+  });
+  setVariableProps("Q014", "返還原折扣碼", "voucher_code", {
+    sourceNote: "<div><b>補償折扣碼流程：返還原折扣碼</b></div><ol><li>先到 Promotion Admin 或 CS Portal 確認原 Voucher Code 是否已失效。</li><li>確認賣場目前沒有相同或更優優惠券；若已有更優優惠，不重複申請。</li><li>使用 Shopee CS Tool 補碼小工具填寫原碼補碼欄位。</li><li>工單中記錄 Order SN、Order ID、User ID、原 Voucher Code 與申請類別。</li></ol><div><b>注意：</b>複數折扣碼無法疊加使用，需明確告知買家。</div>"
+  });
+  setVariableProps("Q014", "返還損失折扣／價差", "voucher_amount", {
+    sourceNote: "<div><b>補償折扣碼流程：返還損失折扣／價差</b></div><ol><li>到 Order Admin 開啟訂單。</li><li>啟動 Shopee CS Tool 補碼小工具，讓系統帶入包裹、折扣與綁定資訊。</li><li>計算：折扣金額（蝦皮＋賣家）＋商品價差（現價－Subtotal）。</li><li>依計算結果填寫最終發碼規格：滿多少折多少。</li></ol><div><b>注意：</b>商品本身價差超過 500 元需轉職代評估；系統預設綁品，若為純補損失折扣可依規範確認是否擴至全店。</div>"
+  });
+  setVariableProps("Q014", "小額折扣碼", "proof_status", {
+    sourceNote: "<div><b>小額折扣碼處理提示</b></div><ol><li>先確認問題類型與照片／表單／OPS 通知等佐證。</li><li>符合破包、漏液、過期、長蟲、缺件、商品出錯或重複出貨等情境時，再到對應交接表或工具領取折扣碼。</li><li>折扣碼提供後，訂單問題仍需依流程開單、填出貨相關問題表或 KAM 表。</li></ol>"
+  });
+
+  ["物流渠道適用延遲補償", "黑名單或不符合補償", "符合補發延遲補償"].forEach(branch => {
+    ["logistics_channel", "paid_time", "delivered_time", "blacklist_result", "voucher_note"].forEach(code => {
+      setVariableProps("Q020", branch, code, {
+        sourceLinks: [delayHelpLink],
+        sourceUrl: delayHelpLink.url
+      });
+    });
+  });
+  setVariableProps("Q020", "黑名單或不符合補償", "blacklist_result", {
+    sourceNote: "<div><b>延遲補償黑名單／資格查詢</b></div><ol><li>先以 Buyer ID 至【2025查詢表4】確認是否為黑名單用戶。</li><li>也可輸入訂單 OSN 查詢該筆訂單是否為延遲訂單；若未顯示，通常代表無延遲。</li><li>若屬黑名單或不符合補償條件，不可承諾會派發延遲補償。</li></ol><div><b>參考：</b>若涉及 14:00 後付款、變更付款方式等情境，可開啟隔日到貨服務說明連結確認規則。</div>"
+  });
+  setVariableProps("Q020", "符合補發延遲補償", "voucher_note", {
+    sourceNote: "<div><b>延遲補償補發提示</b></div><ol><li>以付款完成時間與實際到貨時間確認是否符合補償資格。</li><li>若符合資格但未派發，依【2025HighRisk_Buyer / voucherList】或延遲補償補發流程處理。</li><li>通知買家後續留意蝦皮通知或優惠券錢包。</li></ol>"
+  });
+
+  // Exact PPT tool links supplied on 2026-08-02.
+  const exactLinks = {
+    inventoryExpiration: {
+      title: "商品效期 Inventory Expiration Date",
+      url: "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Expiration-Date?authuser=3"
+    },
+    aodMain: {
+      title: "加價購主商品 AOD-Main",
+      url: "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/AOD-Main?authuser=3"
+    },
+    addonDbSub: {
+      title: "[DB] Add-on / Gift / Bundle 反查流程 - Sub",
+      url: "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=726032763#gid=726032763"
+    },
+    addonDbMain: {
+      title: "[DB] Add-on / Gift / Bundle 反查流程 - Main",
+      url: "https://docs.google.com/spreadsheets/d/1GCKyl0EVCbwzoaUuS3XseQV3U3TICOgKN-jmpEgbzQI/edit?gid=0#gid=0"
+    },
+    inventoryInbound: {
+      title: "商品進貨日 Inventory Inbound Date",
+      url: "https://sites.google.com/shopeemobile-external.com/scs-cs-tool/Inventory-Inbound-Date?authuser=3"
+    },
+    voucherTracking: {
+      title: "個案補碼追蹤表",
+      url: "https://docs.google.com/spreadsheets/d/1mCF93s6coyGKAHdbCG8gwiXf4xYB7BHxwdEIQNSO-cc/edit?gid=1135706082#gid=1135706082"
+    },
+    delayDashboard: {
+      title: "延遲補償工具",
+      url: "https://datasuite.shopee.io/dashboard/dashboard/1daef549-eeb1-475a-81b1-af4a599ad6c9/normal?%22"
+    },
+    highRiskBuyer: {
+      title: "2025 查詢表4 / HighRisk Buyer 查詢表",
+      url: "https://docs.google.com/spreadsheets/d/1TbXd1qRfSnRbb71hNxQpZg_G1JxaOqmggcGlFtEfCrk/edit?gid=1664747531#gid=1664747531"
+    },
+    csPortal: {
+      title: "CS Portal",
+      url: "https://dms.cs.shopee.tw/portal/info/search"
+    },
+    orderAdmin: {
+      title: "Order Admin Portal",
+      url: "https://order-admin.shopee.tw/"
+    },
+    promotionAdmin: {
+      title: "Promotion Admin",
+      url: "https://promotion-admin.shopee.tw/"
+    },
+    delayHelp: {
+      title: "延遲訂單補償規則",
+      url: "https://help.shopee.tw/portal/4/article/149656"
+    }
+  };
+
+  function setVarByCode(questionId, code, props, branchIncludes = null) {
+    data.variables.forEach(variable => {
+      const branchMatched = !branchIncludes || branchIncludes.some(text => variable.branch.includes(text));
+      if ((variable.questionId === questionId || variable.q === questionId) && variable.code === code && branchMatched) {
+        Object.assign(variable, props);
+      }
+    });
+  }
+
+  const sourceBlock = (title, items, extra = "") => {
+    const steps = items.map(item => `<li>${item}</li>`).join("");
+    return `<div><b>${title}</b></div><ol>${steps}</ol>${extra}`;
+  };
+
+  setVarByCode("Q010", "expiration_result", {
+    sourceLinks: [exactLinks.inventoryExpiration],
+    sourceUrl: exactLinks.inventoryExpiration.url,
+    sourceNote: sourceBlock("商品效期查詢", [
+      "到 SCS CS Tool 的 Inventory Expiration Date。",
+      "以 Product ID 查詢；若客人提供規格，需確認對應 variation / spec。",
+      "回覆前提醒商品實際效期仍以包裝標示為準。"
+    ])
+  });
+  setVarByCode("Q010", "inbound_result", {
+    sourceLinks: [exactLinks.inventoryInbound],
+    sourceUrl: exactLinks.inventoryInbound.url,
+    sourceNote: sourceBlock("商品進貨日查詢", [
+      "到 SCS CS Tool 的 Inventory Inbound Date。",
+      "以 Product ID 查詢商品進貨日；若有規格差異，需確認對應品項。",
+      "把查到的進貨日轉成客人看得懂的說法，不直接貼內部欄位名稱。"
+    ])
+  });
+
+  ["addon_campaign_id", "addon_main_product"].forEach(code => {
+    setVarByCode("Q008", code, {
+      sourceLinks: [exactLinks.aodMain, exactLinks.addonDbSub, exactLinks.addonDbMain],
+      sourceUrl: exactLinks.aodMain.url,
+      sourceNote: sourceBlock("加價購主商品確認", [
+        "問題本身先在下方打字說明：需到 AOD-Main 確認商品是否為加價購主商品。",
+        "若工具查不到，再用 [DB] Add-on / Gift / Bundle：先在 Sub 以 Product ID 反查 add_on_deal_id。",
+        "再到 Main 用 add_on_deal_id 查主商品資訊；有加價購標籤才繼續產出下一層答案。",
+        "回覆時帶入主商品 Product ID / 商品名稱；需要時請一併傳送商品卡。"
+      ])
+    });
+  });
+
+  ["voucher_code", "voucher_invalid", "better_voucher_check", "discount_amount", "price_difference", "min_spend", "voucher_amount", "proof_status"].forEach(code => {
+    setVarByCode("Q014", code, {
+      sourceLinks: [exactLinks.orderAdmin, exactLinks.promotionAdmin, exactLinks.voucherTracking],
+      sourceUrl: exactLinks.voucherTracking.url
+    });
+  });
+  setVarByCode("Q014", "voucher_code", {
+    sourceNote: sourceBlock("補償折扣碼 / 原折扣碼確認", [
+      "Shopee CS Tool 補碼小工具是瀏覽器擴充功能，只能在 CP 或 DSS 上使用。",
+      "先確認原折扣碼是否失效、是否沒有同等或更好的券可以提供。",
+      "依工具產出的內容貼到個案補碼追蹤表，再帶回可回覆客人的折扣碼資訊。"
+    ])
+  });
+  setVarByCode("Q014", "voucher_amount", {
+    sourceNote: sourceBlock("返還損失折扣 / 價差", [
+      "在 CP 或 DSS 使用 Shopee CS Tool 補碼小工具。",
+      "將工具結果貼到個案補碼追蹤表指定欄位，依表內結果確認補償金額與門檻。",
+      "金額欄位用單行文字填寫，保留幣別或必要說明。"
+    ])
+  });
+  setVarByCode("Q014", "proof_status", {
+    sourceNote: sourceBlock("小額折扣碼", [
+      "先確認客人佐證是否足夠，不足時補請截圖或訂單資訊。",
+      "需要補碼時走共用補碼流程與個案補碼追蹤表；小額券不代表原訂單問題已處理完。",
+      "若仍涉及物流、商品或退款問題，另外接回對應共用分支處理。"
+    ])
+  });
+
+  ["logistics_channel", "paid_time", "delivered_time", "blacklist_result", "voucher_note"].forEach(code => {
+    setVarByCode("Q020", code, {
+      sourceLinks: [exactLinks.delayDashboard, exactLinks.highRiskBuyer, exactLinks.delayHelp],
+      sourceUrl: exactLinks.delayDashboard.url
+    });
+  });
+  setVarByCode("Q020", "blacklist_result", {
+    sourceNote: sourceBlock("延遲補償資格確認", [
+      "先用延遲補償工具確認物流渠道、付款時間與配達時間是否符合規則。",
+      "再到 2025 查詢表4 / HighRisk Buyer 查詢表，用 Buyer Username / Buyer ID 或 OSN 確認是否為高風險或排除名單。",
+      "若命中黑名單、未延遲或不符規則，不要承諾補償；可參考規則頁說明 14:00 與付款異動相關判斷。"
+    ])
+  });
+  setVarByCode("Q020", "voucher_note", {
+    sourceNote: sourceBlock("補發延遲補償", [
+      "延遲補償工具確認符合後，再用 HighRisk Buyer 查詢表排除黑名單或不可補償情境。",
+      "符合才執行補發，並告知買家留意通知與優惠券錢包。",
+      "回覆文字需帶入補發結果或預計可查看的位置。"
+    ])
+  });
+
+  setVarByCode("Q016", "proof_status", {
+    sourceLinks: [exactLinks.csPortal],
+    sourceUrl: exactLinks.csPortal.url,
+    sourceNote: sourceBlock("Offline RR / AOC_OPS_V2 判別", [
+      "AOC_OPS_V2 是瀏覽器擴充功能，只能在 CsP 使用。",
+      "到 CS Portal 以 Return ID 查詢案件，再點選 AOC_OPS_V2 判別小工具。",
+      "判別為可發起 Agent AOC 才建立；若顯示已退款或不可發起，改走對應退貨 / 退款處理分支。"
+    ])
+  });
+
 })();

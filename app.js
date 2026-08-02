@@ -35,9 +35,20 @@
     showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 1800);
   }
 
+  function questionOrdinal(question) {
+    const match = String(question?.id || "").match(/^Q(\d+)$/);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function questionIntro(question) {
+    const answerText = String(question?.answerText || "").trim();
+    if (questionOrdinal(question) >= 5 && answerText) return answerText;
+    return String(question?.description || "").trim();
+  }
+
   function renderQuestions() {
     const term = els.search.value.trim().toLocaleLowerCase("zh-Hant");
-    const matches = data.questions.filter(q => q.enabled && (!term || [q.name, q.keywords, q.description, q.id].join(" ").toLocaleLowerCase("zh-Hant").includes(term)));
+    const matches = data.questions.filter(q => q.enabled && (!term || [q.name, q.keywords, q.description, q.answerText, q.id].join(" ").toLocaleLowerCase("zh-Hant").includes(term)));
     els.questionGrid.replaceChildren();
     matches.forEach(q => {
       const button = document.createElement("button");
@@ -46,7 +57,7 @@
       button.setAttribute("aria-label", `選擇 ${q.name}`);
       const number = document.createElement("span"); number.className = "number"; number.textContent = "題目";
       const title = document.createElement("strong"); title.textContent = q.name;
-      const desc = document.createElement("p"); desc.textContent = q.description;
+      const desc = document.createElement("p"); desc.textContent = questionIntro(q);
       const arrow = document.createElement("span"); arrow.className = "arrow"; arrow.textContent = "↗"; arrow.setAttribute("aria-hidden", "true");
       button.append(number, title, desc, arrow);
       button.addEventListener("click", () => selectQuestion(q));
@@ -68,7 +79,7 @@
     els.workspace.hidden = false;
     els.qId.textContent = "操作流程";
     els.qName.textContent = question.name;
-    els.qDesc.textContent = question.description;
+    els.qDesc.textContent = questionIntro(question);
     renderWorkflow();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }

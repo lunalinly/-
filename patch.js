@@ -1668,6 +1668,14 @@
   ensureCommonPart("Q025", "廠直退貨／未取回商品", "廠直表", "若需上廠直表，先確認商城名字再填表：");
   ensureCommonPart("Q025", "遊戲點數／SP_GAME", "新建工單", "遊戲點數／SP_GAME 需新建工單並轉職代確認：");
 
+  const protectedFirstFourQuestions = new Set(["Q001", "Q002", "Q003", "Q004"].map(id => questionById(id)?.name).filter(Boolean));
+  data.flows.forEach(flow => {
+    if (protectedFirstFourQuestions.has(flow.question)) return;
+    (flow.answerParts || []).forEach(part => {
+      if (part.question === "共用") part.beforeText = "";
+    });
+  });
+
   const ticketFormatBranches = ["新建工單", "KAM表", "KAM表．SBS", "廠直表"];
   const ticketCategoryOptions = [
     "售前-商品規格",

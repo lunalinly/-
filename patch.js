@@ -659,4 +659,69 @@
   });
   removeVariables("Q020", ["order_sn"]);
 
+  const setVariableProps = (q, branch, code, props) => {
+    data.variables
+      .filter(variable => variable.q === q && variable.branch === branch && variable.code === code)
+      .forEach(variable => Object.assign(variable, props));
+  };
+  const setPropsAllBranches = (q, code, props) => {
+    data.variables
+      .filter(variable => variable.q === q && variable.code === code)
+      .forEach(variable => Object.assign(variable, props));
+  };
+  const asSelect = options => ({ type: "select", multiline: false, options });
+  const asSingleText = { type: "text", multiline: false };
+  const asLongText = { type: "text", multiline: true };
+  const asDate = { type: "date", multiline: false };
+
+  setPropsAllBranches("Q009", "gift_item", asSingleText);
+
+  setVariableProps("Q011", "尚未進入 WMS", "backend_note", asLongText);
+  setVariableProps("Q011", "WMS 已出貨但延遲", "wms_status", asSelect(["Created", "Information Received", "Outbound", "其他／需補充"]));
+  setVariableProps("Q011", "WMS 已出貨但延遲", "delay_days", asSingleText);
+  setVariableProps("Q011", "OMS／WMS 顯示 OOS 缺貨", "backend_note", asLongText);
+
+  setPropsAllBranches("Q012", "logistics_status", asSingleText);
+  setVariableProps("Q012", "包裹延遲未配達", "follow_note", asLongText);
+  setVariableProps("Q012", "配達門市超過 10 天未取消", "store_arrival_date", asDate);
+  setVariableProps("Q012", "貨態已配達但買家未收到", "buyer_confirm", asLongText);
+  setVariableProps("Q012", "貨態配送中但買家已取件", "payment_method", asSelect(["COD", "非 COD", "待確認"]));
+  setVariableProps("Q012", "貨態配送中但買家已取件", "amount_note", asSelect(["收款金額正確", "收款金額不正確", "待確認"]));
+
+  setPropsAllBranches("Q013", "item_amount", asSingleText);
+  setPropsAllBranches("Q013", "issue_type", asSelect(["破包", "破碎／破裂", "漏液", "過期", "長蟲", "缺件", "錯品", "商品瑕疵", "其他"]));
+  setPropsAllBranches("Q013", "photo_status", asSelect(["已提供照片", "未提供照片", "照片不足需補充"]));
+  setPropsAllBranches("Q013", "special_note", asSingleText);
+  setVariableProps("Q013", "管制區／高單／特殊商品", "case_note", asLongText);
+
+  setVariableProps("Q014", "返還原折扣碼", "voucher_invalid", asSelect(["已失效", "未失效", "查無資料"]));
+  setVariableProps("Q014", "返還原折扣碼", "better_voucher_check", asSelect(["已確認無更優優惠", "已有相同或更優優惠", "尚未確認"]));
+  ["discount_amount", "price_difference", "min_spend", "voucher_amount"].forEach(code => setVariableProps("Q014", "返還損失折扣／價差", code, asSingleText));
+  setVariableProps("Q014", "小額折扣碼", "issue_type", asSelect(["破包", "漏液", "過期", "長蟲", "缺件", "商品出錯", "重複出貨", "其他"]));
+  setVariableProps("Q014", "小額折扣碼", "proof_status", asSelect(["照片已確認", "表單／OPS 通知", "待補佐證"]));
+
+  setPropsAllBranches("Q015", "return_reason", asSelect(["包裹未收到", "商品缺件", "不需要了／已購買類似商品", "實品與描述／圖片有落差", "收到不對的商品", "商品功能有問題", "商品外表瑕疵／毀損", "其他"]));
+  setPropsAllBranches("Q015", "refund_amount", asSingleText);
+  setVariableProps("Q015", "包裹未送達進蝦皮審核", "logistics_status", asSingleText);
+  setVariableProps("Q015", "缺件僅退款進蝦皮審核", "proof_status", asSelect(["照片已上傳", "影片已上傳", "待補證明"]));
+  setVariableProps("Q015", "其他原因一般退貨", "return_channel", asSelect(["7-11", "SPX", "黑貓／蝦宅", "賣家自行安排", "待系統顯示"]));
+
+  setVariableProps("Q016", "鑑賞期內優先引導買家自行 AOC", "complete_date", asDate);
+  setPropsAllBranches("Q016", "return_reason", asLongText);
+  setVariableProps("Q016", "可發起 Agent AOC", "proof_status", asSelect(["圖片已上傳", "圖片放入案件", "圖片過多已備註", "待補圖片"]));
+  setVariableProps("Q016", "不可發起 AOC RR", "tool_result", asSelect(["已退款", "紅字不可發起 AOC RR", "查無發起按鈕", "其他"]));
+  setVariableProps("Q016", "不可發起 AOC RR", "case_note", asLongText);
+
+  setVariableProps("Q017", "訂單可申請取消配送中", "logistics_channel", asSelect(["蝦皮店到店", "蝦皮店到店 - 隔日到貨", "SCS", "店到家宅配", "其他物流"]));
+  setVariableProps("Q017", "訂單可申請取消配送中", "button_status", asSelect(["有取消配送中訂單按鈕", "沒有按鈕", "待確認"]));
+  setPropsAllBranches("Q017", "rr_status", asSelect(["RT1:Requested", "RT2:Accept", "RT5:Refund Paid", "RT3:Cancel", "其他"]));
+  setPropsAllBranches("Q017", "remark", asSingleText);
+  setVariableProps("Q017", "系統拒絕或買家撤回", "next_step", asLongText);
+
+  setPropsAllBranches("Q020", "logistics_channel", asSelect(["蝦皮店到店", "蝦皮店到店 - 隔日到貨", "店到家宅配", "店取 - 最快當日到", "宅配 - 最快隔日到", "蝦皮店到店 - 無包裝隔日到", "不適用渠道"]));
+  setPropsAllBranches("Q020", "paid_time", asSingleText);
+  setPropsAllBranches("Q020", "delivered_time", asSingleText);
+  setVariableProps("Q020", "黑名單或不符合補償", "blacklist_result", asLongText);
+  setVariableProps("Q020", "符合補發延遲補償", "voucher_note", asLongText);
+
 })();

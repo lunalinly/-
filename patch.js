@@ -2132,11 +2132,189 @@
     [{ title: "Shopee Drop Shipping（DSS）", url: "https://scm.internal.shopee.tw/homepage/backlogs" }]
   );
 
+  createToolBranch(
+    "工具：CS Portal｜通用搜尋與資訊區",
+    "CS Portal｜通用搜尋與資訊區：\n▪ 搜尋值：{{cs_portal_search_key}}\n▪ 可搜尋類型：OSN / Username / ReturnSN\n▪ 查詢結果：{{cs_portal_search_result}}\n\n步驟：\n1. 開啟 CS Portal。\n2. 在主畫面中間搜尋欄或右上角搜尋欄輸入 OSN、Username 或 ReturnSN 後按 Enter。\n3. 底下跑出 Order 後點選展開。\n4. 依問題需要查看一般資訊、Buyer & Seller Info、歷程記錄、聊聊記錄、物流資訊、金流資訊、商品資訊。\n\n提醒：\n▪ 一般資訊區可看 OID、優惠券資訊、Return 資訊、訂單狀態與時間序。\n▪ 聊聊記錄可看到買家與機器人的完整對話。\n▪ 物流資訊可看各包裹物流歷程；金流資訊可看訂單金額明細。\n\nPPT 出處：第 82-90 頁",
+    [
+      toolVar("cs_portal_search_key", "CS Portal 搜尋值", "可填 OSN、Username 或 ReturnSN。", false, true),
+      toolVar("cs_portal_search_result", "CS Portal 通用查詢結果", "貼上查到的資訊區重點。", true, true)
+    ],
+    "PPT 第 82-90 頁",
+    [exactLinks.csPortal]
+  );
+
+  createToolBranch(
+    "工具：Order Admin｜查歸戶驗證碼",
+    "Order Admin｜查歸戶驗證碼：\n▪ Order SN：{{order_id}}\n▪ User ID / 會員編號：{{user_id}}\n▪ 歸戶驗證碼：{{invoice_verification_code}}\n▪ 查詢結果：{{invoice_lookup_result}}\n\n步驟：\n1. 開啟 Order Admin Portal。\n2. 進入 Orders / Order Information，用 Order SN 查詢。\n3. 依訂單/發票資訊區確認會員編號與歸戶驗證碼。\n4. 關貿平台查詢已開立發票或補發發票通知時，會員編號即 User ID，歸戶驗證碼依後台顯示填入。\n\nPPT 出處：第 23-24、106 頁",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("user_id", "User ID / 會員編號", "會員編號可用 User ID。", false, true),
+      toolVar("invoice_verification_code", "歸戶驗證碼", "從 Order Admin 查到的歸戶驗證碼。", false, true),
+      toolVar("invoice_lookup_result", "發票查詢結果", "貼上查詢或補發所需資訊。", true)
+    ],
+    "PPT 第 23-24、106 頁",
+    [exactLinks.orderAdmin]
+  );
+
+  createToolBranch(
+    "工具：OMS｜訂單狀態異常判斷",
+    "OMS｜訂單狀態異常判斷：\n▪ Order SN：{{order_id}}\n▪ Parcel Status：{{oms_parcel_status}}\n▪ Error Message：{{oms_error_message}}\n▪ 判斷結果：{{oms_status_result}}\n\n判斷：\n▪ Parcel Status = CreateLogisticDelay：要號延誤。\n▪ Error Message = Buyer need to reselect deliver store, deliver store is unavailable：門市關轉。\n▪ Parcel Status = ForderSourceFailed：OOS 缺貨訂單。\n▪ 若不是以上三種狀況，請通報 OPS。\n\nPPT 出處：第 114-117 頁",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("oms_parcel_status", "OMS Parcel Status", "貼上 OMS 顯示的 Parcel Status。"),
+      toolVar("oms_error_message", "OMS Error Message", "貼上 OMS 顯示的 Error Message。", true),
+      toolVar("oms_status_result", "OMS 判斷結果", "選擇要號延誤、門市關轉、OOS 或需通報 OPS。", false, true, "select", ["要號延誤", "門市關轉", "OOS 缺貨", "非三種狀況，通報 OPS"])
+    ],
+    "PPT 第 114-117 頁",
+    [{ title: "OMS", url: "https://oms.shopee.io/" }]
+  );
+
+  createToolBranch(
+    "工具：WMS｜出貨狀態查詢",
+    "WMS｜出貨狀態查詢：\n▪ Order SN：{{order_id}}\n▪ 倉別 / Whs ID：{{warehouse_id}}\n▪ WMS 狀態：{{wms_status}}\n▪ 查詢結果：{{wms_result}}\n\n步驟與提醒：\n1. WMS 可查商品效期與訂單出貨狀況。\n2. 訂單出貨狀態由下往上讀。\n3. 完整狀態包含：已創建、待揀貨、揀貨、已揀貨、分貨、已分貨、質檢中、已檢查、發貨中、出庫。\n4. OOS 是買家下單後揀貨過程發現商品庫存不足，後續由 OPS 取消訂單。\n\nPPT 出處：第 42、120-122 頁",
+    [
+      toolVar("order_id", "Order SN", "貼上訂單編號。", false, true),
+      toolVar("warehouse_id", "倉別 / Whs ID", "例：TWA 觀音倉、TWE 仁愛倉、TWG 高鐵南路倉、TWH 楊梅倉、TWK 黑貓倉、TWT 安南1、TWW 威獅、TWX 安南3。"),
+      toolVar("wms_status", "WMS 狀態", "貼上目前 WMS 狀態。"),
+      toolVar("wms_result", "WMS 查詢結果", "整理出貨狀況、OOS 或需追蹤事項。", true, true)
+    ],
+    "PPT 第 42、120-122 頁",
+    [{ title: "WMS", url: "https://wms.shopee.io/" }]
+  );
+
+  createToolBranch(
+    "工具：WMS｜在倉庫存報表查庫存",
+    "WMS｜在倉庫存報表查庫存：\n▪ Product ID：{{product_id}}\n▪ Model ID：{{model_id}}\n▪ MTSKU ITEM ID：{{mtsku_item_id}}\n▪ 組合查詢 ID：{{wms_stock_lookup_id}}\n▪ 商品名稱／規格：{{V008}}／{{V010}}\n▪ 目前庫存數量：{{stock_quantity}}\n▪ 查詢結果：{{stock_lookup_result}}\n\n步驟：\n1. 開啟 WMS，進入 MTSKU → MTSKU ITEM List。\n2. 輸入 Product ID 後 Search，進入 View。\n3. 分別複製 MTSKU ITEM ID 與 Model ID。\n4. 將兩個 ID 組合為 MTSKU ITEM ID_Model ID。\n5. 到系統現行顯示的「在倉庫存報表」查詢目前庫存。\n\n提醒：\n▪ 若客人指定規格，務必用對應規格的 Model ID，不要用 PID_0 猜。\n▪ Listing Admin 現在價格及庫存更新紀錄已無權限查看，所以庫存以 WMS 在倉庫存報表目前查詢結果為主。\n▪ 對外回覆時避免承諾一定保留庫存，仍需提醒實際可購買數量以商品頁／結帳頁當下顯示為準。\n\nPPT 出處：第 41-45、50 頁",
+    [
+      toolVar("product_id", "Product ID", "從商品頁或 Order Admin 商品資訊區取得。", false, true),
+      toolVar("model_id", "Model ID", "依買家詢問的商品規格確認；不能自行用 0 代替。", false, true),
+      toolVar("mtsku_item_id", "MTSKU ITEM ID", "WMS 的 MTSKU ITEM List → View 取得。", false, true),
+      toolVar("wms_stock_lookup_id", "組合查詢 ID", "將 MTSKU ITEM ID 與 Model ID 組合成 MTSKU ITEM ID_Model ID。", false, true),
+      toolVar("V008", "商品名稱", "貼上商品頁完整標題。"),
+      toolVar("V010", "商品規格", "買家有指定規格時填入。"),
+      toolVar("stock_quantity", "目前庫存數量", "填 WMS 在倉庫存報表查到的數量；若多倉別請整理各倉別數量。", false, true),
+      toolVar("stock_lookup_result", "庫存查詢結果", "貼上庫存報表顯示的倉別、數量、時間或查無資料原因。", true, true)
+    ],
+    "PPT 第 41-45、50 頁",
+    [{ title: "WMS", url: "https://wms.shopee.io/" }]
+  );
+
+  createToolBranch(
+    "工具：Information Hub｜黑貓個案派車",
+    "Information Hub｜黑貓個案派車：\n▪ 使用情境：{{pickup_case_type}}\n▪ Order SN：{{order_id}}\n▪ 收寄件資訊：{{recipient_info}}\n▪ 內容物：{{parcel_content}}\n▪ 寄件編號：{{pickup_tracking_no}}\n▪ 查詢結果：{{pickup_result}}\n\n使用情境：逆物流未發動成功、完成訂單後退貨退款、商品錯寄需回收、分箱出貨退貨。\n\n注意事項：\n1. 系統送出後會向黑貓下運單，定時每 3 小時更新寄件狀態。\n2. 派件資訊請完整，且切勿過長；宿舍棟別、社區、大樓名稱等請放備註。\n3. 內容物欄位務必填寫訂單編號。\n4. 沒有產生寄件編號：請直接刪除並重新上傳。\n5. 已產生寄件編號但需取消/修改：轉 TW - Logistics HM/Mall RR。\n6. L1 專員僅開放 06 派車 A→WH；特殊個案需 04 派車 A→B 時，請通報 OPS 確認。\n\nPPT 出處：第 134 頁",
+    [
+      toolVar("pickup_case_type", "個案派車情境", "選擇派車原因。", false, true, "select", ["逆物流未發動成功", "完成訂單後退貨退款", "商品錯寄需回收", "分箱出貨退貨", "修改派件資訊", "取消派車", "逆物流貨態沒有進度"]),
+      toolVar("order_id", "Order SN", "內容物欄位務必填寫訂單編號。", false, true),
+      toolVar("recipient_info", "收寄件資訊", "寄件人/收件人姓名、電話、地址、郵遞區號與備註。", true, true),
+      toolVar("parcel_content", "內容物", "務必填訂單編號；若有其他備註需簡短。"),
+      toolVar("pickup_tracking_no", "寄件編號", "送出後系統產生的寄件編號。"),
+      toolVar("pickup_result", "派車結果", "貼上寄件編號、狀態或需轉 Logistics HM/Mall RR 的原因。", true)
+    ],
+    "PPT 第 134 頁",
+    [{ title: "Shopee Information Hub", url: "https://shopee24-hub.shopee.io/" }]
+  );
+
+  createToolBranch(
+    "工具：InHouse｜控制台查商品與訂單",
+    "InHouse｜控制台查商品與訂單：\n▪ Buyer Username：{{V018}}\n▪ Order SN：{{order_id}}\n▪ 查詢結果：{{inhouse_console_result}}\n\n提醒：\n1. 商品頁或訂單頁進線時，Recommend 會帶出對應商品或訂單；All 會顯示該賣場所有商品。\n2. 商品可依名稱搜尋，或按銷售量/最近瀏覽排序。\n3. 訂單可依訂單狀態、訂單建立時間篩選，也可用 Order SN 搜尋。\n4. 若要全部訂單一次呈現，Created Time 直接按 X 清除條件。\n5. 可按 Send Order 將訂單發送到聊天視窗；按 Order SN 可跳到 CS Portal 看退貨/退款狀態、訂單金額、預計交貨日期等。\n6. 若買家要求客服針對訂單給評，系統無法操作。\n\nPPT 出處：第 291-295 頁",
+    [
+      toolVar("V018", "Buyer Username（買家帳號）", "控制台查買家訂單時使用。"),
+      toolVar("order_id", "Order SN", "可用 Order SN 搜尋訂單。"),
+      toolVar("inhouse_console_result", "控制台查詢結果", "貼上商品、訂單或狀態判斷結果。", true)
+    ],
+    "PPT 第 291-295 頁",
+    [ticketLinks.inhouse]
+  );
+
+  createToolBranch(
+    "工具：InHouse｜Reason Code 記錄",
+    "InHouse｜Reason Code 記錄：\n▪ Case Subject：{{case_subject}}\n▪ Reason Code：{{reason_code}}\n▪ Case Status：{{case_status}}\n▪ 檢查結果：{{reason_code_check_result}}\n\n提醒：\n1. 現在系統會自動建案，不用點 Create New Case，但仍要手動選 Reason Code。\n2. 每則聊聊皆需建立/記錄 Reason Code。\n3. Reason Code 請參照交接表對照。\n4. Case Status 建議直接選 Solved，系統會要求先選 Reason Code，可降低漏選。\n5. Case Subject 統一：售前填 Username；售後填 OSN。\n6. 若對話同時包含售前商品與售後訂單問題，以對應 RC 為主；主動發訊也要統一。\n7. 需要轉詢外部門的案件仍維持 Jira + InHouse 轉單任務。\n\nPPT 出處：第 304-309 頁",
+    [
+      toolVar("case_subject", "Case Subject", "售前填 Username；售後填 OSN。", false, true),
+      toolVar("reason_code", "Reason Code", "依交接表選擇對應 Reason Code。", false, true),
+      toolVar("case_status", "Case Status", "建議直接選 Solved。", false, true, "select", ["Solved", "Open", "Pending"]),
+      toolVar("reason_code_check_result", "Reason Code 檢查結果", "若漏選，記錄補點狀態或篩選器查詢結果。", true)
+    ],
+    "PPT 第 304-309 頁",
+    [ticketLinks.inhouse]
+  );
+
+  createToolBranch(
+    "工具：賣家中心／CS Portal｜訂單評價確認",
+    "賣家中心／CS Portal｜訂單評價確認：\n▪ Order SN：{{order_id}}\n▪ 賣場 / 商城名字：{{V003}}\n▪ 評價查詢結果：{{rating_check_result}}\n\n步驟：\n1. 若需針對訂單給評，先到賣家中心切換到對應賣場。\n2. 進入訂單管理 → 我的銷售 → 已完成，搜尋對應訂單。\n3. 若出現「評價」，可依公版給五星評價。\n4. 若沒有「評價」而是「查看詳情」，代表已過可評價時間或已回評。\n5. 可回 CS Portal 點擊「查看詳細資訊」→「賣場評價」確認：顯示空白代表已過可評價時間；顯示內容代表已回評。\n\n提醒：若買家要求客服從 InHouse 控制台針對訂單給評，系統無法操作。\n\nPPT 出處：第 95、298-300 頁",
+    [
+      toolVar("order_id", "Order SN", "要確認評價狀態的訂單。", false, true),
+      toolVar("V003", "商城名字", "需要切換賣家中心賣場時使用。"),
+      toolVar("rating_check_result", "評價查詢結果", "填可評價、已過時間、已回評或系統無法操作。", true, true)
+    ],
+    "PPT 第 95、298-300 頁",
+    [{ title: "Seller Center", url: "https://seller.shopee.tw/" }, exactLinks.csPortal]
+  );
+
   data.questions = data.questions.filter(question => question.id !== "Q026" && question.name !== "DSS 商談詢問廠商");
   data.flows = data.flows.filter(flow => flow.question !== "DSS 商談詢問廠商");
   data.templates = data.templates.filter(item => item.q !== "Q026");
   data.variables = data.variables.filter(item => item.q !== "Q026");
   data.actions = data.actions.filter(item => item.q !== "Q026");
+
+  upsert("questions", "id", {
+    id: "Q026",
+    name: "詢問商品目前庫存數量",
+    keywords: "庫存,剩多少,還有幾個,目前有貨嗎,現貨,庫存數量,stock,在倉庫存",
+    description: "依 WMS 在倉庫存報表查詢目前商品庫存數量\nPPT 出處：第 41-45、50 頁",
+    enabled: true,
+    answerText: "先確認客人問的是商品目前是否有貨，還是指定規格剩多少庫存。若客人有指定規格，需先確認對應 Product ID 與 Model ID，再到 WMS 在倉庫存報表查目前庫存。"
+  });
+  data.flows = data.flows.filter(flow => flow.question !== "詢問商品目前庫存數量");
+  data.flows.push({
+    question: "詢問商品目前庫存數量",
+    steps: [{ prompt: "客人是要查哪一種庫存問題？", option: "查商品目前庫存數量" }],
+    branch: "查商品目前庫存數量",
+    next: "確認欄位後產生回覆",
+    routes: [],
+    answerBranches: ["查商品目前庫存數量", "工具：WMS｜在倉庫存報表查庫存"],
+    answerParts: [
+      { question: "詢問商品目前庫存數量", branch: "查商品目前庫存數量", beforeText: "" },
+      { question: "共用", branch: "工具：WMS｜在倉庫存報表查庫存", beforeText: "" }
+    ]
+  });
+  upsertDecision({ prompt: "客人是要查哪一種庫存問題？", options: ["查商品目前庫存數量"] });
+  upsertTemplate({
+    q: "Q026",
+    branch: "查商品目前庫存數量",
+    text: "確認商品：\n▪ Product ID：{{product_id}}\n▪ Model ID：{{model_id}}\n▪ 商品名稱：{{V008}}\n▪ 商品規格：{{V010}}\n\n查詢結果：\n▪ 目前庫存數量：{{stock_quantity}}\n▪ WMS 查詢結果：\n{{stock_lookup_result}}\n\n回覆提醒：\n目前查詢到的庫存為 {{stock_quantity}}。庫存會依訂單成立與倉庫作業即時變動，實際可購買數量仍以商品頁／結帳頁當下顯示為主。\n\nPPT 出處：第 41-45、50 頁"
+  });
+  [
+    ["product_id", "Product ID", "從商品頁或 Order Admin 商品資訊區取得。", false, true, "text"],
+    ["model_id", "Model ID", "依買家指定規格確認，不能自行帶 PID_0。", false, true, "text"],
+    ["V008", "商品名稱", "貼上商品頁完整標題。", false, false, "text"],
+    ["V010", "商品規格", "買家有指定規格時填入。", false, false, "text"],
+    ["stock_quantity", "目前庫存數量", "填 WMS 在倉庫存報表查到的庫存數量；若有多倉別，可簡短彙整。", false, true, "text"],
+    ["stock_lookup_result", "庫存查詢結果", "貼上 WMS 在倉庫存報表的查詢結果、倉別或查無資料原因。", true, true, "text"]
+  ].forEach(([code, label, hint, multiline, required, type]) => upsertVariable({
+    q: "Q026",
+    branch: "查商品目前庫存數量",
+    code,
+    label,
+    hint,
+    multiline,
+    required,
+    type,
+    category: "售前商品工具",
+    sourceLinks: [{ title: "WMS（PPT 第 41-45、50 頁）", url: "https://wms.shopee.io/" }],
+    sourceUrl: "https://wms.shopee.io/",
+    sourceNote: "PPT 第 41-45 頁：WMS → MTSKU → MTSKU ITEM List，用 Product ID 查詢，取得 MTSKU ITEM ID 與 Model ID 後組合查在倉庫存報表。第 50 頁提醒 Listing Admin 現在價格及庫存更新紀錄已無權限查看。"
+  }));
+  upsertAction({
+    q: "Q026",
+    branch: "查商品目前庫存數量",
+    action: "查 WMS 在倉庫存報表",
+    needed: true,
+    note: "依 Product ID / Model ID 確認指定規格目前庫存；回覆時不要承諾保留庫存。",
+    sourceLinks: [{ title: "WMS（PPT 第 41-45、50 頁）", url: "https://wms.shopee.io/" }],
+    sourceUrl: "https://wms.shopee.io/",
+    sourceNote: "PPT 第 41-45、50 頁"
+  });
 
   ensureCommonPart("Q006", "查詢買家目前可用優惠券", "工具：CS Portal 查詢");
   ["可以返還／可以再次使用", "不能返還／不能再次使用", "取消訂單後優惠券是否返還"].forEach(branch => {
@@ -2255,6 +2433,18 @@
   replaceCommonToolParts("Q025", "廠直退貨／未取回商品", {
     "工具：DSS 商品／訂單查詢": ["工具：DSS｜查 MP SKU ID"]
   });
+
+  ["尚未進入 WMS", "WMS 已出貨但延遲", "OMS／WMS 顯示 OOS 缺貨"].forEach(branch => {
+    ensureCommonPart("Q011", branch, "工具：OMS｜訂單狀態異常判斷");
+    ensureCommonPart("Q011", branch, "工具：WMS｜出貨狀態查詢");
+  });
+  ["包裹延遲未配達", "配達門市超過 10 天未取消", "貨態已配達但買家未收到", "貨態配送中但買家已取件"].forEach(branch => {
+    ensureCommonPart("Q012", branch, "工具：WMS｜出貨狀態查詢");
+  });
+  ["有逆物流單號但 1-2 工作天無貨態", "無逆物流單號也無歷程"].forEach(branch => {
+    ensureCommonPart("Q024", branch, "工具：Information Hub｜黑貓個案派車");
+  });
+  ensureCommonPart("Q025", "大材積商品退貨", "工具：Information Hub｜黑貓個案派車");
 
   function flowUsesCode(questionId, flow, code) {
     const ownVariables = data.variables.filter(variable => variable.q === questionId && variable.branch === flow.branch);
@@ -2617,6 +2807,12 @@
   ["KAM表", "KAM表．SBS"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【KAM 表填寫格式】", "依商城名字判斷表別後，選擇問題分類；系統會帶出 CS 詢問用格式：\n{{sheet_question_format}}\n\n建立 Jira 時可使用：\n▪ Summary：{{jira_summary}}\n▪ Description：\n{{jira_description}}"));
   ["廠直表"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【廠直表填寫格式】", "先確認商城名字，再選 Type：order / return / sku。\n{{vendor_required_id_hint}}\n\n請貼入轉單詢問表：\n{{sheet_question_format}}\n\n建立 Jira 時可用主旨：{{jira_summary}}"));
 
+  appendTemplateSection("GLOBAL", "新建工單", "【Jira 操作提醒】", "▪ 新增備註可直接貼截圖，但備註內容不可包含 emoji，否則可能送不出去。\n▪ 工單處理完要按 Complete。\n▪ 可用 Assigned to me、TW SBS ticket search 或常用篩選器追蹤自己建立或需回覆的工單。\n\nPPT 出處：第 139-149 頁");
+  ["DSS 商談詢問廠商", "工具：DSS 商談詢問廠商"].forEach(branch => appendTemplateSection("GLOBAL", branch, "【廠直／DSS 追問提醒】", "▪ L1 Agent 可直接回覆的範圍以統一倉資訊為主，其他商品、物流或退貨細節需透過 DSS 商談或 OPS/KAM 確認。\n▪ 廠直物流資訊應填表或商談，不要只丟 VM。\n▪ 廠直商品 OOS 或廠商自行取消，需同步提醒 OPS/KAM 登記違規。\n▪ 退貨問題原則為只退不換；需一次確認照片、是否組裝/使用、買家訴求與訂單資訊。\n▪ 商談有回覆時要同步移除 KAM 表／廠直表待回覆註記；商談結案時表單也要同步結案。\n\nPPT 出處：第 127-132、194-197 頁"));
+  appendTemplateSection("Q021", "補匯款／整新費查帳", "【補匯款與發票資料提醒】", "▪ 補匯款／整新費若需開立電子發票，需整理手機條碼或自然人憑證、Email、收件人資訊與客文截圖。\n▪ 若是紙本發票，需整理收件人資訊。\n▪ Supplier ID 只適用廠直案件，SCS 商品不用填 Supplier ID。\n▪ SKU ID 組成為 Product ID_Model ID。\n\nPPT 出處：第 208-213 頁");
+  ["訂單可申請取消配送中", "申請處理中", "系統同意取消", "系統拒絕或買家撤回"].forEach(branch => appendTemplateSection("Q017", branch, "【取消配送中提醒】", "▪ 若訂單狀態已是 Seller Shipped，代表已進 WMS；買家通常不能自行取消，可先引導拒收。\n▪ 需要改地址或取消配送中時，需先確認買家同意可能失敗、可能產生改配費或仍需拒收。\n▪ 廠直訂單超過 1 小時可能已安排出貨；若廠商已出貨，需拒絕取消並提供物流資訊或引導拒收。\n\nPPT 出處：第 189-191、272-275 頁"));
+  appendTemplateSection("Q025", "廠直退貨／未取回商品", "【廠直拒收退款提醒】", "▪ 不能只依買家說已拒收或物流顯示拒收就退款。\n▪ 需由廠商確認商品已取回／已收到退貨後，才能進入退款判斷。\n\nPPT 出處：第 192、194-197 頁");
+
   ticketFormatBranches.forEach(branch => {
     [
       ["ticket_case_kind", "工單/表單種類", "先判斷要走哪一種共用流程；KAM 表或廠直表一定要先有商城名字才能判斷。", false, true, "select", ["一般 KAM 商品問題", "SBS KAM 商品問題", "廠直表", "補償折扣碼", "金流工單", "物流工單", "InHouse Case／轉單任務"], ticketFormatRules],
@@ -2714,7 +2910,8 @@
     Q022: "93-94",
     Q023: "125、247-249",
     Q024: "244-245",
-    Q025: "252-258"
+    Q025: "252-258",
+    Q026: "41-45、50"
   };
 
   Object.entries(pptQuestionPages).forEach(([id, pages]) => {
@@ -2753,7 +2950,16 @@
     "工具：AOC_OPS_V2 判別": "263-265",
     "工具：SCI 分箱／貨態查詢": "125、247-249",
     "工具：DSS 商品／訂單查詢": "73、128、132、194-196",
-    "工具：DSS 商談詢問廠商": "73、128、132、194-196"
+    "工具：DSS 商談詢問廠商": "73、128、132、194-196",
+    "工具：WMS｜在倉庫存報表查庫存": "41-45、50",
+    "工具：OMS｜訂單狀態異常判斷": "114-117",
+    "工具：WMS｜出貨狀態查詢": "42、120-122",
+    "工具：CS Portal｜通用搜尋與資訊區": "82-90",
+    "工具：Order Admin｜查歸戶驗證碼": "23-24、106",
+    "工具：Information Hub｜黑貓個案派車": "134",
+    "工具：InHouse｜控制台查商品與訂單": "291-295",
+    "工具：InHouse｜Reason Code 記錄": "304-309",
+    "工具：賣家中心／CS Portal｜訂單評價確認": "95、298-300"
   };
 
   Object.entries(pptBranchPages).forEach(([branch, pages]) => {
@@ -2787,6 +2993,7 @@
     [/scm\.internal\.shopee\.tw|Shopee Drop Shipping|DSS/i, "73、128、132、194-196"],
     [/jira\.shopee\.io|Shopee Jira|Jira/i, "68、136-138、315"],
     [/dms\.cs\.shopee\.tw|CS Portal/i, "5、116、185-186、264、266"],
+    [/wms\.shopee\.io|WMS/i, "41-45、120-122"],
     [/cs\.localshop\.shopee\.tw|InHouse/i, "5、79、283、347-348"],
     [/order-admin\.shopee\.tw|Order Admin/i, "5、20-21、195、221-237"],
     [/promotion-admin\.shopee\.tw|Promotion Admin/i, "171-179"],
